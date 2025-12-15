@@ -1,0 +1,31 @@
+﻿using UnityEngine;
+
+[CreateAssetMenu(fileName = "TileObjectAppearance", menuName = "Scriptable Objects/TileObjectAppearance")]
+public class TileObjectAppearance : ScriptableObject
+{
+    public TileObjectEntry[] entries;
+    public TileObjectEntry Get(TileObjectsType type)
+    {
+        foreach (var entry in entries)
+        {
+            if (entry.type == type)
+                return entry;
+        }
+        return null;
+    }
+}
+
+[System.Serializable]
+public class TileObjectEntry
+{
+    public TileObjectsType type;
+    public Sprite[] variants;
+
+    //Random Variant Choice
+    public Sprite GetRandomSprite()
+    {
+        if (variants == null || variants.Length == 0)
+            return null;
+        return variants[Random.Range(0, variants.Length)];
+    }
+}
