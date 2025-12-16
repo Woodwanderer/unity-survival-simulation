@@ -75,6 +75,13 @@ public class GameState
             return;
         }
     }
+
+    //ACTION BAR
+    public void AttemptHarvest()
+    {
+        world.Harvest();
+    }
+    //STATES
     private enum MapStates
     {
         TileSelected,

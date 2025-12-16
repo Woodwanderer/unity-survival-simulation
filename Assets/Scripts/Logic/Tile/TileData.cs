@@ -7,7 +7,6 @@ public class TileData
     public TerrainType Terrain {  get; private set; }
     public ElevationType Elevation { get; private set; }
     public List<TileObject> objects { get; private set; } = new();
-    //private static int objCapacity = 3;
 
     public TileData(Vector2Int MapCoords, TerrainType Terrain, ElevationType Elevation)
     {

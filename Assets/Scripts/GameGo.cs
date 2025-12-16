@@ -4,9 +4,10 @@ public class GameGo: MonoBehaviour
 {
     //Variables 
     private World world;
-    public RenderWorld renderWorld;
+    public RenderWorld renderWorld; //mono
     private GameState gameState;
     public InputController inputController;
+    public ActionBarUI actionBar; //mono
 
 
     private void Start()
@@ -14,9 +15,13 @@ public class GameGo: MonoBehaviour
         world = new World();        
         world.Initialise();
         inputController.world = world;
-        gameState = new GameState(world, renderWorld);
-        gameState.Initialise();
         renderWorld.Initialise(world);
+        gameState = new GameState(world, renderWorld);
+
+        gameState.Initialise();
+        actionBar.Init(gameState);
+
+        
         
     }
 

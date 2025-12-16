@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem.LowLevel;
+using Unity.Collections;
 
 public class World
 {
@@ -87,6 +88,7 @@ public class World
         int count = System.Enum.GetValues(typeof(TileObjectsType)).Length;
         TileObjectsType type = (TileObjectsType)(UnityEngine.Random.Range(0, count)); // with None
         TileObject obj = new(type, true);
+        obj.quantity = UnityEngine.Random.Range(1, 5);
 
         tile.AddObject(obj);
     }
@@ -138,6 +140,27 @@ public class World
         protagonistData.SetRouteTo(lastTileSelected.mapCoords);
 
         EventBus.Log("Route Established. ");
+        return true;
+    }
+    public bool Harvest()
+    {
+        TileData currentTile = GetProtagonistTileData();
+        if(currentTile.objects.Count == 0)
+        {
+            EventBus.Log("Nothing to gather here.");
+            return false;
+        }
+
+        TileObjectsType type = currentTile.objects[0].type;
+        if (type == TileObjectsType.Rock)
+            EventBus.Log("You gathered some stone.");
+        else
+            EventBus.Log("You gathered some wood.");
+        currentTile.objects[0].quantity -= 1;
+        if(currentTile.objects[0].quantity <= 0)
+        {
+            currentTile.objects.Clear();
+        }
         return true;
     }
   
