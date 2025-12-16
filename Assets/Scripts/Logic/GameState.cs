@@ -79,7 +79,10 @@ public class GameState
     //ACTION BAR
     public void AttemptHarvest()
     {
-        world.Harvest();
+        if (protagonistState == ProtagonistStates.None)
+        {
+            world.Harvest();
+        }
     }
     //STATES
     private enum MapStates

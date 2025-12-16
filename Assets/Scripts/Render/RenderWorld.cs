@@ -68,7 +68,7 @@ public class RenderWorld : MonoBehaviour
     }
     private Sprite GetTileObjectSprite(TileData tileD)
     {
-        if (tileD.objects[0] == null) return null;
+        if (tileD.objects.Count == 0 ) return null;
 
         TileObjectEntry entry = objectAppearance.Get(tileD.objects[0].type);
         if (entry == null) return null;
@@ -100,6 +100,12 @@ public class RenderWorld : MonoBehaviour
         if (currentTile != null)
             TilePrefabs[currentTile.mapCoords.x, currentTile.mapCoords.y].highlight.enabled = true;
         else return;
+    }
+    public void RemoveObjectSprite(Vector2Int tileCoords)
+    {
+        TilePrefab tileP = TilePrefabs[tileCoords.x, tileCoords.y];
+        tileP.HideObjectSprite();
+        
     }
 
 
@@ -150,10 +156,12 @@ public class RenderWorld : MonoBehaviour
     private void OnEnable()
     {
         EventBus.OnTileHighlight += TileHighlight;
+        EventBus.OnObjectDepleted += RemoveObjectSprite;
     }
     private void OnDisable()
     {
         EventBus.OnTileHighlight -= TileHighlight;
+        EventBus.OnObjectDepleted -= RemoveObjectSprite;
     }
  
 

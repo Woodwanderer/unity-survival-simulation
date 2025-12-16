@@ -159,6 +159,7 @@ public class World
         currentTile.objects[0].quantity -= 1;
         if(currentTile.objects[0].quantity <= 0)
         {
+            EventBus.ObjectDepleted(currentTile.mapCoords);
             currentTile.objects.Clear();
         }
         return true;

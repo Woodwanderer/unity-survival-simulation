@@ -59,6 +59,10 @@ public class TilePrefab: MonoBehaviour
         tileObject.transform.localScale = (Vector3.one) * scale;
 
     }
+    public void HideObjectSprite()
+    {
+        tileObject.enabled = false;
+    }
     public void ShowPath(bool visible)
     {
         path.enabled = visible;
