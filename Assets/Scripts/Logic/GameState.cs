@@ -5,6 +5,7 @@ public class GameState
 {
     World world;
     RenderWorld render;
+    
     MapStates mapState = MapStates.None;
     ProtagonistStates protagonistState = ProtagonistStates.None;
     bool routeEstablished = false;

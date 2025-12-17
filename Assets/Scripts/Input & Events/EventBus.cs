@@ -33,7 +33,10 @@ public class EventBus // to tylko statyczna klasa, jak biblioteka na eventy i fu
     public static void Confirm() => OnConfirm?.Invoke();
 
     //OBJECTS
+    public static event Action<ItemType, int> OnItemHarvest;
     public static event Action<Vector2Int> OnObjectDepleted;
+
+    public static void ItemHarvest(ItemType type, int amount) => OnItemHarvest?.Invoke(type, amount);
     public static void ObjectDepleted(Vector2Int tileCoords) => OnObjectDepleted?.Invoke(tileCoords);
 
 }    

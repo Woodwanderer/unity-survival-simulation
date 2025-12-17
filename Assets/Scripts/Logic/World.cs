@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem.LowLevel;
 using Unity.Collections;
+using Unity.VisualScripting;
 
 public class World
 {
@@ -153,10 +154,17 @@ public class World
 
         TileObjectsType type = currentTile.objects[0].type;
         if (type == TileObjectsType.Rock)
+        {
+            EventBus.ItemHarvest(ItemType.Stone, 1);
             EventBus.Log("You gathered some stone.");
+        }
         else
+        {
+            EventBus.ItemHarvest(ItemType.Wood, 1);
             EventBus.Log("You gathered some wood.");
+        }
         currentTile.objects[0].quantity -= 1;
+
         if(currentTile.objects[0].quantity <= 0)
         {
             EventBus.ObjectDepleted(currentTile.mapCoords);
