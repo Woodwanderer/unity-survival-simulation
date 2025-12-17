@@ -4,6 +4,8 @@ public class InputController: MonoBehaviour
 {
     public World world;
     private DoubleClickDetector doubleLeftClickDetector = new DoubleClickDetector(0);
+    public Inventory inventory;
+    bool inventoryOpen = false;
 
     public void Update()
     {
@@ -20,7 +22,19 @@ public class InputController: MonoBehaviour
             EventBus.Cancel();
         }
 
+        //INVENTORY
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            inventoryOpen = !inventoryOpen;
+            if (inventoryOpen == true)
+            {
+                inventory.Show();
+            }
+            else
+                inventory.Hide();
+            
         
+        }
 
     }
 }
