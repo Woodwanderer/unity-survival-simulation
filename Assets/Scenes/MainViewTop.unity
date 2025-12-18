@@ -1103,6 +1103,7 @@ MonoBehaviour:
   renderWorld: {fileID: 948895213}
   inputController: {fileID: 899128859}
   actionBar: {fileID: 1419749311}
+  database: {fileID: 11400000, guid: 23e7e62dbb56a844a8a454a4de8b6b1d, type: 2}
 --- !u!1 &259549035
 GameObject:
   m_ObjectHideFlags: 0

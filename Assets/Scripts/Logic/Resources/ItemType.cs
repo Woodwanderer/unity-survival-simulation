@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 
-public enum ResourceType
+public enum ItemType
 {
+    None,
     Wood,
-    Stone
+    Stone,
+    FoodRaw
 }

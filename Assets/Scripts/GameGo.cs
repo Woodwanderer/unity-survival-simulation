@@ -8,10 +8,11 @@ public class GameGo: MonoBehaviour
     private GameState gameState;
     public InputController inputController;
     public ActionBarUI actionBar;           //mono
+    public TileObjectsDatabase database;
 
     private void Start()
     {
-        world = new World();        
+        world = new World(database);        
         world.Initialise();
         inputController.world = world;
         renderWorld.Initialise(world);

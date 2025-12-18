@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem.LowLevel;
 using Unity.Collections;
 using Unity.VisualScripting;
+using UnityEditor;
 
 public class World
 {
@@ -20,6 +21,12 @@ public class World
     public ProtagonistData protagonistData { get; private set; }
     TerrainType terrain;
     ElevationType elevation;
+    public TileObjectsDatabase database;
+    
+    public World(TileObjectsDatabase data_in)
+    {
+        this.database = data_in;
+    }
 
     //GETTERS
     //Tiles
@@ -80,18 +87,38 @@ public class World
                 elevation = (ElevationType)UnityEngine.Random.Range(0, 3);
 
                 tileData[x, y] = new TileData(tilePos, terrain, elevation);
-                PopulateTileObjects(tileData[x, y]);
+                //PopulateTileObjects(tileData[x, y]);
+                PopulateFood2(tileData[x, y]);
             }
         }
     }
     private void PopulateTileObjects(TileData tile)
     {
-        int count = System.Enum.GetValues(typeof(TileObjectsType)).Length;
+        int count = System.Enum.GetValues(typeof(TileObjectsType)).Length -1; //no Food included
         TileObjectsType type = (TileObjectsType)(UnityEngine.Random.Range(0, count)); // with None
         TileObject obj = new(type, true);
         obj.quantity = UnityEngine.Random.Range(1, 5);
 
         tile.AddObject(obj);
+    }
+    private void PopulateFood(TileData tile)
+    {
+        if(tile.objects.Count == 0)
+        {
+            TileObjectDefinition definition = database.Get(TileObjectsType.FruitTree);
+            TileObject obj = new(definition.objType, true);
+            obj.SetWithDictionary(definition.objType, definition.GenerateResources());
+            tile.AddObject(obj);
+        }
+    }
+    private void PopulateFood2(TileData tile)
+    {
+        
+            TileObjectDefinition definition = database.Get(TileObjectsType.FruitTree);
+            TileObject obj = new(definition.objType, true);
+            obj.SetWithDictionary(definition.objType, definition.GenerateResources());
+            tile.AddObject(obj);
+        
     }
 
     private void SetProtagonist()

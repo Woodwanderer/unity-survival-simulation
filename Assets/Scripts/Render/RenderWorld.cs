@@ -47,7 +47,7 @@ public class RenderWorld : MonoBehaviour
         }
 
         SpawnProtagonist(world.GetProtagonistData());
-        //SpawnDeer();
+        SpawnDeer();
     }
     public Vector3 MapToWorld(Vector2Int mapPos)
     {
