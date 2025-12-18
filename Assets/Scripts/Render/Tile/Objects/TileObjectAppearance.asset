@@ -13,22 +13,22 @@ MonoBehaviour:
   m_Name: TileObjectAppearance
   m_EditorClassIdentifier: 
   entries:
-  - type: 1
+  - type: 0
     variants:
     - {fileID: 21300000, guid: 31fa6867df2a26340b49016723b55aef, type: 3}
     - {fileID: 21300000, guid: 7a0e096bc9f6cc74381170144e690a81, type: 3}
-  - type: 2
+  - type: 1
     variants:
     - {fileID: 21300000, guid: 7e2e8ff7740ac4e47ac739f9f516dd0b, type: 3}
     - {fileID: 21300000, guid: 7f895dfae702d7c42bb1de5e334ea12f, type: 3}
-  - type: 3
+  - type: 2
     variants:
     - {fileID: 21300000, guid: b9a09f6ea7cac6445b813b0d3385752b, type: 3}
     - {fileID: 21300000, guid: 62da59a8b1cef984dae2d95597f2dd59, type: 3}
-  - type: 4
+  - type: 3
     variants:
     - {fileID: 21300000, guid: 8c22189e89575824c9fe34acea43f9a2, type: 3}
     - {fileID: 21300000, guid: 7134e3b10211d3b45a0d33175741bee7, type: 3}
-  - type: 5
+  - type: 4
     variants:
     - {fileID: 21300000, guid: 3f5c2fc6dcc7fb84c9ad0b6737eb1fc6, type: 3}

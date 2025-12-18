@@ -9,8 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d5c654d60f3ace42b865c3b26937265, type: 3}
-  m_Name: TileObjectsDatabase
+  m_Script: {fileID: 11500000, guid: 1349607b314e15940acdbc229df89da0, type: 3}
+  m_Name: 04.TODefRock
   m_EditorClassIdentifier: 
-  definitions:
-  - {fileID: 11400000, guid: 5c37687d0d77e35419d31c0e063c453b, type: 2}
+  objType: 4
+  maxAge: 100
+  resources:
+  - item: 2
+    maxAmount: 500

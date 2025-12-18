@@ -88,21 +88,25 @@ public class World
                 elevation = (ElevationType)UnityEngine.Random.Range(0, 3);
 
                 tileData[x, y] = new TileData(tilePos, terrain, elevation);
-                //PopulateTileObjects(tileData[x, y]);
-                PopulateFood(tileData[x, y]);
+                PopulateTileObjects(tileData[x, y]);
+                //PopulateFood(tileData[x, y]);
             }
         }
     }
-    /*private void PopulateTileObjects(TileData tile)
+ 
+    private void PopulateTileObjects(TileData tile)
     {
-        int count = System.Enum.GetValues(typeof(TileObjectsType)).Length -1; //no Food included
-        TileObjectsType type = (TileObjectsType)(UnityEngine.Random.Range(0, count)); // with None
-        TileObject obj = new(type, true);
-        obj.quantity = UnityEngine.Random.Range(1, 5);
-
+        //Get Random TileObjectType
+        int count = System.Enum.GetValues(typeof(TileObjectsType)).Length;
+        TileObjectsType type = (TileObjectsType)(UnityEngine.Random.Range(0, count)); //no more None
+        
+        //                                                                                                              TO DO!!!!!!!!!!!!!!!!!!!!!!!!! -.all tile are filled.Make saome conditional spawn
+        TileObjectDefinition definition = database.Get(type);
+        TileObject obj = new(definition.objType, definition.GenerateResources());
         tile.AddObject(obj);
-    }*/
-    private void PopulateFood(TileData tile)
+        
+    }
+    private void PopulateFood(TileData tile) //FruitTree
     {
         TileObjectDefinition definition = database.Get(TileObjectsType.FruitTree);
         TileObject obj = new(definition.objType, definition.GenerateResources());
@@ -171,7 +175,7 @@ public class World
         TileObject obj = currentTile.objects[0];
 
         Dictionary<ItemType, int> loot = obj.Harvest();
-        var res00 = loot.First();
+        var res00 = loot.First(); //touple - para
         EventBus.Log("You gathered " + res00.Value + " " + res00.Key);
         EventBus.ItemHarvest(res00.Key, res00.Value);
 

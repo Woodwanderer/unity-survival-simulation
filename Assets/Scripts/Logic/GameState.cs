@@ -27,7 +27,11 @@ public class GameState
     void HandleTileClicked(TileData tile)
     {
         if (world.TrySelectTile(tile))
+        {
             mapState = MapStates.TileSelected;
+            EventBus.Log("Objects here: " + tile.objects[0].type.ToString());
+            
+        }
     }
 
     void HandleCancel()

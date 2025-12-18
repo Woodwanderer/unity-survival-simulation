@@ -23,7 +23,7 @@ public class InputController: MonoBehaviour
         }
 
         //INVENTORY
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.I)) //Items are not added to inv while it's hidden - TO FIX!!!!!!!!!!!!!
         {
             inventoryOpen = !inventoryOpen;
             if (inventoryOpen == true)

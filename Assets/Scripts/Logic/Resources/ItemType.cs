@@ -2,7 +2,7 @@
 
 public enum ItemType
 {
-    None,
+    None, //Needed for Inventory
     Wood,
     Stone,
     FoodRaw
