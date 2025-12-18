@@ -14,10 +14,6 @@ public class TileData
         this.Terrain = Terrain;
         this.Elevation = Elevation;
     }
-    public void SetObjects(List<TileObject> objectsIn)
-    {
-        objects = objectsIn;
-    }
     public void AddObject(TileObject tileObject)
     {
         objects.Add(tileObject);

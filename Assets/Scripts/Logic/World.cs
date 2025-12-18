@@ -7,6 +7,7 @@ using UnityEngine.InputSystem.LowLevel;
 using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEditor;
+using System.Linq;
 
 public class World
 {
@@ -88,11 +89,11 @@ public class World
 
                 tileData[x, y] = new TileData(tilePos, terrain, elevation);
                 //PopulateTileObjects(tileData[x, y]);
-                PopulateFood2(tileData[x, y]);
+                PopulateFood(tileData[x, y]);
             }
         }
     }
-    private void PopulateTileObjects(TileData tile)
+    /*private void PopulateTileObjects(TileData tile)
     {
         int count = System.Enum.GetValues(typeof(TileObjectsType)).Length -1; //no Food included
         TileObjectsType type = (TileObjectsType)(UnityEngine.Random.Range(0, count)); // with None
@@ -100,25 +101,12 @@ public class World
         obj.quantity = UnityEngine.Random.Range(1, 5);
 
         tile.AddObject(obj);
-    }
+    }*/
     private void PopulateFood(TileData tile)
     {
-        if(tile.objects.Count == 0)
-        {
-            TileObjectDefinition definition = database.Get(TileObjectsType.FruitTree);
-            TileObject obj = new(definition.objType, true);
-            obj.SetWithDictionary(definition.objType, definition.GenerateResources());
-            tile.AddObject(obj);
-        }
-    }
-    private void PopulateFood2(TileData tile)
-    {
-        
-            TileObjectDefinition definition = database.Get(TileObjectsType.FruitTree);
-            TileObject obj = new(definition.objType, true);
-            obj.SetWithDictionary(definition.objType, definition.GenerateResources());
-            tile.AddObject(obj);
-        
+        TileObjectDefinition definition = database.Get(TileObjectsType.FruitTree);
+        TileObject obj = new(definition.objType, definition.GenerateResources());
+        tile.AddObject(obj);
     }
 
     private void SetProtagonist()
@@ -173,31 +161,28 @@ public class World
     public bool Harvest()
     {
         TileData currentTile = GetProtagonistTileData();
-        if(currentTile.objects.Count == 0)
+        if (currentTile.objects.Count == 0)
         {
             EventBus.Log("Nothing to gather here.");
             return false;
         }
 
         TileObjectsType type = currentTile.objects[0].type;
-        if (type == TileObjectsType.Rock)
-        {
-            EventBus.ItemHarvest(ItemType.Stone, 1);
-            EventBus.Log("You gathered some stone.");
-        }
-        else
-        {
-            EventBus.ItemHarvest(ItemType.Wood, 1);
-            EventBus.Log("You gathered some wood.");
-        }
-        currentTile.objects[0].quantity -= 1;
+        TileObject obj = currentTile.objects[0];
 
-        if(currentTile.objects[0].quantity <= 0)
+        Dictionary<ItemType, int> loot = obj.Harvest();
+        var res00 = loot.First();
+        EventBus.Log("You gathered " + res00.Value + " " + res00.Key);
+        EventBus.ItemHarvest(res00.Key, res00.Value);
+
+        //CLEAR - object fully depleted
+        if (obj.items.Count == 0)
         {
             EventBus.ObjectDepleted(currentTile.mapCoords);
             currentTile.objects.Clear();
         }
+
         return true;
     }
-  
+
 }

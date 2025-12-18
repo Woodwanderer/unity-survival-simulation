@@ -15,7 +15,7 @@ MonoBehaviour:
   objType: 2
   maxAge: 10
   resources:
-  - item: 1
-    maxAmount: 50
   - item: 3
     maxAmount: 20
+  - item: 1
+    maxAmount: 50

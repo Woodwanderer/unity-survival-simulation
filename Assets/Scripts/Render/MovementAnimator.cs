@@ -18,7 +18,6 @@ public class MovementAnimator : MonoBehaviour
             yield return null;
         }
         transform.position = endLoc;
-        Debug.Log("animator step" + endLoc);
     }
 
     // IMPORTANT:
