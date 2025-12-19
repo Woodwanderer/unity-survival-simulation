@@ -5,15 +5,17 @@ public class GameState
 {
     World world;
     RenderWorld render;
+    CameraMovement cam;
     
     MapStates mapState = MapStates.None;
     ProtagonistStates protagonistState = ProtagonistStates.None;
     bool routeEstablished = false;
 
-    public GameState(World world, RenderWorld render)
+    public GameState(World world, RenderWorld render, CameraMovement cam)
     {
         this.world = world;
         this.render = render;
+        this.cam = cam;
     }
 
     public void Initialise()
@@ -36,6 +38,13 @@ public class GameState
 
     void HandleCancel()
     {
+        //Clear CAMERA Follow
+        if (cam.cameraFollow)
+        {
+            cam.StopFollow();
+            return;
+        }
+
         // Clear Highlight on Tile
         if (mapState == MapStates.TileSelected)
         {

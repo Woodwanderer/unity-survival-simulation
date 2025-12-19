@@ -9,6 +9,7 @@ public class GameGo: MonoBehaviour
     public InputController inputController;
     public ActionBarUI actionBar;           //mono
     public TileObjectsDatabase database;
+    public CameraMovement cam;
 
     private void Start()
     {
@@ -16,7 +17,7 @@ public class GameGo: MonoBehaviour
         world.Initialise();
         inputController.world = world;
         renderWorld.Initialise(world);
-        gameState = new GameState(world, renderWorld);
+        gameState = new GameState(world, renderWorld, cam);
         gameState.Initialise();
         actionBar.Init(gameState);
 

@@ -138,6 +138,14 @@ public class RenderWorld : MonoBehaviour
     {   
         StartCoroutine(protMovement.MoveAlong());
     }
+    public Vector3 GetProtagonistLocation() // to jest jednorazwoe pobranie wartości
+    {
+        return protMovement.transform.position;
+    }
+    public Transform GetProtagonistTransform() //to jest zwrócenie referencji - będzei aktualizowane, co frame
+    {
+        return protMovement.transform;
+    }
 
     // NPC - Creatures
     void SpawnDeer()

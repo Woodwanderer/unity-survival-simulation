@@ -12,8 +12,8 @@ using System.Linq;
 public class World
 {
     //Variables
-    public int worldSizeX { get; private set; } = 20;
-    public int worldSizeY { get; private set; } = 20;
+    public int worldSizeX { get; private set; } = 60;
+    public int worldSizeY { get; private set; } = 40;
     public Vector2Int worldSize { get; private set; }
     public Vector2Int halfWorldSize { get; private set; }
 
