@@ -12,21 +12,33 @@ using System.Linq;
 public class World
 {
     //Variables
+    //General World
     public int worldSizeX { get; private set; } = 60;
     public int worldSizeY { get; private set; } = 40;
     public Vector2Int worldSize { get; private set; }
     public Vector2Int halfWorldSize { get; private set; }
 
+    //Tiles
     private TileData[,] tileData;
     private TileData lastTileSelected;
-    public ProtagonistData protagonistData { get; private set; }
     TerrainType terrain;
     ElevationType elevation;
+    //Tile Objects
     public TileObjectsDatabase database;
+
+    //Protagonist
+    public ProtagonistData protagonistData { get; private set; }
+
+    //Resources
+    public VirtualResources resources = new();
     
     public World(TileObjectsDatabase data_in)
     {
         this.database = data_in;
+    }
+    public void Tick(float deltaTime)
+    {
+
     }
 
     //GETTERS
@@ -175,9 +187,10 @@ public class World
         TileObject obj = currentTile.objects[0];
 
         Dictionary<ItemType, int> loot = obj.Harvest();
-        var res00 = loot.First(); //touple - para
+        KeyValuePair<ItemType, int> res00 = loot.First(); //touple - para
         EventBus.Log("You gathered " + res00.Value + " " + res00.Key);
-        EventBus.ItemHarvest(res00.Key, res00.Value);
+
+        resources.AddItem(res00.Key, res00.Value);
 
         //CLEAR - object fully depleted
         if (obj.items.Count == 0)

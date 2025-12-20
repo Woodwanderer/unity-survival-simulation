@@ -30,6 +30,5 @@ public class InventorySlot : MonoBehaviour
             amountText.enabled = true;
             icon.enabled = true;
         }
-        Debug.Log($"Slot {name} | type={type} | amount={amount}");
     }
 }

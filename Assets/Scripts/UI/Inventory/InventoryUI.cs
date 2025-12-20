@@ -2,16 +2,20 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Inventory : MonoBehaviour
+public class InventoryUI : MonoBehaviour
 {
     InventorySlot[] slots;
-    
+
     private void Awake()
     {
         gameObject.SetActive(false);
         slots = GetComponentsInChildren<InventorySlot>();
     }
 
+    public void AddToInv(ResourceEntry entry)
+    {
+        AddToInv(entry.item, entry.amount);
+    }
     public void AddToInv(ItemType type, int amount)
     {
         foreach (InventorySlot slot in slots)
@@ -35,13 +39,5 @@ public class Inventory : MonoBehaviour
     public void Hide()
     {
         gameObject.SetActive(false);
-    }
-    private void OnEnable()
-    {
-        EventBus.OnItemHarvest += AddToInv;
-    }
-    private void OnDisable()
-    {
-        EventBus.OnItemHarvest -= AddToInv;
     }
 }

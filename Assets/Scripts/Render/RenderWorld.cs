@@ -54,6 +54,10 @@ public class RenderWorld : MonoBehaviour
         Vector3 mapToWorld = new((mapPos.x - mapToCenter.x) * tileSize, (mapPos.y - mapToCenter.y) * tileSize, 0);
         return mapToWorld;
     }
+    public void Tick(float deltaTime)
+    {
+
+    }
 
     //TILES
     private Sprite GetTerrainSprite(TerrainType type)
@@ -105,7 +109,6 @@ public class RenderWorld : MonoBehaviour
     {
         TilePrefab tileP = TilePrefabs[tileCoords.x, tileCoords.y];
         tileP.HideObjectSprite();
-        
     }
 
 

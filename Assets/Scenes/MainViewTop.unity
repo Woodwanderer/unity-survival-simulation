@@ -1104,6 +1104,8 @@ MonoBehaviour:
   inputController: {fileID: 899128859}
   actionBar: {fileID: 1419749311}
   database: {fileID: 11400000, guid: 23e7e62dbb56a844a8a454a4de8b6b1d, type: 2}
+  cam: {fileID: 330585548}
+  inventory: {fileID: 178616592}
 --- !u!1 &259549035
 GameObject:
   m_ObjectHideFlags: 0

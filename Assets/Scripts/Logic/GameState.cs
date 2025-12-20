@@ -3,28 +3,38 @@ using UnityEngine.InputSystem.XR.Haptics;
 
 public class GameState
 {
+    InputController inputContr;
     World world;
     RenderWorld render;
     CameraMovement cam;
+    InventoryUI inventory;
     
     MapStates mapState = MapStates.None;
     ProtagonistStates protagonistState = ProtagonistStates.None;
     bool routeEstablished = false;
 
-    public GameState(World world, RenderWorld render, CameraMovement cam)
+    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inv)
     {
         this.world = world;
         this.render = render;
         this.cam = cam;
+        this.inputContr = input_in;
+        this.inventory = inv;
     }
 
     public void Initialise()
     {
-        EventBus.OnTileClicked += HandleTileClicked;
-        EventBus.OnMovementAnimationComplete += RestoreStates;
-        EventBus.OnCancel += HandleCancel;
-        EventBus.OnConfirm += HandleConfirm;
-
+        EventBus.OnTileClicked += HandleTileClicked; // send by tile
+        EventBus.OnMovementAnimationComplete += RestoreStates; // send by ProtagonistMovement
+    }
+    public void Tick(float deltaTime)
+    {
+        //CONFIRM
+        if (inputContr.ConsumeConfirm())
+            HandleConfirm();
+        //CANCEL
+        if(inputContr.ConsumeCancel()) 
+            HandleCancel();
     }
     void HandleTileClicked(TileData tile)
     {
@@ -95,9 +105,13 @@ public class GameState
     {
         if (protagonistState == ProtagonistStates.None)
         {
-            world.Harvest();
+            if (world.Harvest())
+            {
+                inventory.AddToInv(world.resources.wasAdded); //Update InventoryUI
+                world.resources.ClearEntry();
+            }
         }
-    }
+    } // function is added to button only
     //STATES
     private enum MapStates
     {

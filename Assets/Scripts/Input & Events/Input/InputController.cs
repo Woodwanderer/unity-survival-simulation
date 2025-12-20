@@ -3,37 +3,39 @@ using UnityEngine;
 
 public class InputController: MonoBehaviour 
 {
-    public World world;
     public RenderWorld renderWorld;
     public CameraMovement cam;
     private DoubleClickDetector doubleLeftClickDetector = new DoubleClickDetector(0);
-    public Inventory inventory;
+
+    public InventoryUI inventory;
     bool inventoryOpen = false;
-    
     
 
     //KEYBOARD KEYS Mappings
+    //UI
+    KeyCode toggleInventory = KeyCode.I;
+
     //Camera
     KeyCode cameraCenter = KeyCode.C;
     KeyCode cameraFollowProtagonist = KeyCode.F1;
 
-    public void Update()
+    bool confirmPressed;
+    bool cancelPressed;
+
+    public void Tick(float deltaTime)
     {
         // CONFIRM
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || doubleLeftClickDetector.CheckDoubleClick() )
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || doubleLeftClickDetector.CheckDoubleClick())
         {
-            EventBus.Confirm();
+            confirmPressed = true;
         }
-
-
         // Cancel
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
         {
-            EventBus.Cancel();
+            cancelPressed = true;
         }
-
         //INVENTORY
-        if (Input.GetKeyDown(KeyCode.I)) //Items are not added to inv while it's hidden - TO FIX!!!!!!!!!!!!!
+        if (Input.GetKeyDown(toggleInventory)) // I
         {
             inventoryOpen = !inventoryOpen;
             if (inventoryOpen == true)
@@ -43,12 +45,24 @@ public class InputController: MonoBehaviour
             else
                 inventory.Hide();
         }
-
         //CAMERA
         CameraPointAtProtagonist(); // C
         CameraFollowPlayer();       // F1
     }
-
+    public bool ConsumeConfirm()
+    {
+        if (!confirmPressed)
+            return false;
+        confirmPressed = false;
+        return true;
+    }
+    public bool ConsumeCancel()
+    {
+        if (!cancelPressed)
+            return false;
+        cancelPressed = false;
+        return true;
+    }
     private void CameraPointAtProtagonist()
     {
         if (Input.GetKeyDown(cameraCenter)) //Point at Protagonist
