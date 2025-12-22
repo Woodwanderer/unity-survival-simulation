@@ -28,9 +28,9 @@ public class GameGo: MonoBehaviour
         gameState.Initialise();
 
         //UI
-        actionBar.Init(gameState);
+        actionBar.Init(gameState, world.protagonistData.charSheet.actions);
         timePanelUI.Init(gameTime);
-        charSheetUI.Init(world.protagonistData.charState);
+        charSheetUI.Init(world.protagonistData.charSheet);
 
     }
 

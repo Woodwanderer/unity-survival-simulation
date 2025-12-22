@@ -9,20 +9,20 @@ public class ProtagonistData
     public ProtagonistRoute route = new();
 
     //STATS :)
-    public CharacterSheet charState;
+    public CharacterSheet charSheet;
     public float speed { get; private set; } = 2.0f;
 
     //Actions
-    public Actions actions = new Actions();
+    
     public ProtagonistData(Vector2Int mapCoords, float hourDuration)
     {
         this.hourDuration = hourDuration;
         this.mapCoords = mapCoords;
-        charState = new CharacterSheet(hourDuration);
+        charSheet = new CharacterSheet(hourDuration);
     }    
     public void Tick(float deltaTime)
     {
-        charState.Tick(deltaTime);
+        charSheet.Tick(deltaTime);
     }
     public void SetRouteTo(Vector2Int targetCoords)
     {
@@ -41,4 +41,9 @@ public class ProtagonistData
     {
         mapCoords += step;
     }
+    private void ResolveAction()
+    {
+
+    }
+  
 }
