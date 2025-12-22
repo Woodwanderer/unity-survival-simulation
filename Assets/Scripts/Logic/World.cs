@@ -17,6 +17,7 @@ public class World
     public int worldSizeY { get; private set; } = 40;
     public Vector2Int worldSize { get; private set; }
     public Vector2Int halfWorldSize { get; private set; }
+    public GameTime gameTime;
 
     //Tiles
     private TileData[,] tileData;
@@ -32,13 +33,14 @@ public class World
     //Resources
     public VirtualResources resources = new();
     
-    public World(TileObjectsDatabase data_in)
+    public World(TileObjectsDatabase data_in, GameTime time)
     {
         this.database = data_in;
+        gameTime = time;
     }
     public void Tick(float deltaTime)
     {
-
+        protagonistData.Tick(deltaTime);
     }
 
     //GETTERS
@@ -127,7 +129,7 @@ public class World
 
     private void SetProtagonist()
     {
-        protagonistData = new ProtagonistData(halfWorldSize);
+        protagonistData = new ProtagonistData(halfWorldSize, gameTime.HourDuration);
         string msg = ProtTileDataToString(GetProtagonistTileData());
         EventBus.Log(msg);
     }
