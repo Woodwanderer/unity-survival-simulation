@@ -44,6 +44,9 @@ TagManager:
   - name: World
     uniqueID: 226849583
     locked: 0
+  - name: OnProtUp
+    uniqueID: 3564978509
+    locked: 0
   m_RenderingLayers:
   - Default
   - Light Layer 1

@@ -22,7 +22,10 @@ public class RenderWorld : MonoBehaviour
 
     //Protagonist
     public GameObject protagonistPrefab; //Link do prefaba Protagonisty - podpiąć w Unity
+    public GameObject protagonist; //Instance
     private ProtagonsitMovement protMovement;
+    public AnimateActions animator;
+    
     
     private Vector2 mapToCenter;
 
@@ -133,9 +136,10 @@ public class RenderWorld : MonoBehaviour
         Vector2Int startCoords = world.GetProtagonistCoords();
         Vector3 startLoc = MapToWorld(startCoords) + creatureTileOffset;
 
-        GameObject protagonistInstance = Instantiate(protagonistPrefab, startLoc, Quaternion.identity);
-        protMovement = protagonistInstance.GetComponent<ProtagonsitMovement>();
+        protagonist = Instantiate(protagonistPrefab, startLoc, Quaternion.identity);
+        protMovement = protagonist.GetComponent<ProtagonsitMovement>();
         protMovement.Initialise(protagonistData, this);
+        animator = protagonist.GetComponent<AnimateActions>();
     }
     public void MoveProt()
     {   

@@ -22,6 +22,11 @@ public class InventorySlot : MonoBehaviour
         amount += amount_in;
         Refresh();
     }
+    public void DecreaseAmount(int amount_in)
+    {
+        amount -= amount_in;
+        Refresh();
+    }
     private void Refresh()
     {
         amountText.text = amount.ToString();
@@ -29,6 +34,11 @@ public class InventorySlot : MonoBehaviour
         {
             amountText.enabled = true;
             icon.enabled = true;
+        }
+        else
+        {
+            amountText.enabled = false;
+            icon = null;
         }
     }
 }

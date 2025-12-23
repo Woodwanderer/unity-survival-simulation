@@ -5,8 +5,9 @@ public class GameState
 {
     InputController inputContr;
     World world;
-    RenderWorld render;
+    RenderWorld renderWorld;
     CameraMovement cam;
+    //UI
     InventoryUI inventory;
     
     MapStates mapState = MapStates.None;
@@ -16,7 +17,7 @@ public class GameState
     public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inv)
     {
         this.world = world;
-        this.render = render;
+        this.renderWorld = render;
         this.cam = cam;
         this.inputContr = input_in;
         this.inventory = inv;
@@ -35,6 +36,20 @@ public class GameState
         //CANCEL
         if(inputContr.ConsumeCancel()) 
             HandleCancel();
+
+
+        //Check for base resources changes
+        if(world.resources.removed == true)
+        {
+            inventory.RemoveEntry(world.resources.wasRemoved);
+            world.resources.ClearEntry();
+        }
+        //Check for Protagonist ActionState to trigger apropriate animation
+        
+        bool isEating = world.protagonistData.charSheet.actions.State == CharacterActionState.Eating;
+        renderWorld.animator.SetAnimation(isEating);
+        
+
     }
     void HandleTileClicked(TileData tile)
     {
@@ -67,7 +82,7 @@ public class GameState
         // Clear ROUTE
         if (routeEstablished && protagonistState != ProtagonistStates.Moving)
         {
-            render.DrawPath(world.protagonistData.route.pathCoords, false);
+            renderWorld.DrawPath(world.protagonistData.route.pathCoords, false);
             world.CancelRoute();
             routeEstablished = false;
             mapState = MapStates.TileSelected;
@@ -83,7 +98,7 @@ public class GameState
             {
                 if (world.EstablishRoute())
                 {
-                    render.DrawPath(world.protagonistData.route.pathCoords, true);
+                    renderWorld.DrawPath(world.protagonistData.route.pathCoords, true);
                     routeEstablished = true;
                 }
                 return;
@@ -95,7 +110,7 @@ public class GameState
             protagonistState = ProtagonistStates.Moving;
             world.CancelSelection();
             mapState = MapStates.None;
-            render.MoveProt();
+            renderWorld.MoveProt();
             return;
         }
     }
@@ -112,6 +127,9 @@ public class GameState
             }
         }
     } // function is added to button only
+
+
+
     //STATES
     private enum MapStates
     {

@@ -7,18 +7,21 @@ public class ProtagonistData
     float hourDuration;
     public Vector2Int mapCoords { get; private set; }
     public ProtagonistRoute route = new();
-
-    //STATS :)
+    
     public CharacterSheet charSheet;
     public float speed { get; private set; } = 2.0f;
 
     //Actions
-    
-    public ProtagonistData(Vector2Int mapCoords, float hourDuration)
+    bool actionChanged = false;
+    public CharacterActionState GetActionState()
+    {
+        return charSheet.actions.State;
+    }
+    public ProtagonistData(Vector2Int mapCoords, float hourDuration, VirtualResources global)
     {
         this.hourDuration = hourDuration;
         this.mapCoords = mapCoords;
-        charSheet = new CharacterSheet(hourDuration);
+        charSheet = new CharacterSheet(hourDuration, global);
     }    
     public void Tick(float deltaTime)
     {
@@ -41,9 +44,6 @@ public class ProtagonistData
     {
         mapCoords += step;
     }
-    private void ResolveAction()
-    {
-
-    }
+ 
   
 }

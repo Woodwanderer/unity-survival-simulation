@@ -3533,6 +3533,8 @@ MonoBehaviour:
   objectAppearance: {fileID: 11400000, guid: b81c043f122d91c449adb5a18918ce40, type: 2}
   DeerPrefab: {fileID: 8731488479123900441, guid: 9cfc52c168d2dab4aa1616b62df8100c, type: 3}
   protagonistPrefab: {fileID: 6081129243382996873, guid: 4cf1669bf83d2dd4085e25d4426b0bb4, type: 3}
+  protagonist: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!4 &948895214
 Transform:
   m_ObjectHideFlags: 0

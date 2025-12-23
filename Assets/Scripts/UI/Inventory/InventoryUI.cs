@@ -32,6 +32,17 @@ public class InventoryUI : MonoBehaviour
             }
         }
     }
+    public void RemoveEntry(ResourceEntry entry)
+    {
+        foreach (InventorySlot slot in slots)
+        {
+            if(slot.type == entry.item)
+            {
+                slot.DecreaseAmount(entry.amount);
+                return;
+            }
+        }
+    }
     public void Show()
     {
         gameObject.SetActive(true);

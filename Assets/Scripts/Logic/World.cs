@@ -129,7 +129,7 @@ public class World
 
     private void SetProtagonist()
     {
-        protagonistData = new ProtagonistData(halfWorldSize, gameTime.HourDuration);
+        protagonistData = new ProtagonistData(halfWorldSize, gameTime.HourDuration, resources);
         string msg = ProtTileDataToString(GetProtagonistTileData());
         EventBus.Log(msg);
     }

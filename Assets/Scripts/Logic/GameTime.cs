@@ -6,7 +6,7 @@ public class GameTime
     int day = 0;
     int hour = 0;
     float secondsInHour = 0;
-    float hourDuration = 60; //seconds
+    float hourDuration = 60; //seconds 60 - default game
     public float HourDuration => hourDuration;
     string timeString;
     float timeOfDay = 0; //0...1

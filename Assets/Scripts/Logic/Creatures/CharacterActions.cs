@@ -3,20 +3,55 @@ using UnityEngine;
 
 public class CharacterActions
 {
-    public CharacterActionState state = CharacterActionState.Idle;
+    CharacterActionState state = CharacterActionState.Idle;
+    public CharacterActionState State => state;
+
     float nutritionValue = 0; // will be gone after food - ItemType improvement
     float hourDuration;
     float nutriRate;
     float nutrition = 0;
-    public CharacterActions(float hourDuration)
+
+    VirtualResources globalRes;
+
+    bool actionChanged = false;
+
+    ResourceEntry demand = default;
+    
+    ResourceEntry foodRecepieBasic;
+    public CharacterActions(float hourDuration, VirtualResources baseRes)
     {
         this.hourDuration = hourDuration;
-        nutriRate = hourDuration * 10f; //full bar in 10 minutes // 10 sec in game
+        globalRes = baseRes;
+        nutriRate = hourDuration * 0.16f; //full bar in 10 minutes // 10 sec in game 1/6th of an hour
+        foodRecepieBasic = new ResourceEntry(ItemType.FoodRaw, 5);
+    }
+    public bool BlocksHunger
+    {
+        get
+        {
+            return state == CharacterActionState.Eating;
+        }
     }
     public void EatInit(ItemType food)
     {
         nutritionValue = 0.25f; // get from food -> improve ItemType
-        state = CharacterActionState.Eating;
+
+        int ration = 5;
+        if (!globalRes.RemoveItem(food, ration))
+        {
+            EventBus.Log("You don't have enough food.");
+        }
+        else
+        {
+
+            state = CharacterActionState.Eating;
+        }
+
+    }
+    public void DemandResources(ResourceEntry entryItem)
+    {
+
+        
     }
     public float Eating(float deltaTime)
     {
@@ -24,8 +59,10 @@ public class CharacterActions
         {
             state = CharacterActionState.Idle;
             nutritionValue = 0;
+            nutrition = 0;
         }
-        return nutrition += deltaTime / nutriRate;
+        nutrition += deltaTime / nutriRate;
+        return deltaTime / nutriRate;
     }
     
 }
