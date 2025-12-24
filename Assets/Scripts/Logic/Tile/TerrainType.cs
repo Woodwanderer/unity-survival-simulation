@@ -4,6 +4,7 @@ public enum TerrainType
     {
         Grasslands,
         Woods,
-        Forest
+        Forest,
+        Water
     }
 

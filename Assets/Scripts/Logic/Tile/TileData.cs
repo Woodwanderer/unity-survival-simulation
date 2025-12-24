@@ -7,6 +7,7 @@ public class TileData
     public TerrainType Terrain {  get; private set; }
     public ElevationType Elevation { get; private set; }
     public List<TileObject> objects { get; private set; } = new();
+    public bool isWalkable = true; // hard restriction on WATER tiles only for now
 
     public TileData(Vector2Int MapCoords, TerrainType Terrain, ElevationType Elevation)
     {

@@ -23,13 +23,20 @@ MonoBehaviour:
   - type: 2
     variants:
     - {fileID: 21300000, guid: c8493fedb6c39cf45ad569210fc3438c, type: 3}
+  - type: 3
+    variants:
+    - {fileID: 21300000, guid: 578071a9de89d08499b8a122a268465c, type: 3}
+    - {fileID: 21300000, guid: a07da42af141d72428f67d6a31e62337, type: 3}
   elevationEntries:
   - type: 0
     variants:
-    - {fileID: 21300000, guid: 27ca2406471468742a7063b6cef45814, type: 3}
+    - {fileID: 0}
   - type: 1
     variants:
-    - {fileID: 21300000, guid: 6ecba31253b010142bffa6e3aad3af2a, type: 3}
+    - {fileID: 21300000, guid: 27ca2406471468742a7063b6cef45814, type: 3}
   - type: 2
+    variants:
+    - {fileID: 21300000, guid: 6ecba31253b010142bffa6e3aad3af2a, type: 3}
+  - type: 3
     variants:
     - {fileID: 21300000, guid: 99e7d8234b7e3c94abceba57d032b7dc, type: 3}

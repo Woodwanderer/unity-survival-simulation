@@ -35,15 +35,15 @@ public class RenderWorld : MonoBehaviour
     {        
         this.world = world;
         mapToCenter = world.halfWorldSize; // used by MapToWorld()
-        TilePrefabs = new TilePrefab[world.worldSizeX, world.worldSizeY];
+        TilePrefabs = new TilePrefab[world.WorldSize.x, world.WorldSize.y];
         Render();
     }
     public void Render()
     {
         // Spawn Tile Grid
-        for (int x = 0; x < world.worldSizeX; x++)
+        for (int x = 0; x < world.WorldSize.x; x++)
         {
-            for (int y = 0; y < world.worldSizeY; y++)
+            for (int y = 0; y < world.WorldSize.y; y++)
             {
                 SpawnTile(world.GetTileData(x, y));
             }
@@ -157,7 +157,7 @@ public class RenderWorld : MonoBehaviour
     // NPC - Creatures
     void SpawnDeer()
     {
-        Vector2Int startCoords = new Vector2Int(Random.Range(0, world.worldSizeX), Random.Range(0, world.worldSizeY));
+        Vector2Int startCoords = new Vector2Int(Random.Range(0, world.WorldSize.x), Random.Range(0, world.WorldSize.y));
 
         CreatureData data = new CreatureData(startCoords);
 

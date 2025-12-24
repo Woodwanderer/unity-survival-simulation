@@ -13,17 +13,11 @@ public class CharacterActions
 
     VirtualResources globalRes;
 
-    bool actionChanged = false;
-
-    ResourceEntry demand = default;
-    
-    ResourceEntry foodRecepieBasic;
     public CharacterActions(float hourDuration, VirtualResources baseRes)
     {
         this.hourDuration = hourDuration;
         globalRes = baseRes;
         nutriRate = hourDuration * 0.16f; //full bar in 10 minutes // 10 sec in game 1/6th of an hour
-        foodRecepieBasic = new ResourceEntry(ItemType.FoodRaw, 5);
     }
     public bool BlocksHunger
     {

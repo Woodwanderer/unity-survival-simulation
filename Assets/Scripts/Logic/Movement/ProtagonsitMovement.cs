@@ -17,20 +17,13 @@ public class ProtagonsitMovement : MonoBehaviour
     }
     public IEnumerator MoveAlong()
     {
-        List<Vector2Int> path = data.route.pathSteps;
+        List<Vector2Int> path = data.pathSteps;
         Vector2Int currentCoords = data.mapCoords;
         Vector2Int targetCoords = currentCoords;
 
         foreach (Vector2Int step in path)
         {
             targetCoords += step;
-
-            // Contain in World Boundaries
-            if (targetCoords.x >= world.worldSizeX || targetCoords.y >= world.worldSizeY || targetCoords.x < 0 || targetCoords.y < 0)
-            {
-                targetCoords = currentCoords;
-                continue; 
-            }
 
             render.TilePath(targetCoords, false);
 

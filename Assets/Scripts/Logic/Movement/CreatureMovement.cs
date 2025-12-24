@@ -26,7 +26,7 @@ public class CreatureMovement : MonoBehaviour
             targetCoords += step;
 
             // Contain in World Boundaries
-            if (targetCoords.x >= world.worldSizeX || targetCoords.y >= world.worldSizeY || targetCoords.x < 0 || targetCoords.y < 0)
+            if (targetCoords.x >= world.WorldSize.x || targetCoords.y >= world.WorldSize.y || targetCoords.x < 0 || targetCoords.y < 0)
             {
                 targetCoords = currentCoords;
                 continue; // przeskakuje do nastepnej iteracji foreach. yield break; przerywa coroutine

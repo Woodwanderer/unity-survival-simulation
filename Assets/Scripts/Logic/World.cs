@@ -13,19 +13,19 @@ public class World
 {
     //Variables
     //General World
-    public int worldSizeX { get; private set; } = 60;
-    public int worldSizeY { get; private set; } = 40;
-    public Vector2Int worldSize { get; private set; }
+    int worldSizeX = 60;
+    int worldSizeY = 40;
+    Vector2Int worldSize;
+    public Vector2Int WorldSize => worldSize;
     public Vector2Int halfWorldSize { get; private set; }
     public GameTime gameTime;
 
     //Tiles
     private TileData[,] tileData;
     private TileData lastTileSelected;
-    TerrainType terrain;
-    ElevationType elevation;
     //Tile Objects
     public TileObjectsDatabase database;
+    Pathfinder pathfinder;
 
     //Protagonist
     public ProtagonistData protagonistData { get; private set; }
@@ -37,6 +37,7 @@ public class World
     {
         this.database = data_in;
         gameTime = time;
+        pathfinder = new Pathfinder(this);
     }
     public void Tick(float deltaTime)
     {
@@ -46,9 +47,9 @@ public class World
     //GETTERS
     //Tiles
     public TileData GetTileData(int x, int y) => tileData[x,y];
-    private TileData GetTileData(Vector2Int coords)
+    public TileData GetTileData(Vector2Int mapCoords)
     {
-        return tileData[coords.x, coords.y];
+        return GetTileData(mapCoords.x, mapCoords.y);
     }
     public Vector2Int GetTileCoords(TileData tileData)
     {
@@ -95,15 +96,31 @@ public class World
             for (int y = 0; y < worldSizeY; y++)
             {
                 Vector2Int tilePos = new(x, y);
+                TerrainType terrain;
+                ElevationType elevation;
+                
+                //Set terrain
+                int countTerrainType = System.Enum.GetValues(typeof(TerrainType)).Length;
+                terrain = (TerrainType)UnityEngine.Random.Range(0, countTerrainType);
 
-                int count = System.Enum.GetValues(typeof(TerrainType)).Length;
-                terrain = (TerrainType)UnityEngine.Random.Range(0, count);
+                //Set elevation
+                if (!(terrain == TerrainType.Water)) 
+                {
+                    int countElevationType = System.Enum.GetValues(typeof(ElevationType)).Length;
+                    elevation = (ElevationType)UnityEngine.Random.Range(1, countElevationType);
+                }
+                else
+                {
+                    elevation = ElevationType.Water;
+                }
 
-                elevation = (ElevationType)UnityEngine.Random.Range(0, 3);
 
-                tileData[x, y] = new TileData(tilePos, terrain, elevation);
-                PopulateTileObjects(tileData[x, y]);
-                //PopulateFood(tileData[x, y]);
+                    tileData[x, y] = new TileData(tilePos, terrain, elevation);
+
+                if (terrain != TerrainType.Water) 
+                    PopulateTileObjects(tileData[x, y]);
+                else
+                    tileData[x, y].isWalkable = false;
             }
         }
     }
@@ -120,13 +137,6 @@ public class World
         tile.AddObject(obj);
         
     }
-    private void PopulateFood(TileData tile) //FruitTree
-    {
-        TileObjectDefinition definition = database.Get(TileObjectsType.FruitTree);
-        TileObject obj = new(definition.objType, definition.GenerateResources());
-        tile.AddObject(obj);
-    }
-
     private void SetProtagonist()
     {
         protagonistData = new ProtagonistData(halfWorldSize, gameTime.HourDuration, resources);
@@ -164,14 +174,18 @@ public class World
     //ROUTE
     public void CancelRoute()
     {
-        protagonistData.route.Clear();
+        protagonistData.pathCoords.Clear();
     }
     public bool EstablishRoute()
     {
         if (protagonistData.mapCoords == lastTileSelected.mapCoords)
             return false;
 
-        protagonistData.SetRouteTo(lastTileSelected.mapCoords);
+
+        protagonistData.pathCoords.Clear();
+        protagonistData.pathCoords = pathfinder.FindPath(protagonistData.mapCoords, lastTileSelected.mapCoords);
+        protagonistData.pathSteps.Clear();
+        protagonistData.pathSteps = pathfinder.GetPathSteps(protagonistData.mapCoords, protagonistData.pathCoords);
 
         EventBus.Log("Route Established. ");
         return true;

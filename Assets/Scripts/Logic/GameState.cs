@@ -82,7 +82,7 @@ public class GameState
         // Clear ROUTE
         if (routeEstablished && protagonistState != ProtagonistStates.Moving)
         {
-            renderWorld.DrawPath(world.protagonistData.route.pathCoords, false);
+            renderWorld.DrawPath(world.protagonistData.pathCoords, false);
             world.CancelRoute();
             routeEstablished = false;
             mapState = MapStates.TileSelected;
@@ -98,7 +98,7 @@ public class GameState
             {
                 if (world.EstablishRoute())
                 {
-                    renderWorld.DrawPath(world.protagonistData.route.pathCoords, true);
+                    renderWorld.DrawPath(world.protagonistData.pathCoords, true);
                     routeEstablished = true;
                 }
                 return;

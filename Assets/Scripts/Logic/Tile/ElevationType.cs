@@ -2,6 +2,7 @@
 
 public enum ElevationType
 {
+    Water,
     Plains,
     Highlands,
     Mountains
