@@ -9,18 +9,22 @@ public class GameState
     CameraMovement cam;
     //UI
     InventoryUI inventory;
+    ContextActionBarUI contextActionBarUI;
     
     MapStates mapState = MapStates.None;
     ProtagonistStates protagonistState = ProtagonistStates.None;
     bool routeEstablished = false;
 
-    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inv)
+    TileObjectView lastObjectSelected;
+
+    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inv, ContextActionBarUI contextActionBarUI)
     {
         this.world = world;
         this.renderWorld = render;
         this.cam = cam;
         this.inputContr = input_in;
         this.inventory = inv;
+        this.contextActionBarUI = contextActionBarUI;
     }
 
     public void Initialise()
@@ -62,13 +66,36 @@ public class GameState
             
         }
     }
-    void HandleObjectClick(TileObject objectData)
+    void HandleObjectClick(TileObjectView objectView)
     {
-        EventBus.Log($"Object clicked: {objectData.type}");
-    }
+        if (lastObjectSelected == objectView) //deselect
+        {
+            CancelObjSelection();
+            contextActionBarUI.ClearButtons();
+        }
+        else
+        {
+            CancelObjSelection();
+            contextActionBarUI.ClearButtons();
 
+            objectView.SetSelected();
+            lastObjectSelected = objectView;
+            EventBus.Log($"Object clicked: {objectView.Data}");
+            SetContextActionBarUI();
+        }
+    }
+    void CancelObjSelection()
+    {
+        if (lastObjectSelected != null)
+        {
+            lastObjectSelected.SetSelected();
+            lastObjectSelected = null;
+        }
+    }
     void HandleCancel()
     {
+        // SEQUENCE matters
+
         //Clear CAMERA Follow
         if (cam.cameraFollow)
         {
@@ -94,6 +121,9 @@ public class GameState
             mapState = MapStates.TileSelected;
             return;
         }
+
+        CancelObjSelection();
+        contextActionBarUI.ClearButtons();
     }
     void HandleConfirm()
     {
@@ -122,7 +152,7 @@ public class GameState
     }
 
     //ACTION BAR
-    public void AttemptHarvest()
+    public void AttemptHarvest() // function is added to button only
     {
         if (protagonistState == ProtagonistStates.None)
         {
@@ -132,8 +162,16 @@ public class GameState
                 world.resources.ClearEntry();
             }
         }
-    } // function is added to button only
+    } 
+    void SetContextActionBarUI() // for HandleObjectClick
+    {
+        contextActionBarUI.GetActionSource(lastObjectSelected.Data);
+        
+    }
+    public void AttemptHarvestObject(TileObject tileObject)
+    {
 
+    }
 
 
     //STATES

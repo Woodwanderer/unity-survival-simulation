@@ -4,6 +4,8 @@ using UnityEngine.EventSystems;
 public class TileObjectView : MonoBehaviour
 {
     TileObject data;
+    public TileObject Data => data;
+
     SpriteRenderer sR;
     bool selected = false;
     float size;
@@ -49,12 +51,13 @@ public class TileObjectView : MonoBehaviour
     {
         if (EventSystem.current.IsPointerOverGameObject())
             return;
-        SetSelected(selected = !selected);
-        EventBus.ObjectClick(data);
+        EventBus.ObjectClick(this);
     }
-    public void SetSelected(bool selected)
+    public void SetSelected()
     {
-        sR.color = selected ? Color.yellow : Color.white;
+        selected = !selected;
+        sR.color = selected ? new Color32(248, 20, 207, 200) : Color.white;
+        
     }
 
 }

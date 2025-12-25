@@ -10,6 +10,7 @@ public class ActionBarUI : MonoBehaviour
         this.gameState = gameState;
         this.characterActions = actions;
     }
+
     public void Harvest()
     {
         gameState.AttemptHarvest();

@@ -5,7 +5,9 @@ using UnityEngine;
 public class TileObject
 {
     public TileObjectsType type;
-    public Dictionary<ItemType, int> items = new Dictionary<ItemType, int>();
+
+    Dictionary<ItemType, int> items = new Dictionary<ItemType, int>();
+    public Dictionary<ItemType, int> Items => items;
 
     public TileObject(TileObjectsType type_in, Dictionary<ItemType, int> startResources)
     {

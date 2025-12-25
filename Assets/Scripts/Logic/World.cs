@@ -148,10 +148,7 @@ public class World
     public bool TrySelectTile(TileData tileData)
     {
         if (tileData == lastTileSelected)
-        {
-            EventBus.Log("The tile is already selected Bro. :) ");
             return false;
-        }
         else
         {
             EventBus.TileHighlight(lastTileSelected, tileData);
@@ -209,7 +206,7 @@ public class World
         resources.AddItem(res00.Key, res00.Value);
 
         //CLEAR - object fully depleted
-        if (obj.items.Count == 0)
+        if (obj.Items.Count == 0)
         {
             EventBus.ObjectDepleted(currentTile.mapCoords);
             currentTile.objects.Clear();
