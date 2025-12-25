@@ -25,7 +25,9 @@ public class EventBus // to tylko statyczna klasa, jak biblioteka na eventy i fu
 
     //OBJECTS
     public static event Action<Vector2Int> OnObjectDepleted;
+    public static event Action<TileObject> OnObjectClick;
 
+    public static void ObjectClick(TileObject objData) => OnObjectClick?.Invoke(objData);
     public static void ObjectDepleted(Vector2Int tileCoords) => OnObjectDepleted?.Invoke(tileCoords);
 
 }    

@@ -27,6 +27,7 @@ public class GameState
     {
         EventBus.OnTileClicked += HandleTileClicked; // send by tile
         EventBus.OnMovementAnimationComplete += RestoreStates; // send by ProtagonistMovement
+        EventBus.OnObjectClick += HandleObjectClick;
     }
     public void Tick(float deltaTime)
     {
@@ -56,9 +57,14 @@ public class GameState
         if (world.TrySelectTile(tile))
         {
             mapState = MapStates.TileSelected;
-            EventBus.Log("Objects here: " + tile.objects[0].type.ToString());
+            if(tile.objects.Count != 0)
+                EventBus.Log("Objects here: " + tile.objects[0].type.ToString());
             
         }
+    }
+    void HandleObjectClick(TileObject objectData)
+    {
+        EventBus.Log($"Object clicked: {objectData.type}");
     }
 
     void HandleCancel()

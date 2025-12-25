@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class TilePrefab: MonoBehaviour
 {
-    private float size;
+    float size;
     //SPRITES
     public SpriteRenderer terrain;
     public SpriteRenderer elevation;
@@ -13,7 +13,10 @@ public class TilePrefab: MonoBehaviour
 
     public SpriteRenderer path;
 
-    public SpriteRenderer tileObject;
+    public GameObject tileObjectPrefab;
+    GameObject tileObj; //Instance
+    TileObjectView TObjView;
+
     private Vector3 centerToBottLeft = new(-0.5f, 0f, -0.5f);
 
     //Referencja do danych świata
@@ -35,33 +38,14 @@ public class TilePrefab: MonoBehaviour
     }
     public void SetObjects(Sprite _object, float tileSize)
     {
-        tileObject.sprite = _object;
+        tileObj = Instantiate(tileObjectPrefab, this.transform);
+        TObjView = tileObj.GetComponent<TileObjectView>();
 
-        //Local offset
-        size = tileSize;
-        float safetyBound = 0.15f;
-        float localOffset = size / 2 - safetyBound;
-        float posX = Random.Range(-localOffset, +localOffset);
-        float posY = Random.Range(-localOffset, +localOffset);
-
-        tileObject.transform.localPosition = new Vector3(posX, posY, 0);
-
-        //Random Mirror
-        if (Random.Range(0, 2) == 1) 
-            tileObject.flipX = true;
-
-        //Rotation Spread
-        float rotRange = Random.Range(-10, 10);
-        tileObject.transform.localRotation = Quaternion.Euler(0, 0, rotRange);
-
-        //Scale - to expand - trees gonna grow etc. Create dependancy from TileData - TileObject: resource: capacity like wood, stone quantity i.e.:10 -> scale of 10> quasntity 3 i.e.
-        float scale = Random.Range(0.6f, 1.4f);
-        tileObject.transform.localScale = (Vector3.one) * scale;
-
+        TObjView.Init(_object, tileSize, tileData.objects[0]);
     }
     public void HideObjectSprite()
     {
-        tileObject.enabled = false;
+        TObjView.enabled = false; //CHECK!!! tu popraw
     }
     public void ShowPath(bool visible)
     {

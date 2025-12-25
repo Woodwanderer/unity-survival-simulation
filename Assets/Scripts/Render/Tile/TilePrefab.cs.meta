@@ -1,2 +1,17 @@
 fileFormatVersion: 2
 guid: 1ca6ce1c91ef3784b803f1d956a2eb35
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - terrain: {instanceID: 0}
+  - elevation: {instanceID: 0}
+  - highlight: {instanceID: 0}
+  - path: {instanceID: 0}
+  - tileObject: {instanceID: 0}
+  - tileObjectPrefab: {fileID: 373984066279194547, guid: b7f7efb80d8bbfd4ba742252fce8d7d5, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

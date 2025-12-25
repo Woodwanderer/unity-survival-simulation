@@ -91,7 +91,8 @@ public class RenderWorld : MonoBehaviour
         tileP.SetTerrain(GetTerrainSprite(tileData.Terrain));
         tileP.SetElevation(GetElevationSprite(tileData.Elevation));
 
-        tileP.SetObjects(GetTileObjectSprite(tileData), tileSize);
+        if (tileData.objects != null && tileData.objects.Count > 0) 
+            tileP.SetObjects(GetTileObjectSprite(tileData), tileSize);
 
 
 

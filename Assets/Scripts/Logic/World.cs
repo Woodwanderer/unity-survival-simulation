@@ -178,7 +178,7 @@ public class World
     }
     public bool EstablishRoute()
     {
-        if (protagonistData.mapCoords == lastTileSelected.mapCoords)
+        if (protagonistData.mapCoords == lastTileSelected.mapCoords || lastTileSelected.isWalkable == false) 
             return false;
 
 
