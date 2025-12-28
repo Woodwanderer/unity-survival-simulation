@@ -6823,6 +6823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonPrefab: {fileID: 1442490324014553657, guid: fd18f3e2ce0704d44a37730a8ad423a0, type: 3}
+  icons: {fileID: 11400000, guid: 162bcc96d52daca46a5e1bfa809c0296, type: 2}
 --- !u!114 &1785302030
 MonoBehaviour:
   m_ObjectHideFlags: 0

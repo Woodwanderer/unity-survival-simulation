@@ -7,6 +7,7 @@ public class ContextActionBarUI : MonoBehaviour
     TileObject actionSource = null;
     public GameObject buttonPrefab;
     List<GameObject> buttonList = new List<GameObject>();
+    public ItemIcons icons;
 
     
     public void Init(CharacterActions actions)
@@ -24,13 +25,21 @@ public class ContextActionBarUI : MonoBehaviour
         {
             foreach (KeyValuePair<ItemType, int> item in actionSource.Items) 
             {
-                buttonList.Add(Instantiate(buttonPrefab, transform));
+                GameObject btnObj = Instantiate(buttonPrefab, transform);
+                buttonList.Add(btnObj);
+
+                ContextABButton button = btnObj.GetComponent<ContextABButton>();
+
+                Sprite icon = icons.GetIcon(item.Key);
+                button.SetIcon(icon);
+                
+
             }
         }
     }
     public void ClearButtons()
     {
-        foreach(GameObject button in  buttonList)
+        foreach (GameObject button in  buttonList)
         {
             Destroy(button);
         }

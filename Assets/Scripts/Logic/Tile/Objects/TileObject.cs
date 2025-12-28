@@ -5,14 +5,16 @@ using UnityEngine;
 public class TileObject
 {
     public TileObjectsType type;
+    public Vector2Int itsTileCoords;
 
     Dictionary<ItemType, int> items = new Dictionary<ItemType, int>();
     public Dictionary<ItemType, int> Items => items;
 
-    public TileObject(TileObjectsType type_in, Dictionary<ItemType, int> startResources)
+    public TileObject(TileObjectsType type_in, Dictionary<ItemType, int> startResources, Vector2Int itsTile )
     {
         type = type_in;
         items = startResources;
+        this.itsTileCoords = itsTile;
     }
     public Dictionary<ItemType, int> HarvestByType(ItemType type)
     {

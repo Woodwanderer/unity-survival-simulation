@@ -19,6 +19,8 @@ public class CharacterActions
         globalRes = baseRes;
         nutriRate = hourDuration * 0.16f; //full bar in 10 minutes // 10 sec in game 1/6th of an hour
     }
+
+    //EAT
     public bool BlocksHunger
     {
         get
@@ -42,11 +44,6 @@ public class CharacterActions
         }
 
     }
-    public void DemandResources(ResourceEntry entryItem)
-    {
-
-        
-    }
     public float Eating(float deltaTime)
     {
         if (nutrition >= nutritionValue)
@@ -57,6 +54,12 @@ public class CharacterActions
         }
         nutrition += deltaTime / nutriRate;
         return deltaTime / nutriRate;
+    }
+    //HARVEST
+    public void HarvestObject(TileObject tileObject)
+    {
+        
+        state = CharacterActionState.Moving;
     }
     
 }

@@ -4,5 +4,6 @@ public enum CharacterActionState
 {
     Idle,
     Eating,
-    Moving
+    Moving,
+    Harvesting
 }

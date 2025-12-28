@@ -133,7 +133,7 @@ public class World
         
         //                                                                                                              TO DO!!!!!!!!!!!!!!!!!!!!!!!!! -.all tile are filled.Make saome conditional spawn
         TileObjectDefinition definition = database.Get(type);
-        TileObject obj = new(definition.objType, definition.GenerateResources());
+        TileObject obj = new(definition.objType, definition.GenerateResources(), tile.mapCoords);
         tile.AddObject(obj);
         
     }
