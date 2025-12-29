@@ -26,6 +26,14 @@ public class TileObject
         items.Remove(type);
         return result;
     }
+    public ResourceEntry? HarvestByTypeEntry(ItemType type)
+    {
+        if (!items.ContainsKey(type))
+            return null;
+        ResourceEntry harvested = new ResourceEntry(type, items[type]);
+        items.Remove(type);
+        return harvested;
+    }
     public Dictionary<ItemType,int> Harvest()
     {
         Dictionary<ItemType, int> result = new();

@@ -46,8 +46,13 @@ public class GameState
             inventory.RemoveEntry(world.resources.wasRemoved);
             world.resources.ClearEntry();
         }
+        if(world.resources.added == true)
+        {
+            inventory.AddToInv(world.resources.wasAdded);
+            world.resources.ClearEntry();
+        }
         //Check for Protagonist ActionState to trigger apropriate animation
-        
+
         bool isEating = world.protagonistData.charSheet.actions.State == CharacterActionState.Eating;
         renderWorld.animator.SetAnimation(isEating);
 

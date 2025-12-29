@@ -21,6 +21,8 @@ public class CharacterSheet
     }
     public void Tick(float deltaTime)
     {
+        actions.Tick(deltaTime);
+
         if (!actions.BlocksHunger) 
         {
             hunger -= deltaTime / hungerRate; // full bar / day

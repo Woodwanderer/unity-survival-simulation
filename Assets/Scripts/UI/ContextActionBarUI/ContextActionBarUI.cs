@@ -33,9 +33,10 @@ public class ContextActionBarUI : MonoBehaviour
 
                 Sprite icon = icons.GetIcon(item.Key);
                 button.SetIcon(icon);
+                button.SetAmount($"{item.Value}");
+
 
                 ItemType capturedItem = item.Key;
-
                 button.SetAction(() =>
                 {
                     HarvestObject(capturedItem);

@@ -57,7 +57,10 @@ public class TileObjectView : MonoBehaviour
     {
         selected = !selected;
         sR.color = selected ? new Color32(248, 20, 207, 200) : Color.white;
-        
+    }
+    public void SetDepleted()
+    {
+        sR.enabled = false;
     }
 
 }

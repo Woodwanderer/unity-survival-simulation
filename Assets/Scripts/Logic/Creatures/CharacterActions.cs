@@ -49,6 +49,21 @@ public class CharacterActions
     {
         EventBus.OnMovementAnimationComplete += SetIdle; // send by ProtagonistMovement
     }
+    public void Tick(float dt)
+    {
+        //Check for pending action
+        if (state == CharacterActionState.Idle && pendingAction != null)
+            state = pendingAction.type;
+
+
+        //Harvesting
+        if (state == CharacterActionState.Harvesting)
+        {
+            //Harvesting(dt); rewrite later -> harvesting action and make class for actions to resolve it's progress here 3 vars (max, step, speed.. or smth like in eating, harvesting etc.)
+            if (pendingAction.type == CharacterActionState.Harvesting) 
+                Harvesting();
+        }
+    }
     void SetIdle() 
     {
         if(state == CharacterActionState.Moving) //after movement animation complete only so far
@@ -122,27 +137,41 @@ public class CharacterActions
     {
         pendingAction = new PendingAction(CharacterActionState.Harvesting, tileObject, item);
 
-        if (tileObject.itsTileCoords == protagonistData.mapCoords)
+        if (tileObject.itsTileCoords == protagonistData.mapCoords && state == CharacterActionState.Idle) 
         {
-            HarvestInit();
+            state = pendingAction.type;
         }
         else
         {
             MoveToTile(tileObject.itsTileCoords);
         }
     }
-    public void HarvestInit()
+    public void Harvesting()
     {
-        state = pendingAction.type;
         TileObject obj = pendingAction.target;
         ItemType itemHarvested = pendingAction.itemType;
 
-        obj.HarvestByType(itemHarvested);
-        
+        ResourceEntry? harvested = obj.HarvestByTypeEntry(itemHarvested); // ResourceEntry? -. to nullable struct :p lol :D to, co sam chciałem napisać, ale... ejst już w języku :) tu - przykłaldowa obsługa
+        if (harvested.HasValue)
+        {
+            world.resources.AddItem(harvested.Value);
+        }
+        else
+            EventBus.Log("No more to harvest ATM.");
 
+        //CLEAR - object fully depleted
+        if (obj.Items.Count == 0)
+        {
+            TileData currentTile = world.GetProtagonistTileData();
+            EventBus.ObjectDepleted(currentTile.mapCoords);
+            currentTile.objects.Clear();
+        }
 
         pendingAction = null;
+        state = CharacterActionState.Idle;
     }
+
+    //MOVE
     public void MoveToTile(Vector2Int tileCoords)
     {
         if (EstablishRoute(tileCoords))
@@ -168,7 +197,6 @@ public class CharacterActions
         protagonistData.pathSteps.Clear();
         protagonistData.pathSteps = world.pathfinder.GetPathSteps(protagonistData.mapCoords, protagonistData.pathCoords);
 
-        EventBus.Log("Route Established. ");
         return true;
     }
     public void HandleConfirm()

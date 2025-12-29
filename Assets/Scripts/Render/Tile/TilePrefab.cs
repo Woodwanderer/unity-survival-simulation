@@ -45,7 +45,7 @@ public class TilePrefab: MonoBehaviour
     }
     public void HideObjectSprite()
     {
-        TObjView.enabled = false; //CHECK!!! tu popraw
+        TObjView.SetDepleted(); //CHECK!!! tu popraw
     }
     public void ShowPath(bool visible)
     {

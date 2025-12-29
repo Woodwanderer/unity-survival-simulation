@@ -20,6 +20,10 @@ public class VirtualResources
         wasAdded = new(type, amount);
         added = true;
     }
+    public void AddItem(ResourceEntry entryItem)
+    {
+        AddItem(entryItem.item, entryItem.amount);
+    }
     public bool RemoveItem(ItemType type, int amount)
     {
         if (resources.ContainsKey(type))
