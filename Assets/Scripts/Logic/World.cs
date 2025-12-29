@@ -22,10 +22,11 @@ public class World
 
     //Tiles
     private TileData[,] tileData;
-    private TileData lastTileSelected;
+    public TileData lastTileSelected;
     //Tile Objects
     public TileObjectsDatabase database;
-    Pathfinder pathfinder;
+    public Pathfinder pathfinder;
+
 
     //Protagonist
     public ProtagonistData protagonistData { get; private set; }
@@ -42,6 +43,7 @@ public class World
     public void Tick(float deltaTime)
     {
         protagonistData.Tick(deltaTime);
+
     }
 
     //GETTERS
@@ -78,13 +80,13 @@ public class World
     }
 
     //INITIALISE
-    public void Initialise()
+    public void Initialise(RenderWorld render)
     {
         worldSize = new Vector2Int(worldSizeX, worldSizeY);
         halfWorldSize = worldSize / 2;
 
         GenerateTiles();
-        SetProtagonist();
+        SetProtagonist(render);
     }
     public void GenerateTiles()
     {
@@ -137,11 +139,9 @@ public class World
         tile.AddObject(obj);
         
     }
-    private void SetProtagonist()
+    private void SetProtagonist(RenderWorld render)
     {
-        protagonistData = new ProtagonistData(halfWorldSize, gameTime.HourDuration, resources);
-        string msg = ProtTileDataToString(GetProtagonistTileData());
-        EventBus.Log(msg);
+        protagonistData = new ProtagonistData(halfWorldSize, gameTime.HourDuration, resources, this, render);
     }
     
     //Tile SELECTION
@@ -168,51 +168,7 @@ public class World
         return true;
     }
 
-    //ROUTE
-    public void CancelRoute()
-    {
-        protagonistData.pathCoords.Clear();
-    }
-    public bool EstablishRoute()
-    {
-        if (protagonistData.mapCoords == lastTileSelected.mapCoords || lastTileSelected.isWalkable == false) 
-            return false;
 
 
-        protagonistData.pathCoords.Clear();
-        protagonistData.pathCoords = pathfinder.FindPath(protagonistData.mapCoords, lastTileSelected.mapCoords);
-        protagonistData.pathSteps.Clear();
-        protagonistData.pathSteps = pathfinder.GetPathSteps(protagonistData.mapCoords, protagonistData.pathCoords);
-
-        EventBus.Log("Route Established. ");
-        return true;
-    }
-    public bool Harvest()
-    {
-        TileData currentTile = GetProtagonistTileData();
-        if (currentTile.objects.Count == 0)
-        {
-            EventBus.Log("Nothing to gather here.");
-            return false;
-        }
-
-        TileObjectsType type = currentTile.objects[0].type;
-        TileObject obj = currentTile.objects[0];
-
-        Dictionary<ItemType, int> loot = obj.Harvest();
-        KeyValuePair<ItemType, int> res00 = loot.First(); //touple - para
-        EventBus.Log("You gathered " + res00.Value + " " + res00.Key);
-
-        resources.AddItem(res00.Key, res00.Value);
-
-        //CLEAR - object fully depleted
-        if (obj.Items.Count == 0)
-        {
-            EventBus.ObjectDepleted(currentTile.mapCoords);
-            currentTile.objects.Clear();
-        }
-
-        return true;
-    }
 
 }

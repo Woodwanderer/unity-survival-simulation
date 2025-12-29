@@ -11,9 +11,7 @@ public class GameState
     InventoryUI inventory;
     ContextActionBarUI contextActionBarUI;
     
-    MapStates mapState = MapStates.None;
-    ProtagonistStates protagonistState = ProtagonistStates.None;
-    bool routeEstablished = false;
+    CharacterActionState protagonistState;
 
     TileObjectView lastObjectSelected;
 
@@ -30,14 +28,13 @@ public class GameState
     public void Initialise()
     {
         EventBus.OnTileClicked += HandleTileClicked; // send by tile
-        EventBus.OnMovementAnimationComplete += RestoreStates; // send by ProtagonistMovement
         EventBus.OnObjectClick += HandleObjectClick;
     }
     public void Tick(float deltaTime)
     {
         //CONFIRM
         if (inputContr.ConsumeConfirm())
-            HandleConfirm();
+            world.protagonistData.charSheet.actions.HandleConfirm();
         //CANCEL
         if(inputContr.ConsumeCancel()) 
             HandleCancel();
@@ -53,18 +50,11 @@ public class GameState
         
         bool isEating = world.protagonistData.charSheet.actions.State == CharacterActionState.Eating;
         renderWorld.animator.SetAnimation(isEating);
-        
 
     }
     void HandleTileClicked(TileData tile)
     {
-        if (world.TrySelectTile(tile))
-        {
-            mapState = MapStates.TileSelected;
-            if(tile.objects.Count != 0)
-                EventBus.Log("Objects here: " + tile.objects[0].type.ToString());
-            
-        }
+        world.TrySelectTile(tile);
     }
     void HandleObjectClick(TileObjectView objectView)
     {
@@ -104,59 +94,20 @@ public class GameState
         }
 
         // Clear Highlight on Tile
-        if (mapState == MapStates.TileSelected)
-        {
-            if (world.CancelSelection())
-            {
-                mapState = MapStates.None;
-                return;
-            }
-        }
-        // Clear ROUTE
-        if (routeEstablished && protagonistState != ProtagonistStates.Moving)
-        {
-            renderWorld.DrawPath(world.protagonistData.pathCoords, false);
-            world.CancelRoute();
-            routeEstablished = false;
-            mapState = MapStates.TileSelected;
-            return;
-        }
-
+        world.CancelSelection();
+            
         CancelObjSelection();
         contextActionBarUI.ClearButtons();
     }
-    void HandleConfirm()
-    {
-        // Establish ROUTE
-        if (protagonistState == ProtagonistStates.None && mapState == MapStates.TileSelected)
-        {
-            if (!routeEstablished)
-            {
-                if (world.EstablishRoute())
-                {
-                    renderWorld.DrawPath(world.protagonistData.pathCoords, true);
-                    routeEstablished = true;
-                }
-                return;
-            }
-        }
-        // Protagonist MOVEMENT
-        if (protagonistState == ProtagonistStates.None && routeEstablished)
-        {
-            protagonistState = ProtagonistStates.Moving;
-            world.CancelSelection();
-            mapState = MapStates.None;
-            renderWorld.MoveProt();
-            return;
-        }
-    }
+  
+
 
     //ACTION BAR
     public void AttemptHarvest() // function is added to button only
     {
-        if (protagonistState == ProtagonistStates.None)
+        if (protagonistState == CharacterActionState.Idle)
         {
-            if (world.Harvest())
+            if (world.protagonistData.charSheet.actions.Harvest())
             {
                 inventory.AddToInv(world.resources.wasAdded); //Update InventoryUI
                 world.resources.ClearEntry();
@@ -168,30 +119,5 @@ public class GameState
         contextActionBarUI.GetActionSource(lastObjectSelected.Data);
         
     }
-    public void AttemptHarvestObject(TileObject tileObject)
-    {
 
-    }
-
-
-    //STATES
-    private enum MapStates
-    {
-        TileSelected,
-        None,
-    }
-    private enum ProtagonistStates
-    {
-        Moving,
-        None,
-    }
-    private void SetProtagonistIdleState()
-    {
-        protagonistState = ProtagonistStates.None;
-    }
-    private void RestoreStates()
-    {
-        SetProtagonistIdleState();
-        routeEstablished = false;
-    }
 }

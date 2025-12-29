@@ -11,12 +11,13 @@ public class CharacterSheet
     public CharacterActions actions;
     VirtualResources invChar;
 
-    public CharacterSheet(float hourDuration, VirtualResources inv )
+    public CharacterSheet(float hourDuration, VirtualResources inv, World world, ProtagonistData protagonistData, RenderWorld render )
     {
         this.hourDuration = hourDuration;
         this.invChar = inv;
         hungerRate = hourDuration * 24;
-        actions = new CharacterActions(hourDuration, invChar);
+        actions = new CharacterActions(hourDuration, invChar, world, protagonistData, render);
+        actions.Init();
     }
     public void Tick(float deltaTime)
     {

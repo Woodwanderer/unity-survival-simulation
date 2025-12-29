@@ -2,14 +2,17 @@
 using UnityEngine;
 using UnityEngine.InputSystem.Composites;
 using UnityEngine.UI;
+using System; // for Action
 
 public class ContextABButton : MonoBehaviour
 {
     Image image;
+    Button button;
 
     private void Awake()
     {
         image = transform.Find("BtnSprite").GetComponent<Image>();
+        button = GetComponent<Button>();
     }
 
     public void SetIcon(Sprite icon)
@@ -18,9 +21,10 @@ public class ContextABButton : MonoBehaviour
         
         
     }
-    public void harvest()
+    public void SetAction(Action action)
     {
-        Button button = GetComponent<Button>();
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() => action());
     }
 
 }

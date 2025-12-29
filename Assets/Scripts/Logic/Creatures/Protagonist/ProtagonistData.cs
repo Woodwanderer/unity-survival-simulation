@@ -11,24 +11,20 @@ public class ProtagonistData
     
     public CharacterSheet charSheet;
     public float speed { get; private set; } = 2.0f;
-
-    //Actions
-    public CharacterActionState GetActionState()
-    {
-        return charSheet.actions.State;
-    }
-    //Movement
+    
     public List<Vector2Int> pathCoords = new List<Vector2Int>();
     public List<Vector2Int> pathSteps = new List<Vector2Int>();
-    public ProtagonistData(Vector2Int mapCoords, float hourDuration, VirtualResources global)
+    public ProtagonistData(Vector2Int mapCoords, float hourDuration, VirtualResources global, World world, RenderWorld render)
     {
         this.hourDuration = hourDuration;
         this.mapCoords = mapCoords;
-        charSheet = new CharacterSheet(hourDuration, global);
+        charSheet = new CharacterSheet(hourDuration, global, world, this, render);
     }    
     public void Tick(float deltaTime)
     {
         charSheet.Tick(deltaTime);
+
+   
     }
     public void MoveByStep(Vector2Int step)
     {

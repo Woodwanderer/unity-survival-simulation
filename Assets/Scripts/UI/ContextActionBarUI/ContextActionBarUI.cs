@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ContextActionBarUI : MonoBehaviour
 {
-    private CharacterActions characterActions;
+    CharacterActions characterActions;
     TileObject actionSource = null;
     public GameObject buttonPrefab;
     List<GameObject> buttonList = new List<GameObject>();
@@ -32,7 +33,13 @@ public class ContextActionBarUI : MonoBehaviour
 
                 Sprite icon = icons.GetIcon(item.Key);
                 button.SetIcon(icon);
-                
+
+                ItemType capturedItem = item.Key;
+
+                button.SetAction(() =>
+                {
+                    HarvestObject(capturedItem);
+                });
 
             }
         }
@@ -46,14 +53,11 @@ public class ContextActionBarUI : MonoBehaviour
         buttonList.Clear();
     }
 
-    public void HarvestObject()
+    public void HarvestObject(ItemType item)
     {
-        
+        characterActions.RequestHarvest(actionSource, item);
     }
-    public void Eat()
-    {
-        characterActions.EatInit(ItemType.FoodRaw); //pick from inv
-    }
+
 
 
 }
