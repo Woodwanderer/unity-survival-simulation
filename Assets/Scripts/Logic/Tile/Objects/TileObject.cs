@@ -26,11 +26,11 @@ public class TileObject
         items.Remove(type);
         return result;
     }
-    public ResourceEntry? HarvestByTypeEntry(ItemType type)
+    public ResourceChange? HarvestByTypeEntry(ItemType type)
     {
         if (!items.ContainsKey(type))
             return null;
-        ResourceEntry harvested = new ResourceEntry(type, items[type]);
+        ResourceChange harvested = new ResourceChange(type, items[type]);
         items.Remove(type);
         return harvested;
     }

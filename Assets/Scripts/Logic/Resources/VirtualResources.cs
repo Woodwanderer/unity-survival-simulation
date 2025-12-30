@@ -1,53 +1,35 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using UnityEngine;
 
 public class VirtualResources
 {
     Dictionary<ItemType , int> resources = new();
-    public ResourceEntry wasAdded = default;
-    public bool added = false;
-    public ResourceEntry wasRemoved = default;
-    public bool removed = false;
 
-    public void AddItem(ItemType type, int amount)
+    public int Get(ItemType type)
+        => resources.TryGetValue(type, out int amount) ? amount : 0;
+    
+    public bool Has(ItemType type, int amount = 1)
+        => Get(type) >= amount; 
+    
+    public void Add(ItemType type, int amount)
     {
-        if (resources.ContainsKey(type)) 
-            resources[type] += amount;
-        else
-            resources[type] = amount;
+        resources[type] = Get(type) + amount;
+    }
+    public void Add(ResourceChange entryItem)
+    {
+        Add(entryItem.item, entryItem.delta);
+    }
+    public bool Remove(ItemType type, int amount)
+    {
+        if (!Has(type, amount))
+            return false;
 
-        wasAdded = new(type, amount);
-        added = true;
+        resources[type] -= amount;
+        if (resources[type] <= 0)
+            resources.Remove(type);
+
+        return true;
     }
-    public void AddItem(ResourceEntry entryItem)
-    {
-        AddItem(entryItem.item, entryItem.amount);
-    }
-    public bool RemoveItem(ItemType type, int amount)
-    {
-        if (resources.ContainsKey(type))
-        {
-            if (resources[type] >= amount)
-            {
-                resources[type] -= amount;
-                wasRemoved = new(type, amount);
-                return removed = true;
-            }
-            EventBus.Log("Not enough resources.");
-            return removed = false;
-        }
-        else
-        {
-            EventBus.Log("Not enough resources.");
-            return removed = false;
-        }
-    }
-    public void ClearEntry()
-    {
-        wasAdded = default;
-        wasRemoved= default;
-        added = false;
-        removed = false;
-    }
+    public IEnumerable<KeyValuePair<ItemType, int>> All()
+        => resources;
+
 }

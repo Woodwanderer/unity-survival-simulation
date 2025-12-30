@@ -6,39 +6,18 @@ public class InventorySlot : MonoBehaviour
 {
     public Image icon;
     public TMP_Text amountText;
-    int amount = 0;
-    public ItemType type { get; private set; }
     public ItemIcons configIcons;
 
-    public void Set(ItemType type_in,  int amount_in)
+    public void Set(ItemType type,  int amount)
     {
-        this.type = type_in;
-        icon.sprite = configIcons.GetIcon(type_in);
-        IncreaseAmount(amount_in);
+        icon.sprite = configIcons.GetIcon(type);
         icon.enabled = true;
-    }
-    public void IncreaseAmount(int  amount_in)
-    {
-        amount += amount_in;
-        Refresh();
-    }
-    public void DecreaseAmount(int amount_in)
-    {
-        amount -= amount_in;
-        Refresh();
-    }
-    private void Refresh()
-    {
         amountText.text = amount.ToString();
-        if (amount > 0)
-        {
-            amountText.enabled = true;
-            icon.enabled = true;
-        }
-        else
-        {
-            amountText.enabled = false;
-            icon = null;
-        }
+        amountText.enabled = true;
+    }
+    public void Clear()
+    {
+        icon.enabled = false;
+        amountText.enabled = false; icon.sprite = null;
     }
 }

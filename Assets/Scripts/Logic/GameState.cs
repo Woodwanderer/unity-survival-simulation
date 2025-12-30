@@ -8,25 +8,26 @@ public class GameState
     RenderWorld renderWorld;
     CameraMovement cam;
     //UI
-    InventoryUI inventory;
+    InventoryUI inventoryUI;
     ContextActionBarUI contextActionBarUI;
     
     CharacterActionState protagonistState;
 
     TileObjectView lastObjectSelected;
 
-    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inv, ContextActionBarUI contextActionBarUI)
+    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inventoryUI, ContextActionBarUI contextActionBarUI)
     {
         this.world = world;
         this.renderWorld = render;
         this.cam = cam;
         this.inputContr = input_in;
-        this.inventory = inv;
+        this.inventoryUI = inventoryUI;
         this.contextActionBarUI = contextActionBarUI;
     }
 
     public void Initialise()
     {
+        inventoryUI.Init(world.resources);
         EventBus.OnTileClicked += HandleTileClicked; // send by tile
         EventBus.OnObjectClick += HandleObjectClick;
     }
@@ -40,17 +41,6 @@ public class GameState
             HandleCancel();
 
 
-        //Check for base resources changes
-        if(world.resources.removed == true)
-        {
-            inventory.RemoveEntry(world.resources.wasRemoved);
-            world.resources.ClearEntry();
-        }
-        if(world.resources.added == true)
-        {
-            inventory.AddToInv(world.resources.wasAdded);
-            world.resources.ClearEntry();
-        }
         //Check for Protagonist ActionState to trigger apropriate animation
 
         bool isEating = world.protagonistData.charSheet.actions.State == CharacterActionState.Eating;
@@ -112,11 +102,7 @@ public class GameState
     {
         if (protagonistState == CharacterActionState.Idle)
         {
-            if (world.protagonistData.charSheet.actions.Harvest())
-            {
-                inventory.AddToInv(world.resources.wasAdded); //Update InventoryUI
-                world.resources.ClearEntry();
-            }
+            world.protagonistData.charSheet.actions.Harvest();
         }
     } 
     void SetContextActionBarUI() // for HandleObjectClick

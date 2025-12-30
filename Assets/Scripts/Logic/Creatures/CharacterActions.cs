@@ -83,7 +83,7 @@ public class CharacterActions
         nutritionValue = 0.25f; // get from food -> improve ItemType
 
         int ration = 5;
-        if (!globalRes.RemoveItem(food, ration))
+        if (!globalRes.Remove(food, ration))
         {
             EventBus.Log("You don't have enough food.");
         }
@@ -122,7 +122,7 @@ public class CharacterActions
         KeyValuePair<ItemType, int> res00 = loot.First(); //touple - para
         EventBus.Log("You gathered " + res00.Value + " " + res00.Key);
 
-        world.resources.AddItem(res00.Key, res00.Value);
+        world.resources.Add(res00.Key, res00.Value);
 
         //CLEAR - object fully depleted
         if (obj.Items.Count == 0)
@@ -151,10 +151,10 @@ public class CharacterActions
         TileObject obj = pendingAction.target;
         ItemType itemHarvested = pendingAction.itemType;
 
-        ResourceEntry? harvested = obj.HarvestByTypeEntry(itemHarvested); // ResourceEntry? -. to nullable struct :p lol :D to, co sam chciałem napisać, ale... ejst już w języku :) tu - przykłaldowa obsługa
+        ResourceChange? harvested = obj.HarvestByTypeEntry(itemHarvested); // ResourceEntry? -. to nullable struct :p lol :D to, co sam chciałem napisać, ale... ejst już w języku :) tu - przykłaldowa obsługa
         if (harvested.HasValue)
         {
-            world.resources.AddItem(harvested.Value);
+            world.resources.Add(harvested.Value);
         }
         else
             EventBus.Log("No more to harvest ATM.");

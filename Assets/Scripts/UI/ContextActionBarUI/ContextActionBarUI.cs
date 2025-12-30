@@ -45,6 +45,14 @@ public class ContextActionBarUI : MonoBehaviour
             }
         }
     }
+    private void Update()
+    {
+        foreach(GameObject button  in buttonList)
+        {
+
+        }
+   
+    }
     public void ClearButtons()
     {
         foreach (GameObject button in  buttonList)

@@ -1,50 +1,44 @@
-﻿using Unity.VisualScripting;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
     InventorySlot[] slots;
+    VirtualResources resources;
 
-    private void Awake()
+    void Awake()
     {
         gameObject.SetActive(false);
         slots = GetComponentsInChildren<InventorySlot>();
     }
+    public void Init(VirtualResources resources)
+    {
+        this.resources = resources;
+    }
+    private void Update()
+    {
+        if(!gameObject.activeSelf)
+            return;
+        Refresh();
+    }
+    void Refresh()
+    {
+        if (resources == null) 
+            return;
 
-    public void AddToInv(ResourceEntry entry)
-    {
-        AddToInv(entry.item, entry.amount);
-    }
-    public void AddToInv(ItemType type, int amount)
-    {
-        foreach (InventorySlot slot in slots)
+        int i = 0;
+        foreach (var entry in resources.All())
         {
-            if (slot.type == type)
-            {
-                slot.IncreaseAmount(amount);
-                return;
-            }
-            if (slot.type == ItemType.None)
-            {
-                slot.Set(type, amount);
-                return;
-            }
+            slots[i].Set(entry.Key, entry.Value);
+            i++;
         }
-    }
-    public void RemoveEntry(ResourceEntry entry)
-    {
-        foreach (InventorySlot slot in slots)
-        {
-            if(slot.type == entry.item)
-            {
-                slot.DecreaseAmount(entry.amount);
-                return;
-            }
-        }
+
+        for (; i < slots.Length; i++)
+            slots[i].Clear();
     }
     public void Show()
     {
+        Refresh();
         gameObject.SetActive(true);
     }
     public void Hide()
