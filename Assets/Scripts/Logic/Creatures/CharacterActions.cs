@@ -115,35 +115,34 @@ public class CharacterActions
             return false;
         }
 
-        TileObjectsType type = currentTile.objects[0].type;
         TileObject obj = currentTile.objects[0];
 
-        Dictionary<ItemType, int> loot = obj.Harvest();
-        KeyValuePair<ItemType, int> res00 = loot.First(); //touple - para
-        EventBus.Log("You gathered " + res00.Value + " " + res00.Key);
-
-        world.resources.Add(res00.Key, res00.Value);
+        foreach (var change in obj.Resources.DrainAll())
+        {
+            world.resources.Add(change);
+            
+        }
 
         //CLEAR - object fully depleted
-        if (obj.Items.Count == 0)
+        if (obj.Resources.isEmpty) 
         {
             EventBus.ObjectDepleted(currentTile.mapCoords);
             currentTile.objects.Clear();
         }
 
         return true;
-    }
+    } // kinda becoming absolete
     public void RequestHarvest(TileObject tileObject, ItemType item)
     {
         pendingAction = new PendingAction(CharacterActionState.Harvesting, tileObject, item);
 
-        if (tileObject.itsTileCoords == protagonistData.mapCoords && state == CharacterActionState.Idle) 
+        if (tileObject.tileCoords == protagonistData.mapCoords && state == CharacterActionState.Idle) 
         {
             state = pendingAction.type;
         }
         else
         {
-            MoveToTile(tileObject.itsTileCoords);
+            MoveToTile(tileObject.tileCoords);
         }
     }
     public void Harvesting()
@@ -151,16 +150,15 @@ public class CharacterActions
         TileObject obj = pendingAction.target;
         ItemType itemHarvested = pendingAction.itemType;
 
-        ResourceChange? harvested = obj.HarvestByTypeEntry(itemHarvested); // ResourceEntry? -. to nullable struct :p lol :D to, co sam chciałem napisać, ale... ejst już w języku :) tu - przykłaldowa obsługa
-        if (harvested.HasValue)
+        if (obj.Resources.Has(itemHarvested)) 
         {
-            world.resources.Add(harvested.Value);
+            int amount = obj.Resources.Get(itemHarvested);
+            obj.Resources.Remove(itemHarvested, amount);
+            world.resources.Add(itemHarvested, amount);
         }
-        else
-            EventBus.Log("No more to harvest ATM.");
 
         //CLEAR - object fully depleted
-        if (obj.Items.Count == 0)
+        if (obj.Resources.isEmpty) 
         {
             TileData currentTile = world.GetProtagonistTileData();
             EventBus.ObjectDepleted(currentTile.mapCoords);

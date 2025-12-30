@@ -1315,7 +1315,7 @@ MonoBehaviour:
   inputController: {fileID: 899128859}
   database: {fileID: 11400000, guid: 23e7e62dbb56a844a8a454a4de8b6b1d, type: 2}
   cam: {fileID: 330585548}
-  inventory: {fileID: 178616592}
+  inventoryUI: {fileID: 178616592}
   actionBar: {fileID: 1419749311}
   timePanelUI: {fileID: 2021315610}
   charSheetUI: {fileID: 264669006}

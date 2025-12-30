@@ -24,19 +24,19 @@ public class ContextActionBarUI : MonoBehaviour
     {
         if (actionSource != null)
         {
-            foreach (KeyValuePair<ItemType, int> item in actionSource.Items) 
+            foreach (var kv in actionSource.Resources.All()) 
             {
                 GameObject btnObj = Instantiate(buttonPrefab, transform);
                 buttonList.Add(btnObj);
 
                 ContextABButton button = btnObj.GetComponent<ContextABButton>();
 
-                Sprite icon = icons.GetIcon(item.Key);
+                Sprite icon = icons.GetIcon(kv.Key);
                 button.SetIcon(icon);
-                button.SetAmount($"{item.Value}");
+                button.SetAmount($"{kv.Value}");
 
 
-                ItemType capturedItem = item.Key;
+                ItemType capturedItem = kv.Key;
                 button.SetAction(() =>
                 {
                     HarvestObject(capturedItem);

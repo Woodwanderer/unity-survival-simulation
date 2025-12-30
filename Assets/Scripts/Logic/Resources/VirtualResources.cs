@@ -3,6 +3,7 @@
 public class VirtualResources
 {
     Dictionary<ItemType , int> resources = new();
+    public bool isEmpty => resources.Count == 0;
 
     public int Get(ItemType type)
         => resources.TryGetValue(type, out int amount) ? amount : 0;
@@ -15,9 +16,8 @@ public class VirtualResources
         resources[type] = Get(type) + amount;
     }
     public void Add(ResourceChange entryItem)
-    {
-        Add(entryItem.item, entryItem.delta);
-    }
+        => Add(entryItem.item, entryItem.delta);
+
     public bool Remove(ItemType type, int amount)
     {
         if (!Has(type, amount))
@@ -29,7 +29,17 @@ public class VirtualResources
 
         return true;
     }
+    public bool Remove(ResourceChange transfer)
+        => Remove(transfer.item, transfer.delta);
+            
     public IEnumerable<KeyValuePair<ItemType, int>> All()
         => resources;
+    public IEnumerable<ResourceChange> DrainAll()
+    {
+        foreach(var kv  in resources)
+            yield return new ResourceChange(kv.Key, kv.Value);
+
+        resources.Clear();
+    }
 
 }
