@@ -1,72 +1,72 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class ContextActionBarUI : MonoBehaviour
 {
     CharacterActions characterActions;
     TileObject actionSource = null;
-    public GameObject buttonPrefab;
-    List<GameObject> buttonList = new List<GameObject>();
+    ContextABButton[] buttons;
+    
     public ItemIcons icons;
 
-    
+    void Awake()
+    {
+        buttons = GetComponentsInChildren<ContextABButton>();
+        Hide();
+    }
     public void Init(CharacterActions actions)
     {
         this.characterActions = actions;
     }
-    public void GetActionSource(TileObject obj)
+    public void Show(TileObject obj)
     {
+        if (obj == null)
+            return;
+
+        gameObject.SetActive(true);
         actionSource = obj;
-        SetButtons();
+
+        Refresh();
     }
-    void SetButtons()
+    void Refresh()
     {
         if (actionSource != null)
+            return;
+
+        int i = 0;
+        foreach (var kv in actionSource.Resources.All())
         {
-            foreach (var kv in actionSource.Resources.All()) 
+            buttons[i].gameObject.SetActive(true);
+
+            Sprite icon = icons.GetIcon(kv.Key);
+            buttons[i].SetIcon(icon);
+
+            buttons[i].SetAmount($"{kv.Value}");
+
+            ItemType capturedItem = kv.Key;
+            buttons[i].SetAction(() =>
             {
-                GameObject btnObj = Instantiate(buttonPrefab, transform);
-                buttonList.Add(btnObj);
-
-                ContextABButton button = btnObj.GetComponent<ContextABButton>();
-
-                Sprite icon = icons.GetIcon(kv.Key);
-                button.SetIcon(icon);
-                button.SetAmount($"{kv.Value}");
-
-
-                ItemType capturedItem = kv.Key;
-                button.SetAction(() =>
-                {
-                    HarvestObject(capturedItem);
-                });
-
-            }
+                HarvestObject(capturedItem);
+            });
+            i++;
         }
-    }
-    private void Update()
-    {
-        foreach(GameObject button  in buttonList)
+        while (i < buttons.Length)
         {
-
+            buttons[i].gameObject.SetActive(false);
+            i++;
         }
-   
     }
-    public void ClearButtons()
+    public void Hide()
     {
-        foreach (GameObject button in  buttonList)
+        foreach (var button in  buttons)
         {
-            Destroy(button);
+            button.Clear();
+            button.gameObject.SetActive(false);
         }
-        buttonList.Clear();
+        actionSource = null;
+        gameObject.SetActive(false);
     }
-
     public void HarvestObject(ItemType item)
     {
         characterActions.RequestHarvest(actionSource, item);
     }
-
-
-
 }

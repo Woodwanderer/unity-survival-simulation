@@ -13,7 +13,7 @@ public class GameState
     
     CharacterActionState protagonistState;
 
-    TileObjectView lastObjectSelected;
+    TileObjectView currentObj;
 
     public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inventoryUI, ContextActionBarUI contextActionBarUI)
     {
@@ -40,7 +40,6 @@ public class GameState
         if(inputContr.ConsumeCancel()) 
             HandleCancel();
 
-
         //Check for Protagonist ActionState to trigger apropriate animation
 
         bool isEating = world.protagonistData.charSheet.actions.State == CharacterActionState.Eating;
@@ -51,52 +50,45 @@ public class GameState
     {
         world.TrySelectTile(tile);
     }
-    void HandleObjectClick(TileObjectView objectView)
+    void HandleObjectClick(TileObjectView obj)
     {
-        if (lastObjectSelected == objectView) //deselect
+        if (currentObj == obj)
         {
-            CancelObjSelection();
-            contextActionBarUI.ClearButtons();
+            DeselectCurrentObj();
+            return;
         }
-        else
-        {
-            CancelObjSelection();
-            contextActionBarUI.ClearButtons();
 
-            objectView.SetSelected();
-            lastObjectSelected = objectView;
-            EventBus.Log($"Object clicked: {objectView.Data}");
-            SetContextActionBarUI();
-        }
+        SelectObj(obj);
     }
-    void CancelObjSelection()
+    void SelectObj(TileObjectView obj)
     {
-        if (lastObjectSelected != null)
-        {
-            lastObjectSelected.SetSelected();
-            lastObjectSelected = null;
-        }
+        DeselectCurrentObj();
+        obj.SetSelected(true);
+        currentObj = obj;
+        contextActionBarUI.Show(obj.Data);
+    }
+    void DeselectCurrentObj()
+    {
+        if (currentObj == null)
+            return;
+        
+        currentObj.SetSelected(false);
+        currentObj = null;
+        contextActionBarUI.Hide();
     }
     void HandleCancel()
     {
-        // SEQUENCE matters
-
-        //Clear CAMERA Follow
         if (cam.cameraFollow)
         {
             cam.StopFollow();
             return;
         }
+     
+        world.CancelSelection(); // Clear Highlight on Tile
 
-        // Clear Highlight on Tile
-        world.CancelSelection();
-            
-        CancelObjSelection();
-        contextActionBarUI.ClearButtons();
+        DeselectCurrentObj();
     }
   
-
-
     //ACTION BAR
     public void AttemptHarvest() // function is added to button only
     {
@@ -105,10 +97,5 @@ public class GameState
             world.protagonistData.charSheet.actions.Harvest();
         }
     } 
-    void SetContextActionBarUI() // for HandleObjectClick
-    {
-        contextActionBarUI.GetActionSource(lastObjectSelected.Data);
-        
-    }
 
 }

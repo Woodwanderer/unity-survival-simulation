@@ -51,11 +51,12 @@ public class TileObjectView : MonoBehaviour
     {
         if (EventSystem.current.IsPointerOverGameObject())
             return;
+
         EventBus.ObjectClick(this);
     }
-    public void SetSelected()
+    public void SetSelected(bool value)
     {
-        selected = !selected;
+        selected = value;
         sR.color = selected ? new Color32(248, 20, 207, 200) : Color.white;
     }
     public void SetDepleted()

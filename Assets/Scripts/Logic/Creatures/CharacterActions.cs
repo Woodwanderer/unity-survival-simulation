@@ -13,7 +13,7 @@ public class CharacterActions
 
     CharacterActionState state = CharacterActionState.Idle;
     public CharacterActionState State => state;
-    public PendingAction pendingAction = null;
+    PendingAction pendingAction = null;
 
     float nutritionValue = 0; // will be gone after food - ItemType improvement
     float hourDuration;
@@ -22,7 +22,7 @@ public class CharacterActions
 
     VirtualResources globalRes;
 
-    public class PendingAction
+    class PendingAction
     {
         public CharacterActionState type;
         public TileObject target;
@@ -131,7 +131,7 @@ public class CharacterActions
         }
 
         return true;
-    } // kinda becoming absolete
+    }
     public void RequestHarvest(TileObject tileObject, ItemType item)
     {
         pendingAction = new PendingAction(CharacterActionState.Harvesting, tileObject, item);
@@ -172,8 +172,14 @@ public class CharacterActions
     //MOVE
     public void MoveToTile(Vector2Int tileCoords)
     {
+        if (state == CharacterActionState.Moving)
+            return;
+
         if (EstablishRoute(tileCoords))
+        {
+            renderWorld.DrawPath(world.protagonistData.pathCoords, true);
             ProtagonistMove();
+        }
     }
 
     //ROUTE
@@ -181,13 +187,9 @@ public class CharacterActions
     {
         protagonistData.pathCoords.Clear();
     }
-    bool EstablishRoute()
-    {
-        return EstablishRoute(world.lastTileSelected.mapCoords);
-    }
     bool EstablishRoute(Vector2Int target)
     {
-        if (protagonistData.mapCoords == target || world.lastTileSelected.isWalkable == false)
+        if (protagonistData.mapCoords == target || world.GetTileData(target).isWalkable == false) 
             return false;
 
         protagonistData.pathCoords.Clear();
@@ -200,13 +202,9 @@ public class CharacterActions
     public void HandleConfirm()
     {
         // Establish ROUTE
-        if (state == CharacterActionState.Idle && world.lastTileSelected != null)
+        if (world.lastTileSelected != null)
         {
-            if (EstablishRoute())
-            {
-                renderWorld.DrawPath(world.protagonistData.pathCoords, true);
-                ProtagonistMove();
-            }
+            MoveToTile(world.lastTileSelected.mapCoords);
         }
     }
     void ProtagonistMove()
