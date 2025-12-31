@@ -1,9 +1,4 @@
-﻿using JetBrains.Annotations;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Runtime.InteropServices;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CharacterActions
 {
@@ -19,6 +14,10 @@ public class CharacterActions
     float hourDuration;
     float nutriRate;
     float nutrition = 0;
+
+    
+    float harvestSpeed;
+    float harvested = 0;
 
     VirtualResources globalRes;
 
@@ -42,6 +41,8 @@ public class CharacterActions
 
         globalRes = baseRes;
         nutriRate = hourDuration * 0.16f; //full bar in 10 minutes // 10 sec in game 1/6th of an hour
+        harvestSpeed = 100 / hourDuration;
+        
         this.renderWorld = renderWorld;
     }
 
@@ -60,8 +61,9 @@ public class CharacterActions
         if (state == CharacterActionState.Harvesting)
         {
             //Harvesting(dt); rewrite later -> harvesting action and make class for actions to resolve it's progress here 3 vars (max, step, speed.. or smth like in eating, harvesting etc.)
-            if (pendingAction.type == CharacterActionState.Harvesting) 
-                Harvesting();
+            if (pendingAction.type == CharacterActionState.Harvesting)
+                HarvestTimed(dt);
+
         }
     }
     void SetIdle() 
@@ -120,7 +122,6 @@ public class CharacterActions
         foreach (var change in obj.Resources.DrainAll())
         {
             world.resources.Add(change);
-            
         }
 
         //CLEAR - object fully depleted
@@ -131,7 +132,7 @@ public class CharacterActions
         }
 
         return true;
-    }
+    } // kinda absolete
     public void RequestHarvest(TileObject tileObject, ItemType item)
     {
         pendingAction = new PendingAction(CharacterActionState.Harvesting, tileObject, item);
@@ -144,6 +145,40 @@ public class CharacterActions
         {
             MoveToTile(tileObject.tileCoords);
         }
+    }
+  
+    public void HarvestTimed(float deltaTime)
+    {
+        ItemType itemHarvested = pendingAction.itemType;
+        TileObject obj = pendingAction.target;
+
+        if(obj.Resources.Has(itemHarvested))
+        {
+            harvested += deltaTime * harvestSpeed;
+
+            while (harvested >= 1)
+            {
+                harvested -= 1;
+                obj.Resources.Remove(itemHarvested, 1);
+                world.resources.Add(itemHarvested, 1);
+            }
+        }
+        else
+        {
+            pendingAction = null;
+            state = CharacterActionState.Idle;
+        }
+
+        //CLEAR - object fully depleted
+        if (obj.Resources.isEmpty)
+        {
+            TileData currentTile = world.GetProtagonistTileData();
+            EventBus.ObjectDepleted(currentTile.mapCoords);
+            currentTile.objects.Clear();
+        }
+
+        
+        
     }
     public void Harvesting()
     {
@@ -175,11 +210,14 @@ public class CharacterActions
         if (state == CharacterActionState.Moving)
             return;
 
-        if (EstablishRoute(tileCoords))
-        {
-            renderWorld.DrawPath(world.protagonistData.pathCoords, true);
-            ProtagonistMove();
-        }
+        if (!EstablishRoute(tileCoords))
+            return;
+        
+        renderWorld.DrawPath(world.protagonistData.pathCoords, true);
+
+        state = CharacterActionState.Moving;
+        world.CancelSelection();
+        renderWorld.MoveProt();
     }
 
     //ROUTE
@@ -201,16 +239,10 @@ public class CharacterActions
     }
     public void HandleConfirm()
     {
-        // Establish ROUTE
+        // Move
         if (world.lastTileSelected != null)
         {
             MoveToTile(world.lastTileSelected.mapCoords);
         }
-    }
-    void ProtagonistMove()
-    {
-        state = CharacterActionState.Moving;
-        world.CancelSelection();
-        renderWorld.MoveProt();
     }
 }

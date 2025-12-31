@@ -29,7 +29,7 @@ public class ContextActionBarUI : MonoBehaviour
     }
     void Refresh()
     {
-        if (actionSource != null)
+        if (actionSource == null)
             return;
 
         int i = 0;
