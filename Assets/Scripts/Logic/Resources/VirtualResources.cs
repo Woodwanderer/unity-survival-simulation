@@ -3,7 +3,6 @@
 public class VirtualResources
 {
     Dictionary<ItemType , int> resources = new();
-    public bool isEmpty => resources.Count == 0;
 
     public int Get(ItemType type)
         => resources.TryGetValue(type, out int amount) ? amount : 0;

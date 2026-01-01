@@ -29,7 +29,7 @@ public class GameGo: MonoBehaviour
         gameState.Initialise();
 
         //UI
-        actionBar.Init(gameState, world.protagonistData.charSheet.actions);
+        actionBar.Init(world.protagonistData.charSheet.actions);
         timePanelUI.Init(gameTime);
         charSheetUI.Init(world.protagonistData.charSheet);
         contextActionbar.Init(world.protagonistData.charSheet.actions);

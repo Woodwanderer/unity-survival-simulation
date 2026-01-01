@@ -10,10 +10,6 @@ public class ProtagonistData
     public Pathfinder pathfinder { get; private set; }
     
     public CharacterSheet charSheet;
-    public float speed { get; private set; } = 2.0f;
-    
-    public List<Vector2Int> pathCoords = new List<Vector2Int>();
-    public List<Vector2Int> pathSteps = new List<Vector2Int>();
     public ProtagonistData(Vector2Int mapCoords, float hourDuration, VirtualResources global, World world, RenderWorld render)
     {
         this.hourDuration = hourDuration;
@@ -26,9 +22,9 @@ public class ProtagonistData
 
    
     }
-    public void MoveByStep(Vector2Int step)
+    public void MoveTo(Vector2Int coords)
     {
-        mapCoords += step;
+        mapCoords = coords;
     }
  
   

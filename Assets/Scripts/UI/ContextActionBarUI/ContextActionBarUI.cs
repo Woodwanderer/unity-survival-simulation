@@ -67,6 +67,6 @@ public class ContextActionBarUI : MonoBehaviour
     }
     public void HarvestObject(ItemType item)
     {
-        characterActions.RequestHarvest(actionSource, item);
+        characterActions.HarvestAttempt(actionSource, item);
     }
 }

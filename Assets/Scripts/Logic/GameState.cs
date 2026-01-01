@@ -10,8 +10,6 @@ public class GameState
     //UI
     InventoryUI inventoryUI;
     ContextActionBarUI contextActionBarUI;
-    
-    CharacterActionState protagonistState;
 
     TileObjectView currentObj;
 
@@ -88,14 +86,5 @@ public class GameState
 
         DeselectCurrentObj();
     }
-  
-    //ACTION BAR
-    public void AttemptHarvest() // function is added to button only
-    {
-        if (protagonistState == CharacterActionState.Idle)
-        {
-            world.protagonistData.charSheet.actions.Harvest();
-        }
-    } 
 
 }

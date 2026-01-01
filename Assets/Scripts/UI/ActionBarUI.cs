@@ -2,18 +2,11 @@
 
 public class ActionBarUI : MonoBehaviour
 {
-    private GameState gameState;
     private CharacterActions characterActions;
 
-    public void Init(GameState gameState, CharacterActions actions)
+    public void Init( CharacterActions actions)
     {
-        this.gameState = gameState;
         this.characterActions = actions;
-    }
-
-    public void Harvest()
-    {
-        gameState.AttemptHarvest();
     }
     public void Eat()
     {

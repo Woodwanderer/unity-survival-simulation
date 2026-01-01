@@ -20,8 +20,4 @@ public class MovementAnimator : MonoBehaviour
         transform.position = endLoc;
     }
 
-    // IMPORTANT:
-    // This project uses XY plane.
-    // Z is NEVER used for movement (only sorting / camera).
-
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class CharacterSheet
 {
     float hunger = 1f;
+    public float speed { get; private set; } = 2.0f;
     public float Hunger => hunger; //Getter so that var hunger is safe and private
     float hourDuration;
     float hungerRate;

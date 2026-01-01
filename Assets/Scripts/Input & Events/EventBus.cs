@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-public class EventBus // to tylko statyczna klasa, jak biblioteka na eventy i funkcje obslugujace
+public class EventBus
 {
     //CONSOLE
     public static event Action<string> OnLogMessage;
@@ -10,8 +10,9 @@ public class EventBus // to tylko statyczna klasa, jak biblioteka na eventy i fu
 
 
     //MOVEMENT
-    public static event Action OnMovementAnimationComplete;    
-    public static void MovementAnimationComplete() => OnMovementAnimationComplete?.Invoke();
+    public static event Action<Vector2Int> OnTileCommanded;
+    public static void TileCommanded(Vector2Int mapPos) => OnTileCommanded?.Invoke(mapPos);
+    
 
 
     //TILE CLICK

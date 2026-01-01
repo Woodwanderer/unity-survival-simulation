@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
+
 
 public class CharacterActions
 {
@@ -9,6 +11,8 @@ public class CharacterActions
     CharacterActionState state = CharacterActionState.Idle;
     public CharacterActionState State => state;
     PendingAction pendingAction = null;
+
+    Movement movement;
 
     float nutritionValue = 0; // will be gone after food - ItemType improvement
     float hourDuration;
@@ -48,10 +52,13 @@ public class CharacterActions
 
     public void Init()
     {
-        EventBus.OnMovementAnimationComplete += SetIdle; // send by ProtagonistMovement
+        movement = new Movement(protagonistData, renderWorld);
+        EventBus.OnTileCommanded += MoveToTile;
     }
     public void Tick(float dt)
     {
+        movement.Tick(dt);
+
         //Check for pending action
         if (state == CharacterActionState.Idle && pendingAction != null)
             state = pendingAction.type;
@@ -62,14 +69,8 @@ public class CharacterActions
         {
             //Harvesting(dt); rewrite later -> harvesting action and make class for actions to resolve it's progress here 3 vars (max, step, speed.. or smth like in eating, harvesting etc.)
             if (pendingAction.type == CharacterActionState.Harvesting)
-                HarvestTimed(dt);
-
+                Harvesting(dt);
         }
-    }
-    void SetIdle() 
-    {
-        if(state == CharacterActionState.Moving) //after movement animation complete only so far
-            state = CharacterActionState.Idle;
     }
 
     //EAT
@@ -108,32 +109,7 @@ public class CharacterActions
     }
 
     //HARVEST
-    public bool Harvest()
-    {
-        TileData currentTile = world.GetProtagonistTileData();
-        if (currentTile.objects.Count == 0)
-        {
-            EventBus.Log("Nothing to gather here.");
-            return false;
-        }
-
-        TileObject obj = currentTile.objects[0];
-
-        foreach (var change in obj.Resources.DrainAll())
-        {
-            world.resources.Add(change);
-        }
-
-        //CLEAR - object fully depleted
-        if (obj.Resources.isEmpty) 
-        {
-            EventBus.ObjectDepleted(currentTile.mapCoords);
-            currentTile.objects.Clear();
-        }
-
-        return true;
-    } // kinda absolete
-    public void RequestHarvest(TileObject tileObject, ItemType item)
+    public void HarvestAttempt(TileObject tileObject, ItemType item)
     {
         pendingAction = new PendingAction(CharacterActionState.Harvesting, tileObject, item);
 
@@ -147,7 +123,7 @@ public class CharacterActions
         }
     }
   
-    public void HarvestTimed(float deltaTime)
+    public void Harvesting(float deltaTime)
     {
         ItemType itemHarvested = pendingAction.itemType;
         TileObject obj = pendingAction.target;
@@ -167,75 +143,24 @@ public class CharacterActions
         {
             pendingAction = null;
             state = CharacterActionState.Idle;
-        }
 
-        //CLEAR - object fully depleted
-        if (obj.Resources.isEmpty)
-        {
+            //CLEAR - object fully depleted
             TileData currentTile = world.GetProtagonistTileData();
             EventBus.ObjectDepleted(currentTile.mapCoords);
             currentTile.objects.Clear();
         }
-
-        
-        
     }
-    public void Harvesting()
-    {
-        TileObject obj = pendingAction.target;
-        ItemType itemHarvested = pendingAction.itemType;
-
-        if (obj.Resources.Has(itemHarvested)) 
-        {
-            int amount = obj.Resources.Get(itemHarvested);
-            obj.Resources.Remove(itemHarvested, amount);
-            world.resources.Add(itemHarvested, amount);
-        }
-
-        //CLEAR - object fully depleted
-        if (obj.Resources.isEmpty) 
-        {
-            TileData currentTile = world.GetProtagonistTileData();
-            EventBus.ObjectDepleted(currentTile.mapCoords);
-            currentTile.objects.Clear();
-        }
-
-        pendingAction = null;
-        state = CharacterActionState.Idle;
-    }
-
     //MOVE
     public void MoveToTile(Vector2Int tileCoords)
     {
-        if (state == CharacterActionState.Moving)
+        if (protagonistData.mapCoords == tileCoords || world.GetTileData(tileCoords).isWalkable == false) 
             return;
 
-        if (!EstablishRoute(tileCoords))
-            return;
-        
-        renderWorld.DrawPath(world.protagonistData.pathCoords, true);
+        List<Vector2Int> newPath = world.pathfinder.FindPath(protagonistData.mapCoords, tileCoords);
 
-        state = CharacterActionState.Moving;
         world.CancelSelection();
-        renderWorld.MoveProt();
-    }
-
-    //ROUTE
-    public void CancelRoute()
-    {
-        protagonistData.pathCoords.Clear();
-    }
-    bool EstablishRoute(Vector2Int target)
-    {
-        if (protagonistData.mapCoords == target || world.GetTileData(target).isWalkable == false) 
-            return false;
-
-        protagonistData.pathCoords.Clear();
-        protagonistData.pathCoords = world.pathfinder.FindPath(protagonistData.mapCoords, target);
-        protagonistData.pathSteps.Clear();
-        protagonistData.pathSteps = world.pathfinder.GetPathSteps(protagonistData.mapCoords, protagonistData.pathCoords);
-
-        return true;
+        movement.SetPath(newPath);
+        
     }
     public void HandleConfirm()
     {

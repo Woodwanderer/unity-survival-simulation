@@ -5,6 +5,7 @@ public class InputController: MonoBehaviour
 {
     public RenderWorld renderWorld;
     public CameraMovement cam;
+    
     private DoubleClickDetector doubleLeftClickDetector = new DoubleClickDetector(0);
 
     public InventoryUI inventory;
@@ -21,16 +22,25 @@ public class InputController: MonoBehaviour
 
     bool confirmPressed;
     bool cancelPressed;
+    
 
     public void Tick(float deltaTime)
     {
-        // CONFIRM
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || doubleLeftClickDetector.CheckDoubleClick())
+        // Movement
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || doubleLeftClickDetector.CheckDoubleClick()) 
         {
             confirmPressed = true;
         }
+        if(Input.GetMouseButtonDown(1))
+        {
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            worldPos.z = 0;
+            Vector2Int mapPos = renderWorld.WorldToMap(worldPos);
+
+            EventBus.TileCommanded(mapPos);
+        }
         // Cancel
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
+        if (Input.GetKeyDown(KeyCode.Escape)) 
         {
             cancelPressed = true;
         }

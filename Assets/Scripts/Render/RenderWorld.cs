@@ -1,8 +1,7 @@
-﻿using NUnit.Framework;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using System.Collections.Generic;
-using System.Collections;
+using static UnityEditor.PlayerSettings;
+
 
 public class RenderWorld : MonoBehaviour
 {
@@ -23,12 +22,9 @@ public class RenderWorld : MonoBehaviour
     //Protagonist
     public GameObject protagonistPrefab; //Link do prefaba Protagonisty - podpiąć w Unity
     public GameObject protagonist; //Instance
-    private ProtagonsitMovement protMovement;
     public AnimateActions animator;
     
-    
     private Vector2 mapToCenter;
-
 
     //INITIALISE
     public void Initialise(World world)
@@ -52,11 +48,18 @@ public class RenderWorld : MonoBehaviour
         SpawnProtagonist(world.GetProtagonistData());
         SpawnDeer();
     }
-    public Vector3 MapToWorld(Vector2Int mapPos)
+    public Vector3 MapToWorld(Vector2Int coords)
     {
-        Vector3 mapToWorld = new((mapPos.x - mapToCenter.x) * tileSize, (mapPos.y - mapToCenter.y) * tileSize, 0);
+        Vector3 mapToWorld = new((coords.x - mapToCenter.x) * tileSize, (coords.y - mapToCenter.y) * tileSize, 0);
         return mapToWorld;
     }
+    public Vector2Int WorldToMap(Vector3 worldPos)
+    {
+        int x = Mathf.RoundToInt(worldPos.x / tileSize + mapToCenter.x);
+        int y = Mathf.RoundToInt(worldPos.y / tileSize + mapToCenter.y);
+        return new Vector2Int(x, y);
+    }
+
     public void Tick(float deltaTime)
     {
 
@@ -119,12 +122,15 @@ public class RenderWorld : MonoBehaviour
     //PATH
     public void DrawPath(List<Vector2Int> pathCoords, bool visible)
     {
+        if (pathCoords.Count == 0)
+            return;
+
         foreach (Vector2Int coords in pathCoords)
         {
-            TilePath(coords, visible);
+            ShowTilePath(coords, visible);
         }
     }
-    public void TilePath(Vector2Int coords, bool visible)
+    public void ShowTilePath(Vector2Int coords, bool visible)
     {
         TilePrefabs[coords.x, coords.y].ShowPath(visible);
     }
@@ -133,26 +139,19 @@ public class RenderWorld : MonoBehaviour
     // PROTAGONIST
     private void SpawnProtagonist(ProtagonistData protagonistData)
     {
-
         Vector2Int startCoords = world.GetProtagonistCoords();
         Vector3 startLoc = MapToWorld(startCoords) + creatureTileOffset;
 
         protagonist = Instantiate(protagonistPrefab, startLoc, Quaternion.identity);
-        protMovement = protagonist.GetComponent<ProtagonsitMovement>();
-        protMovement.Initialise(protagonistData, this);
         animator = protagonist.GetComponent<AnimateActions>();
-    }
-    public void MoveProt()
-    {   
-        StartCoroutine(protMovement.MoveAlong());
     }
     public Vector3 GetProtagonistLocation() // to jest jednorazwoe pobranie wartości
     {
-        return protMovement.transform.position;
+        return protagonist.transform.position;
     }
     public Transform GetProtagonistTransform() //to jest zwrócenie referencji - będzei aktualizowane, co frame
     {
-        return protMovement.transform;
+        return protagonist.transform;
     }
 
     // NPC - Creatures
@@ -179,9 +178,6 @@ public class RenderWorld : MonoBehaviour
         EventBus.OnTileHighlight -= TileHighlight;
         EventBus.OnObjectDepleted -= RemoveObjectSprite;
     }
- 
-
-    
 
 }
 
