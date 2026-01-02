@@ -5,7 +5,7 @@ public class ContextActionBarUI : MonoBehaviour
     CharacterActions characterActions;
     TileObject actionSource = null;
     ContextABButton[] buttons;
-    
+
     public ItemIcons icons;
 
     void Awake()
@@ -16,6 +16,13 @@ public class ContextActionBarUI : MonoBehaviour
     public void Init(CharacterActions actions)
     {
         this.characterActions = actions;
+    }
+    private void Update()
+    {
+        if (!(characterActions.State == CharacterActionState.Harvesting) ) 
+            return;
+        
+        Refresh();
     }
     public void Show(TileObject obj)
     {
@@ -29,9 +36,12 @@ public class ContextActionBarUI : MonoBehaviour
     }
     void Refresh()
     {
-        if (actionSource == null)
+        if (actionSource == null || actionSource.Resources.Depleted)
+        {
+            Hide();
             return;
-
+        }
+            
         int i = 0;
         foreach (var kv in actionSource.Resources.All())
         {

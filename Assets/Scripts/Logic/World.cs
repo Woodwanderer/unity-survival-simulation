@@ -133,7 +133,7 @@ public class World
     }
     private void SetProtagonist(RenderWorld render)
     {
-        protagonistData = new ProtagonistData(halfWorldSize, gameTime.HourDuration, resources, this, render);
+        protagonistData = new ProtagonistData(halfWorldSize, gameTime.HourDuration, this, render);
     }
     
     //Tile SELECTION

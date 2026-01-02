@@ -114,7 +114,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0da1757cef30e6a42bf755df28c463e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objAnimated: {fileID: 8125083844575882426}
+  foodRaw: {fileID: 0}
+  progressBarPrefab: {fileID: 5678725485024379382, guid: 77f160366b42b6947bc91cf8db79779a, type: 3}
 --- !u!1 &7373347166232298662
 GameObject:
   m_ObjectHideFlags: 0

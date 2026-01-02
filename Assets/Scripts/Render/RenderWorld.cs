@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 
 public class RenderWorld : MonoBehaviour
@@ -112,12 +111,11 @@ public class RenderWorld : MonoBehaviour
             TilePrefabs[currentTile.mapCoords.x, currentTile.mapCoords.y].highlight.enabled = true;
         else return;
     }
-    public void RemoveObjectSprite(Vector2Int tileCoords)
+    public void RemoveObjectSprite(TileObject obj)
     {
-        TilePrefab tileP = TilePrefabs[tileCoords.x, tileCoords.y];
+        TilePrefab tileP = TilePrefabs[obj.tileCoords.x, obj.tileCoords.y];
         tileP.HideObjectSprite();
     }
-
 
     //PATH
     public void DrawPath(List<Vector2Int> pathCoords, bool visible)

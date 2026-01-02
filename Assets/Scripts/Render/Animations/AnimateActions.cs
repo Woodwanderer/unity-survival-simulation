@@ -1,13 +1,26 @@
 ﻿using UnityEngine;
 
-public class AnimateActions : MonoBehaviour
+public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by renderWorld
 {
-    public SpriteRenderer objAnimated;
-    
-    public void SetAnimation(bool active)
+    public SpriteRenderer foodRaw;
+    [SerializeField] GameObject progressBarPrefab;
+
+    private void Awake()
     {
-        objAnimated.enabled = active;
+        progressBarPrefab = Instantiate(progressBarPrefab, transform);
     }
+
+    public void SetEatingAnimation(bool active)
+    {
+        foodRaw.enabled = active;
+    }
+
+    void ActionProgressView()
+    {
+        
+    }
+
+
 
 
 }

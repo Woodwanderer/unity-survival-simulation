@@ -19,7 +19,7 @@ public class CharacterActions
     float nutriRate;
     float nutrition = 0;
 
-    
+    GameObject ActionProgMiniBarUI;
     float harvestSpeed;
     float harvested = 0;
 
@@ -37,16 +37,15 @@ public class CharacterActions
             this.itemType = itemType;
         }
     }
-    public CharacterActions(float hourDuration, VirtualResources baseRes, World world, ProtagonistData protagonistData, RenderWorld renderWorld)
+    public CharacterActions(float hourDuration, World world, ProtagonistData protagonistData, RenderWorld renderWorld)
     {
         this.world = world;
         this.protagonistData = protagonistData;
         this.hourDuration = hourDuration;
 
-        globalRes = baseRes;
         nutriRate = hourDuration * 0.16f; //full bar in 10 minutes // 10 sec in game 1/6th of an hour
         harvestSpeed = 100 / hourDuration;
-        
+
         this.renderWorld = renderWorld;
     }
 
@@ -71,6 +70,10 @@ public class CharacterActions
             if (pendingAction.type == CharacterActionState.Harvesting)
                 Harvesting(dt);
         }
+
+        //Eating
+        if (state == CharacterActionState.Eating)
+            renderWorld.animator.SetEatingAnimation(true);
     }
 
     //EAT
@@ -113,7 +116,7 @@ public class CharacterActions
     {
         pendingAction = new PendingAction(CharacterActionState.Harvesting, tileObject, item);
 
-        if (tileObject.tileCoords == protagonistData.mapCoords && state == CharacterActionState.Idle) 
+        if (tileObject.tileCoords == protagonistData.mapCoords && state == CharacterActionState.Idle)
         {
             state = pendingAction.type;
         }
@@ -122,14 +125,17 @@ public class CharacterActions
             MoveToTile(tileObject.tileCoords);
         }
     }
-  
+
     public void Harvesting(float deltaTime)
     {
         ItemType itemHarvested = pendingAction.itemType;
         TileObject obj = pendingAction.target;
 
-        if(obj.Resources.Has(itemHarvested))
+        if (obj.Resources.Has(itemHarvested))
         {
+            
+
+
             harvested += deltaTime * harvestSpeed;
 
             while (harvested >= 1)
@@ -144,23 +150,25 @@ public class CharacterActions
             pendingAction = null;
             state = CharacterActionState.Idle;
 
-            //CLEAR - object fully depleted
-            TileData currentTile = world.GetProtagonistTileData();
-            EventBus.ObjectDepleted(currentTile.mapCoords);
-            currentTile.objects.Clear();
+            if (obj.Resources.Depleted)
+            {
+                TileData currentTile = world.GetProtagonistTileData();
+                EventBus.ObjectDepleted(obj);
+                currentTile.RemoveObject(obj);
+            }
         }
     }
     //MOVE
     public void MoveToTile(Vector2Int tileCoords)
     {
-        if (protagonistData.mapCoords == tileCoords || world.GetTileData(tileCoords).isWalkable == false) 
+        if (protagonistData.mapCoords == tileCoords || world.GetTileData(tileCoords).isWalkable == false)
             return;
 
         List<Vector2Int> newPath = world.pathfinder.FindPath(protagonistData.mapCoords, tileCoords);
 
         world.CancelSelection();
         movement.SetPath(newPath);
-        
+
     }
     public void HandleConfirm()
     {

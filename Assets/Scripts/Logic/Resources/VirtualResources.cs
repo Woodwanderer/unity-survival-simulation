@@ -2,7 +2,10 @@
 
 public class VirtualResources
 {
-    Dictionary<ItemType , int> resources = new();
+    Dictionary<ItemType, int> resources = new();
+    bool isDepleted =>
+        resources.Count == 0;
+    public bool Depleted => isDepleted;
 
     public int Get(ItemType type)
         => resources.TryGetValue(type, out int amount) ? amount : 0;

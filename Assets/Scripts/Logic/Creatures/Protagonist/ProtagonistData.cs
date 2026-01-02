@@ -10,11 +10,11 @@ public class ProtagonistData
     public Pathfinder pathfinder { get; private set; }
     
     public CharacterSheet charSheet;
-    public ProtagonistData(Vector2Int mapCoords, float hourDuration, VirtualResources global, World world, RenderWorld render)
+    public ProtagonistData(Vector2Int mapCoords, float hourDuration, World world, RenderWorld render)
     {
         this.hourDuration = hourDuration;
         this.mapCoords = mapCoords;
-        charSheet = new CharacterSheet(hourDuration, global, world, this, render);
+        charSheet = new CharacterSheet(hourDuration, world, this, render);
     }    
     public void Tick(float deltaTime)
     {

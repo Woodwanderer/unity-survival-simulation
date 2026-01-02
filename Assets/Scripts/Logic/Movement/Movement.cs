@@ -11,6 +11,7 @@ public class Movement
     float moveT;
     int pathIndex = 0;
     bool isMoving => pathIndex < path.Count;
+    public bool Moving => isMoving;
 
     Vector3 fromPos;
     Vector3 toPos;

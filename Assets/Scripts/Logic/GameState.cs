@@ -38,10 +38,7 @@ public class GameState
         if(inputContr.ConsumeCancel()) 
             HandleCancel();
 
-        //Check for Protagonist ActionState to trigger apropriate animation
-
-        bool isEating = world.protagonistData.charSheet.actions.State == CharacterActionState.Eating;
-        renderWorld.animator.SetAnimation(isEating);
+        
 
     }
     void HandleTileClicked(TileData tile)

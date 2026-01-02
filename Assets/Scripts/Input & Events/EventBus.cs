@@ -24,11 +24,11 @@ public class EventBus
 
 
     //OBJECTS
-    public static event Action<Vector2Int> OnObjectDepleted;
+    public static event Action<TileObject> OnObjectDepleted;
     public static event Action<TileObjectView> OnObjectClick;
 
     public static void ObjectClick(TileObjectView objView) => OnObjectClick?.Invoke(objView);
-    public static void ObjectDepleted(Vector2Int tileCoords) => OnObjectDepleted?.Invoke(tileCoords);
+    public static void ObjectDepleted(TileObject obj) => OnObjectDepleted?.Invoke(obj);
 
 }    
 

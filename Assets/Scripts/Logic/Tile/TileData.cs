@@ -19,5 +19,8 @@ public class TileData
     {
         objects.Add(tileObject);
     }
-
+    public void RemoveObject(TileObject tileObject)
+    {
+        objects.Remove(tileObject);
+    }
 }
