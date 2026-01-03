@@ -3,27 +3,23 @@ using TMPro;
 using UnityEngine.UI;
 public class ActionProgressUI : MonoBehaviour
 {
-    TMP_Text gathered;
-    Image fill;
-    float progress;
+    [SerializeField] TMP_Text gathered;
+    [SerializeField] Image fill;
 
-    void Awake()
-    {
-        gathered = GetComponent<TMP_Text>();
-        fill = GetComponent<Image>();
-    }
     void Show()
     {
         gameObject.SetActive(true);
     }
-    void Hide()
+    public void Hide()
     {
         gameObject.SetActive(false);
     }
 
-    void SetProgress(float t)
+    public void SetProgress(float t)
     {
+        Show();
         fill.fillAmount = t;
+        gathered.text = t.ToString();
     }
 
 

@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
+using Unity.VisualScripting;
 
 
 public class CharacterActions
@@ -7,6 +9,7 @@ public class CharacterActions
     World world;
     ProtagonistData protagonistData;
     RenderWorld renderWorld;
+
 
     CharacterActionState state = CharacterActionState.Idle;
     public CharacterActionState State => state;
@@ -20,10 +23,21 @@ public class CharacterActions
     float nutrition = 0;
 
     GameObject ActionProgMiniBarUI;
-    float harvestSpeed;
+    float harvestSpeed; //Set in constructor
     float harvested = 0;
+    public float harvestedOfWhole = 0;
+    int wholeHarvestSize = 0;
 
-    VirtualResources globalRes;
+    int actionIterationUnitCount = 0;
+
+    public IAction currentAction;
+    void SetAction(IAction newAction)
+    {
+        currentAction = newAction;
+        currentAction.Start();
+        currentAction?.Cancel();
+    }
+
 
     class PendingAction
     {
@@ -58,18 +72,10 @@ public class CharacterActions
     {
         movement.Tick(dt);
 
-        //Check for pending action
-        if (state == CharacterActionState.Idle && pendingAction != null)
-            state = pendingAction.type;
+        currentAction?.Tick(dt);
 
-
-        //Harvesting
-        if (state == CharacterActionState.Harvesting)
-        {
-            //Harvesting(dt); rewrite later -> harvesting action and make class for actions to resolve it's progress here 3 vars (max, step, speed.. or smth like in eating, harvesting etc.)
-            if (pendingAction.type == CharacterActionState.Harvesting)
-                Harvesting(dt);
-        }
+        if(currentAction != null && currentAction.IsFinished) 
+            currentAction = null;
 
         //Eating
         if (state == CharacterActionState.Eating)
@@ -89,7 +95,7 @@ public class CharacterActions
         nutritionValue = 0.25f; // get from food -> improve ItemType
 
         int ration = 5;
-        if (!globalRes.Remove(food, ration))
+        if (!world.resources.Has(food, ration))
         {
             EventBus.Log("You don't have enough food.");
         }
@@ -112,13 +118,29 @@ public class CharacterActions
     }
 
     //HARVEST
+    public void TryHarvest(TileObject target, ItemType item)
+    {
+        if (protagonistData.mapCoords == target.tileCoords)
+            SetAction(new HarvestAction(target, item, harvestSpeed, world.resources));
+        else
+        {
+            //MoveAction -> to write
+        }
+    }
     public void HarvestAttempt(TileObject tileObject, ItemType item)
     {
         pendingAction = new PendingAction(CharacterActionState.Harvesting, tileObject, item);
 
-        if (tileObject.tileCoords == protagonistData.mapCoords && state == CharacterActionState.Idle)
+        if (tileObject.tileCoords == protagonistData.mapCoords)
         {
-            state = pendingAction.type;
+            wholeHarvestSize = tileObject.Resources.Get(item);
+            if (wholeHarvestSize <= 0)
+            {
+                pendingAction = null;
+                return;
+            }
+            harvestedOfWhole = 0;
+            state = CharacterActionState.Harvesting;
         }
         else
         {
@@ -133,9 +155,7 @@ public class CharacterActions
 
         if (obj.Resources.Has(itemHarvested))
         {
-            
-
-
+            //Harvest by units
             harvested += deltaTime * harvestSpeed;
 
             while (harvested >= 1)
@@ -143,10 +163,18 @@ public class CharacterActions
                 harvested -= 1;
                 obj.Resources.Remove(itemHarvested, 1);
                 world.resources.Add(itemHarvested, 1);
+                actionIterationUnitCount++;
             }
+
+            //Get progress into Harvesting of full obj
+            float totalHarvested = harvested + actionIterationUnitCount;
+            float progress = totalHarvested / wholeHarvestSize;
+            harvestedOfWhole = Mathf.Clamp01(progress);
+
         }
         else
         {
+            harvestedOfWhole = 0;
             pendingAction = null;
             state = CharacterActionState.Idle;
 

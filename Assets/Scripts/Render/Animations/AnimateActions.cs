@@ -2,12 +2,24 @@
 
 public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by renderWorld
 {
+    public CharacterActions actions;
     public SpriteRenderer foodRaw;
     [SerializeField] GameObject progressBarPrefab;
+    GameObject progressBar;
+    ActionProgressUI progressUI;
+
+    bool isInitialised = false;
+
+    public void Init(CharacterActions actions)
+    {
+        this.actions = actions;
+        isInitialised = true;
+    }
 
     private void Awake()
     {
-        progressBarPrefab = Instantiate(progressBarPrefab, transform);
+        progressBar = Instantiate(progressBarPrefab, transform);
+        progressUI = progressBar.GetComponentInChildren<ActionProgressUI>();
     }
 
     public void SetEatingAnimation(bool active)
@@ -15,12 +27,20 @@ public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by r
         foodRaw.enabled = active;
     }
 
-    void ActionProgressView()
+    private void Update()
     {
-        
+        if (!isInitialised)
+            return;
+
+        SetHarvest();
     }
 
+    public void SetHarvest()
+    {
+        if (actions.currentAction is HarvestAction h)
+            progressUI.SetProgress(h.progress);
+        
 
-
+    }
 
 }

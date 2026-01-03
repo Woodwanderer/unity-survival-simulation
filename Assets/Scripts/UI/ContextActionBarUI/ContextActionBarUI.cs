@@ -8,6 +8,8 @@ public class ContextActionBarUI : MonoBehaviour
 
     public ItemIcons icons;
 
+    int lastHash;
+
     void Awake()
     {
         buttons = GetComponentsInChildren<ContextABButton>();
@@ -19,9 +21,6 @@ public class ContextActionBarUI : MonoBehaviour
     }
     private void Update()
     {
-        if (!(characterActions.State == CharacterActionState.Harvesting) ) 
-            return;
-        
         Refresh();
     }
     public void Show(TileObject obj)
@@ -77,6 +76,6 @@ public class ContextActionBarUI : MonoBehaviour
     }
     public void HarvestObject(ItemType item)
     {
-        characterActions.HarvestAttempt(actionSource, item);
+        characterActions.TryHarvest(actionSource, item);
     }
 }
