@@ -21,7 +21,8 @@ public class ContextActionBarUI : MonoBehaviour
     }
     private void Update()
     {
-        Refresh();
+        if (characterActions.currentAction is HarvestAction) 
+            Refresh();
     }
     public void Show(TileObject obj)
     {

@@ -19,7 +19,8 @@ public class ActionProgressUI : MonoBehaviour
     {
         Show();
         fill.fillAmount = t;
-        gathered.text = t.ToString();
+        float percent = t * 100f;
+        gathered.text = $"{percent:0}%";
     }
 
 

@@ -37,9 +37,6 @@ public class GameState
         //CANCEL
         if(inputContr.ConsumeCancel()) 
             HandleCancel();
-
-        
-
     }
     void HandleTileClicked(TileData tile)
     {

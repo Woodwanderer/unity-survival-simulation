@@ -8,10 +8,9 @@ public class HarvestAction : IAction
     public bool IsFinished => progress >= 1f;
     int targetAmount;
 
-    TileObject targetObj;
+    public TileObject targetObj;
     ItemType targetItem;
     VirtualResources inventory;
-
 
     public HarvestAction(TileObject targetObj, ItemType targetItem, float speed, VirtualResources inventory )
     {
@@ -30,7 +29,7 @@ public class HarvestAction : IAction
 
     public void Tick(float dt)
     {
-        if (!targetObj.Resources.Has(targetItem))
+        if (!targetObj.Resources.Has(targetItem)) // only init check
         {
             progress = 1f;
             return;

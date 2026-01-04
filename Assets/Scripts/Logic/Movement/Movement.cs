@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Movement
+public class Movement : IAction
 {
     ProtagonistData data;
     RenderWorld render;
@@ -10,37 +10,32 @@ public class Movement
     float speed;
     float moveT;
     int pathIndex = 0;
-    bool isMoving => pathIndex < path.Count;
-    public bool Moving => isMoving;
+    public bool IsFinished => pathIndex >= path.Count;
 
     Vector3 fromPos;
     Vector3 toPos;
 
-    public Movement(ProtagonistData data, RenderWorld render)
+    public Movement(ProtagonistData data, RenderWorld render, List<Vector2Int> newPath)
     {
         this.data = data;
         this.render = render;
+        this.path = newPath;
     }
-
-    public void Tick(float dt)
+    public void Start()
     {
-        if (!isMoving) 
-            return;
-
-        MoveInTime(dt);
-    }
-    public void SetPath(List<Vector2Int> newPath)
-    {
-        ClearPath();
-        path = newPath;
-
-        render.DrawPath(newPath, true);
+        render.DrawPath(path, true);
         pathIndex = 0;
         moveT = 1;
         // Get Stats
         speed = data.charSheet.speed; //gest new speed cosue it may change in play time (in the future - i.e. some speed haste buff or being tired or wounded)
     }
+    public void Tick(float dt)
+    {
+        if (IsFinished) 
+            return;
 
+        MoveInTime(dt);
+    }
     void MoveInTime(float dt)
     {
         while (moveT >= 1) //Set new step
@@ -63,12 +58,8 @@ public class Movement
             pathIndex++;
         }
     }
-    public void ClearPath()
+    public void Cancel()
     {
         render.DrawPath(path, false);
-        path.Clear();
-        pathIndex = 0;
-        moveT = 0;
     }
-
 }

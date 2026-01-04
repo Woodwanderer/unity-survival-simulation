@@ -136,6 +136,13 @@ public class World
         protagonistData = new ProtagonistData(halfWorldSize, gameTime.HourDuration, this, render);
     }
     
+    //EVENT Functions
+    public void ClearTileObject(TileObject obj)
+    {
+        TileData tile = GetTileData(obj.tileCoords);
+        tile.objects.Remove(obj);
+    }
+
     //Tile SELECTION
     public bool TrySelectTile(TileData tileData)
     {

@@ -38,7 +38,9 @@ public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by r
     public void SetHarvest()
     {
         if (actions.currentAction is HarvestAction h)
+        {
             progressUI.SetProgress(h.progress);
+        }
         
 
     }

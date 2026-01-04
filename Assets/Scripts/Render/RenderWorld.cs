@@ -170,12 +170,10 @@ public class RenderWorld : MonoBehaviour
     private void OnEnable()
     {
         EventBus.OnTileHighlight += TileHighlight;
-        EventBus.OnObjectDepleted += RemoveObjectSprite;
     }
     private void OnDisable()
     {
         EventBus.OnTileHighlight -= TileHighlight;
-        EventBus.OnObjectDepleted -= RemoveObjectSprite;
     }
 
 }
