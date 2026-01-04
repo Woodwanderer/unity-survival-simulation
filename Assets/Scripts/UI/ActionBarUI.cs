@@ -2,7 +2,7 @@
 
 public class ActionBarUI : MonoBehaviour
 {
-    private CharacterActions characterActions;
+    CharacterActions characterActions;
 
     public void Init( CharacterActions actions)
     {
@@ -10,7 +10,7 @@ public class ActionBarUI : MonoBehaviour
     }
     public void Eat()
     {
-        characterActions.EatInit(ItemType.FoodRaw); //pick from inv
+        characterActions.TryEat();
     }
 
 

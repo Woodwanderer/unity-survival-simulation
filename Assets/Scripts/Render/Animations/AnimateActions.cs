@@ -31,17 +31,26 @@ public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by r
     {
         if (!isInitialised)
             return;
+        if (actions.currentAction == null) 
+            return;
 
-        SetHarvest();
+        bool isEating = actions.currentAction is EatAction;
+        if (isEating)
+            SetEatingAnimation(isEating);
+
+        SetMiniBar();
     }
 
-    public void SetHarvest()
+    public void SetMiniBar()
     {
         if (actions.currentAction is HarvestAction h)
         {
             progressUI.SetProgress(h.progress);
         }
-        
+        if(actions.currentAction is EatAction e)
+        {
+            progressUI.SetProgress(e.progress);
+        }
 
     }
 

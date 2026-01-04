@@ -1,0 +1,51 @@
+﻿using UnityEngine;
+
+public class EatAction : IAction
+{
+    VirtualResources resources; //Eating from
+    ItemType foodType;          //Eating that
+    float nutritionValue;
+    public float nutrition;
+    CharacterSheet stats;
+
+    public bool IsFinished => progress >= 1;
+
+    public float progress = 0f;
+    float unitProgress = 0f;
+    float speed;
+    int mealAmount;
+
+    public EatAction(VirtualResources resources, ItemType foodType, CharacterSheet stats)
+    {
+        this.resources = resources;
+        this.foodType = foodType;
+        this.stats = stats;
+    }
+    public void Start()
+    {
+        //foodRaw stats -> get stats later from consumed ItemType
+        nutritionValue = 0.25f; //percent of full HUNGER bar -> how much of a bar it will fill
+        mealAmount = 5; // minimum amount per meal -> gives: nutrition value
+        speed = stats.eatSpeed;
+    }
+    public void Tick(float dt)
+    {
+        //consume full portion -> in case of canceling action -> food is wasted (gone) -> END VERSIOn FAIR
+        //for now nice Ticking ;p ONE by ONE
+
+        unitProgress += dt * speed;
+        progress += dt * speed / mealAmount;
+
+        while (unitProgress >= 1f)
+        {
+            unitProgress -= 1f;
+            resources.Remove(foodType, 1);
+        }
+        nutrition += dt * speed * nutritionValue;
+    }
+    public void Cancel()
+    {
+
+    }
+
+}

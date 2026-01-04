@@ -6,15 +6,9 @@ public class CharacterActions
     World world;
     ProtagonistData protagonistData;
     RenderWorld renderWorld;
+    CharacterSheet stats;
 
-    CharacterActionState state = CharacterActionState.Idle;
-    public CharacterActionState State => state;
-
-    float nutritionValue = 0; // will be gone after food - ItemType improvement
     float hourDuration;
-    float nutriRate;
-    float nutrition = 0;
-
     float harvestSpeed; //Set in constructor
 
     Queue<IAction> actionQueue = new Queue<IAction>();
@@ -25,16 +19,16 @@ public class CharacterActions
         currentAction = newAction;
         currentAction.Start();
     }
-    public CharacterActions(float hourDuration, World world, ProtagonistData protagonistData, RenderWorld renderWorld)
+    public CharacterActions(float hourDuration, World world, ProtagonistData protagonistData, RenderWorld renderWorld, CharacterSheet stats)
     {
         this.world = world;
         this.protagonistData = protagonistData;
         this.hourDuration = hourDuration;
 
-        nutriRate = hourDuration * 0.16f; //full bar in 10 minutes // 10 sec in game 1/6th of an hour
         harvestSpeed = 100 / hourDuration;
 
         this.renderWorld = renderWorld;
+        this.stats = stats;
     }
 
     public void Init()
@@ -59,44 +53,22 @@ public class CharacterActions
                 currentAction = null;
         }
 
-        //Eating
-        if (state == CharacterActionState.Eating)
-            renderWorld.animator.SetEatingAnimation(true);
     }
 
     //EAT
-    public bool BlocksHunger
+    public bool TryEat()
     {
-        get
-        {
-            return state == CharacterActionState.Eating;
-        }
-    }
-    public void EatInit(ItemType food)
-    {
-        nutritionValue = 0.25f; // get from food -> improve ItemType
-
         int ration = 5;
-        if (!world.resources.Has(food, ration))
+        if (!world.resources.Has(ItemType.FoodRaw, ration))
         {
             EventBus.Log("You don't have enough food.");
-        }
-        else
-        {
-            state = CharacterActionState.Eating;
+            return false;
         }
 
-    }
-    public float Eating(float deltaTime)
-    {
-        if (nutrition >= nutritionValue)
-        {
-            state = CharacterActionState.Idle;
-            nutritionValue = 0;
-            nutrition = 0;
-        }
-        nutrition += deltaTime / nutriRate;
-        return deltaTime / nutriRate;
+        IAction eat = new EatAction(world.resources, ItemType.FoodRaw, stats);
+        SetAction(eat);
+
+        return true;
     }
 
     //HARVEST

@@ -29,11 +29,8 @@ public class HarvestAction : IAction
 
     public void Tick(float dt)
     {
-        if (!targetObj.Resources.Has(targetItem)) // only init check
-        {
-            progress = 1f;
-            return;
-        }
+        if (!targetObj.Resources.Has(targetItem))
+            return; // just a failsafe
 
         unitProgress += dt * speed;
         progress += dt * speed / targetAmount;
