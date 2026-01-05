@@ -15,7 +15,7 @@ MonoBehaviour:
   objType: 1
   maxAge: 10
   resources:
-  - item: 3
+  - item: {fileID: 11400000, guid: 76784c41182a7a248a13b937ad4dc5f0, type: 2}
     maxAmount: 20
-  - item: 1
+  - item: {fileID: 11400000, guid: bdc1438ad54452d4c8aa6181bccfae1a, type: 2}
     maxAmount: 50

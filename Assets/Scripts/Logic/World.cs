@@ -17,6 +17,7 @@ public class World
     public TileData lastTileSelected;
     //Tile Objects
     public TileObjectsDatabase database;
+    public ItemsDatabase itemsDatabase;
     public Pathfinder pathfinder;
 
 
@@ -26,9 +27,10 @@ public class World
     //Resources
     public VirtualResources resources = new();
     
-    public World(TileObjectsDatabase data_in, GameTime time)
+    public World(TileObjectsDatabase data_in, ItemsDatabase itemsData, GameTime time)
     {
         this.database = data_in;
+        this.itemsDatabase = itemsData;
         gameTime = time;
         pathfinder = new Pathfinder(this);
     }

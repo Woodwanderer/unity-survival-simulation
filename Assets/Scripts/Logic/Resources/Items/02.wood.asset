@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1349607b314e15940acdbc229df89da0, type: 3}
-  m_Name: 04.TODefRock
+  m_Script: {fileID: 11500000, guid: 21484ef74098ecf4d96504ae9403271b, type: 3}
+  m_Name: 02.wood
   m_EditorClassIdentifier: 
-  objType: 4
-  maxAge: 100
-  resources:
-  - item: {fileID: 11400000, guid: 127c2813f8b032544b0e129920ccf124, type: 2}
-    maxAmount: 500
+  id: Wood
+  icon: {fileID: 21300000, guid: 8cc1a3d1054c9f04389033ac39257c46, type: 3}
+  weight: 20
+  nutrition: 20
+  maxStockpileSize: 100

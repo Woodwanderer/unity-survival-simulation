@@ -12,14 +12,16 @@ public class TileObjectDefinition : ScriptableObject
     [System.Serializable]
     public class ResourceRules
     {
-        public ItemType item;
+        public ItemDefinition item;
         public int maxAmount = 0;
     }
-    public Dictionary<ItemType, int> GenerateResources() //give age from TileObject later on
+    public Dictionary<ItemDefinition, int> GenerateResources() //give age from TileObject later on
     {
         int amount = 0;
         int age = Random.Range(1, maxAge + 1);
-        Dictionary<ItemType, int> result = new Dictionary<ItemType, int>();
+
+        Dictionary<ItemDefinition, int> result = new Dictionary<ItemDefinition, int>();
+
         foreach(ResourceRules resource in resources)
         {
             amount = resource.maxAmount * age / maxAge;

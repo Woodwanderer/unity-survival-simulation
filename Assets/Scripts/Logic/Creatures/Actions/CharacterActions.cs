@@ -6,10 +6,7 @@ public class CharacterActions
     World world;
     ProtagonistData protagonistData;
     RenderWorld renderWorld;
-    CharacterSheet stats;
-
-    float hourDuration;
-    float harvestSpeed; //Set in constructor
+    public CharacterSheet stats;
 
     Queue<IAction> actionQueue = new Queue<IAction>();
     public IAction currentAction;
@@ -19,16 +16,14 @@ public class CharacterActions
         currentAction = newAction;
         currentAction.Start();
     }
-    public CharacterActions(float hourDuration, World world, ProtagonistData protagonistData, RenderWorld renderWorld, CharacterSheet stats)
+    public CharacterActions(float hourDuration, World world, ProtagonistData protagonistData, RenderWorld renderWorld)
     {
         this.world = world;
         this.protagonistData = protagonistData;
-        this.hourDuration = hourDuration;
-
-        harvestSpeed = 100 / hourDuration;
-
         this.renderWorld = renderWorld;
-        this.stats = stats;
+        stats = new CharacterSheet(hourDuration, this);
+
+        Init();
     }
 
     public void Init()
@@ -59,22 +54,25 @@ public class CharacterActions
     public bool TryEat()
     {
         int ration = 5;
-        if (!world.resources.Has(ItemType.FoodRaw, ration))
+
+        ItemDefinition foodRaw = world.itemsDatabase.Get("foodRaw");
+
+        if (!world.resources.Has(foodRaw, ration))
         {
             EventBus.Log("You don't have enough food.");
             return false;
         }
 
-        IAction eat = new EatAction(world.resources, ItemType.FoodRaw, stats);
+        IAction eat = new EatAction(world.resources, foodRaw, stats);
         SetAction(eat);
 
         return true;
     }
 
     //HARVEST
-    public void TryHarvest(TileObject target, ItemType item)
+    public void TryHarvest(TileObject target, ItemDefinition item)
     {
-        IAction harvest = new HarvestAction(target, item, harvestSpeed, world.resources);
+        IAction harvest = new HarvestAction(target, item, stats.harvestSpeed, world.resources);
         if (protagonistData.mapCoords == target.tileCoords)
             SetAction(harvest);
         else
@@ -100,8 +98,8 @@ public class CharacterActions
             return false;
 
         world.CancelSelection();
-        
-        SetAction(new Movement(protagonistData, renderWorld, newPath));
+
+        SetAction(new Movement(protagonistData, renderWorld, stats.speed, newPath));
         return true;
     }
     public void HandleConfirm()

@@ -1318,9 +1318,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   renderWorld: {fileID: 948895213}
   inputController: {fileID: 899128859}
-  database: {fileID: 11400000, guid: 23e7e62dbb56a844a8a454a4de8b6b1d, type: 2}
   cam: {fileID: 330585548}
   inventoryUI: {fileID: 178616592}
+  objDatabase: {fileID: 11400000, guid: 23e7e62dbb56a844a8a454a4de8b6b1d, type: 2}
+  itemsDatabase: {fileID: 11400000, guid: 15deb01c033a20447ba78efa800af1d2, type: 2}
   actionBar: {fileID: 1419749311}
   timePanelUI: {fileID: 2021315610}
   charSheetUI: {fileID: 264669006}

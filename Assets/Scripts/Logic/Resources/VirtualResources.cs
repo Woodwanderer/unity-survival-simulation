@@ -2,25 +2,25 @@
 
 public class VirtualResources
 {
-    Dictionary<ItemType, int> resources = new();
+    Dictionary<ItemDefinition, int> resources = new();
     bool isDepleted =>
         resources.Count == 0;
     public bool Depleted => isDepleted;
 
-    public int Get(ItemType type)
+    public int Get(ItemDefinition type)
         => resources.TryGetValue(type, out int amount) ? amount : 0;
     
-    public bool Has(ItemType type, int amount = 1)
+    public bool Has(ItemDefinition type, int amount = 1)
         => Get(type) >= amount; 
     
-    public void Add(ItemType type, int amount)
+    public void Add(ItemDefinition type, int amount)
     {
         resources[type] = Get(type) + amount;
     }
     public void Add(ResourceChange entryItem)
         => Add(entryItem.item, entryItem.delta);
 
-    public bool Remove(ItemType type, int amount)
+    public bool Remove(ItemDefinition type, int amount)
     {
         if (!Has(type, amount))
             return false;
@@ -34,7 +34,7 @@ public class VirtualResources
     public bool Remove(ResourceChange transfer)
         => Remove(transfer.item, transfer.delta);
             
-    public IEnumerable<KeyValuePair<ItemType, int>> All()
+    public IEnumerable<KeyValuePair<ItemDefinition, int>> All()
         => resources;
     public IEnumerable<ResourceChange> DrainAll()
     {

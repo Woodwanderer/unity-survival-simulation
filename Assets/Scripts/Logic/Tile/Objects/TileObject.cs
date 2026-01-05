@@ -7,7 +7,7 @@ public class TileObject
     public Vector2Int tileCoords { get; }
     public VirtualResources Resources { get; }
 
-    public TileObject(TileObjectsType type_in, Dictionary<ItemType, int> startResources, Vector2Int tileCoords )
+    public TileObject(TileObjectsType type_in, Dictionary<ItemDefinition, int> startResources, Vector2Int tileCoords )
     {
         type = type_in;
         this.tileCoords = tileCoords;

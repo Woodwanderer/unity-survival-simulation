@@ -5,27 +5,32 @@ using UnityEngine;
 public class CharacterSheet
 {
     float hunger = 1f;
-    public float speed { get; private set; } = 2.0f;
-    public float Hunger => hunger; //Getter so that var hunger is safe and private
-    float hourDuration;
+    public float Hunger => hunger;
     float hungerRate;
+
+    float hourDuration; //calculate stats    
+
+    //ACTIONS
     public CharacterActions actions;
-
+    //stats
     public float eatSpeed;
+    public float harvestSpeed;
+    public float speed { get; private set; } = 2.0f; //walking
 
-    void InitStats()
+    public CharacterSheet(float hourDuration, CharacterActions actions)
     {
-        eatSpeed = 30 / hourDuration;
-    }
-
-    public CharacterSheet(float hourDuration, World world, ProtagonistData protagonistData, RenderWorld render )
-    {
+        this.actions = actions;
         this.hourDuration = hourDuration;
-        hungerRate = hourDuration * 24;
-        actions = new CharacterActions(hourDuration, world, protagonistData, render, this);
-        actions.Init();
+
         InitStats();
     }
+    void InitStats()
+    {
+        hungerRate = hourDuration * 24;
+        eatSpeed = 30 / hourDuration;
+        harvestSpeed = 100 / hourDuration;
+    }
+
     public void Tick(float deltaTime)
     {
         actions.Tick(deltaTime);
@@ -40,6 +45,5 @@ public class CharacterSheet
             hunger += e.nutrition;
             hunger = Mathf.Clamp01(hunger);
         }
-        
     }
 }

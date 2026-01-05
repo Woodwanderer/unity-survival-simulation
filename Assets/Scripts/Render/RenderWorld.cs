@@ -142,7 +142,7 @@ public class RenderWorld : MonoBehaviour
 
         protagonist = Instantiate(protagonistPrefab, startLoc, Quaternion.identity);
         animator = protagonist.GetComponent<AnimateActions>();
-        animator.Init(world.protagonistData.charSheet.actions);
+        animator.Init(world.protagonistData.actions);
     }
     public Vector3 GetProtagonistLocation() // to jest jednorazwoe pobranie wartości
     {

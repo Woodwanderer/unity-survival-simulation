@@ -6,10 +6,6 @@ public class ContextActionBarUI : MonoBehaviour
     TileObject actionSource = null;
     ContextABButton[] buttons;
 
-    public ItemIcons icons;
-
-    int lastHash;
-
     void Awake()
     {
         buttons = GetComponentsInChildren<ContextABButton>();
@@ -47,12 +43,12 @@ public class ContextActionBarUI : MonoBehaviour
         {
             buttons[i].gameObject.SetActive(true);
 
-            Sprite icon = icons.GetIcon(kv.Key);
+            Sprite icon = kv.Key.icon;
             buttons[i].SetIcon(icon);
 
             buttons[i].SetAmount($"{kv.Value}");
 
-            ItemType capturedItem = kv.Key;
+            ItemDefinition capturedItem = kv.Key;
             buttons[i].SetAction(() =>
             {
                 HarvestObject(capturedItem);
@@ -75,7 +71,7 @@ public class ContextActionBarUI : MonoBehaviour
         actionSource = null;
         gameObject.SetActive(false);
     }
-    public void HarvestObject(ItemType item)
+    public void HarvestObject(ItemDefinition item)
     {
         characterActions.TryHarvest(actionSource, item);
     }

@@ -4,20 +4,22 @@ public class HarvestAction : IAction
 {
     public float progress = 0f;
     public float unitProgress = 0f;
+    int targetAmount;
     float speed;
     public bool IsFinished => progress >= 1f;
-    int targetAmount;
-
+    
     public TileObject targetObj;
-    ItemType targetItem;
+    ItemDefinition targetItem;
     VirtualResources inventory;
 
-    public HarvestAction(TileObject targetObj, ItemType targetItem, float speed, VirtualResources inventory )
+    public HarvestAction(TileObject targetObj, ItemDefinition targetItem, float speed, VirtualResources inventory )
     {
         this.targetObj = targetObj;
         this.targetItem = targetItem;
-        this.speed = speed;
         this.inventory = inventory;
+
+        //Set stats
+        this.speed = speed;
     }
 
     public void Start()

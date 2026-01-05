@@ -3,7 +3,7 @@
 public class EatAction : IAction
 {
     VirtualResources resources; //Eating from
-    ItemType foodType;          //Eating that
+    ItemDefinition foodType;          //Eating that
     float nutritionValue;
     public float nutrition;
     CharacterSheet stats;
@@ -15,7 +15,7 @@ public class EatAction : IAction
     float speed;
     int mealAmount;
 
-    public EatAction(VirtualResources resources, ItemType foodType, CharacterSheet stats)
+    public EatAction(VirtualResources resources, ItemDefinition foodType, CharacterSheet stats)
     {
         this.resources = resources;
         this.foodType = foodType;

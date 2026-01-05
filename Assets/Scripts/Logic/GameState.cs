@@ -33,7 +33,7 @@ public class GameState
     {
         //CONFIRM
         if (inputContr.ConsumeConfirm())
-            world.protagonistData.charSheet.actions.HandleConfirm();
+            world.protagonistData.actions.HandleConfirm();
         //CANCEL
         if(inputContr.ConsumeCancel()) 
             HandleCancel();

@@ -15,19 +15,18 @@ public class Movement : IAction
     Vector3 fromPos;
     Vector3 toPos;
 
-    public Movement(ProtagonistData data, RenderWorld render, List<Vector2Int> newPath)
+    public Movement(ProtagonistData data, RenderWorld render, float speed, List<Vector2Int> newPath)
     {
         this.data = data;
         this.render = render;
         this.path = newPath;
+        this.speed = speed;
     }
     public void Start()
     {
         render.DrawPath(path, true);
         pathIndex = 0;
         moveT = 1;
-        // Get Stats
-        speed = data.charSheet.speed; //gest new speed cosue it may change in play time (in the future - i.e. some speed haste buff or being tired or wounded)
     }
     public void Tick(float dt)
     {
