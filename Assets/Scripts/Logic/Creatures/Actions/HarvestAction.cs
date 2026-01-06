@@ -9,14 +9,17 @@ public class HarvestAction : IAction
     public bool IsFinished => progress >= 1f;
     
     public TileObject targetObj;
+    TileObject stockpile = null;
     ItemDefinition targetItem;
-    VirtualResources inventory;
+    World world;
+    RenderWorld render;
 
-    public HarvestAction(TileObject targetObj, ItemDefinition targetItem, float speed, VirtualResources inventory )
+    public HarvestAction(TileObject targetObj, ItemDefinition targetItem, float speed, World world, RenderWorld render)
     {
         this.targetObj = targetObj;
         this.targetItem = targetItem;
-        this.inventory = inventory;
+        this.world = world;
+        this.render = render;
 
         //Set stats
         this.speed = speed;
@@ -26,23 +29,46 @@ public class HarvestAction : IAction
     {
         unitProgress = 0f;
         progress = 0f;
-        targetAmount = targetObj.Resources.Get(targetItem);
+        targetAmount = targetObj.resources.Get(targetItem);
+        if(targetAmount <= 0 )
+        {
+            progress = 1f;
+            EventBus.Log("target is depleted.");
+            return;
+        }
+
+        CreateNewPile(0);
     }
 
     public void Tick(float dt)
     {
-        if (!targetObj.Resources.Has(targetItem))
-            return; // just a failsafe
-
+        if (!targetObj.resources.Has(targetItem))
+        {
+            progress = 1f;
+            return;
+        }
+            
         unitProgress += dt * speed;
         progress += dt * speed / targetAmount;
 
         while(unitProgress >= 1f)
         {
             unitProgress -= 1;
-            targetObj.Resources.Remove(targetItem, 1);
-            inventory.Add(targetItem, 1);
+            targetObj.resources.Remove(targetItem, 1);
+            int overflow = stockpile.pile.Add(1);
+            if (overflow > 0) 
+            {
+                stockpile = CreateNewPile(overflow);
+            }
         }
+    }
+
+    TileObject CreateNewPile(int amount = 0)
+    {
+        TileData tile = world.GetTileData(targetObj.tileCoords);
+        stockpile = world.CreateResourcePile(tile, targetItem, amount);
+        render.SpawnResourcePile(stockpile);
+        return stockpile;
     }
     public void Cancel()
     {

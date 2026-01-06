@@ -32,14 +32,14 @@ public class ContextActionBarUI : MonoBehaviour
     }
     void Refresh()
     {
-        if (actionSource == null || actionSource.Resources.Depleted)
+        if (actionSource == null || actionSource.resources == null || actionSource.resources.Depleted) //ress or pile? ;p
         {
             Hide();
             return;
         }
             
         int i = 0;
-        foreach (var kv in actionSource.Resources.All())
+        foreach (var kv in actionSource.resources.All())
         {
             buttons[i].gameObject.SetActive(true);
 

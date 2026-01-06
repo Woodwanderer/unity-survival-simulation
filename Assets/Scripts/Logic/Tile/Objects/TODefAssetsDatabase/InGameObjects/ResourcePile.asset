@@ -10,11 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1349607b314e15940acdbc229df89da0, type: 3}
-  m_Name: 04.TODefRock
+  m_Name: ResourcePile
   m_EditorClassIdentifier: 
-  objType: 4
-  maxAge: 100
-  spawnOnWorldGen: 1
-  resources:
-  - item: {fileID: 11400000, guid: 127c2813f8b032544b0e129920ccf124, type: 2}
-    maxAmount: 500
+  objType: 5
+  maxAge: 0
+  spawnOnWorldGen: 0
+  resources: []

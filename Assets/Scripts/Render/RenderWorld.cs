@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -75,32 +76,24 @@ public class RenderWorld : MonoBehaviour
         ElevationEntry entry = config.Get(type);
         return entry.GetRandomSprite();
     }
-    private Sprite GetTileObjectSprite(TileData tileD)
-    {
-        if (tileD.objects.Count == 0 ) return null;
-
-        TileObjectEntry entry = objectAppearance.Get(tileD.objects[0].type);
-        if (entry == null) return null;
-
-        return entry.GetRandomSprite();
-    }
     private void SpawnTile(TileData tileData)
     {
         GameObject tileObjCopy = Instantiate(tilePrefab, MapToWorld(tileData.mapCoords), Quaternion.identity);
         TilePrefab tileP = tileObjCopy.GetComponent<TilePrefab>();
 
-        tileP.GetTileDataRef(tileData);
+        tileP.SetTileDataRef(tileData);
         tileP.SetTerrain(GetTerrainSprite(tileData.Terrain));
         tileP.SetElevation(GetElevationSprite(tileData.Elevation));
 
-        if (tileData.objects != null && tileData.objects.Count > 0) 
-            tileP.SetObjects(GetTileObjectSprite(tileData), tileSize);
-
-
+        foreach (TileObject obj in tileData.objects)
+            tileP.SetObject(obj, GetTileObjectSprite(tileData, obj), tileSize);
 
         TilePrefabs[tileData.mapCoords.x, tileData.mapCoords.y] = tileP;
     }
-    
+    TilePrefab GetTileP(Vector2Int coords)
+    {
+        return TilePrefabs[coords.x, coords.y];
+    }
     private void TileHighlight(TileData previousTile, TileData currentTile)
     {
         if (previousTile != null)
@@ -111,10 +104,31 @@ public class RenderWorld : MonoBehaviour
             TilePrefabs[currentTile.mapCoords.x, currentTile.mapCoords.y].highlight.enabled = true;
         else return;
     }
+    
+    //Objects
+    public void SpawnResourcePile(TileObject obj)
+    {
+        TilePrefab tileP = GetTileP(obj.tileCoords);
+
+        TileObjectEntry entry = objectAppearance.Get(obj.type);
+        ItemDefinition item = obj.pile.item;
+        Sprite icon = item.icon;
+        
+        tileP.SetObject(obj, icon, tileSize);
+    }
+    private Sprite GetTileObjectSprite(TileData tileD, TileObject obj)
+    {
+        if (tileD.objects.Count == 0) return null;
+
+        TileObjectEntry entry = objectAppearance.Get(obj.type);
+        if (entry == null) return null;
+
+        return entry.GetRandomSprite();
+    }
     public void RemoveObjectSprite(TileObject obj)
     {
         TilePrefab tileP = TilePrefabs[obj.tileCoords.x, obj.tileCoords.y];
-        tileP.HideObjectSprite();
+        tileP.HideObjectSprite(obj);
     }
 
     //PATH

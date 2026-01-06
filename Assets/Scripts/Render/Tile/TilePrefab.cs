@@ -1,7 +1,8 @@
-﻿using Unity.VisualScripting;
-using UnityEditor;
+﻿using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 public class TilePrefab: MonoBehaviour
 {
@@ -14,8 +15,7 @@ public class TilePrefab: MonoBehaviour
     public SpriteRenderer path;
 
     public GameObject tileObjectPrefab;
-    GameObject tileObj; //Instance
-    TileObjectView TObjView;
+    List<TileObjectView> objects = new(); //Instance
 
     private Vector3 centerToBottLeft = new(-0.5f, 0f, -0.5f);
 
@@ -23,7 +23,7 @@ public class TilePrefab: MonoBehaviour
     private TileData tileData;
 
     //FUNCTIONS
-    public void GetTileDataRef(TileData tileData)
+    public void SetTileDataRef(TileData tileData)
     {
         this.tileData = tileData;
     }
@@ -36,16 +36,20 @@ public class TilePrefab: MonoBehaviour
     {
         elevation.sprite = _elevation;
     }
-    public void SetObjects(Sprite _object, float tileSize)
+    public void SetObject(TileObject objData, Sprite _object, float tileSize)
     {
-        tileObj = Instantiate(tileObjectPrefab, this.transform);
-        TObjView = tileObj.GetComponent<TileObjectView>();
-
-        TObjView.Init(_object, tileSize, tileData.objects[0]);
+        GameObject obj = Instantiate(tileObjectPrefab, this.transform);
+        TileObjectView current = obj.GetComponent<TileObjectView>();
+        objects.Add(current);
+        current.Init(_object, tileSize, objData);
     }
-    public void HideObjectSprite()
+    public void HideObjectSprite(TileObject obj)
     {
-        TObjView.SetDepleted(); //CHECK!!! tu popraw
+        foreach (TileObjectView o in objects) 
+        {
+            if (o.Data == obj)
+                o.SetDepleted();
+        }
     }
     public void ShowPath(bool visible)
     {

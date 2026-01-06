@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objType: 2
   maxAge: 5
+  spawnOnWorldGen: 1
   resources:
   - item: {fileID: 11400000, guid: bdc1438ad54452d4c8aa6181bccfae1a, type: 2}
     maxAmount: 10

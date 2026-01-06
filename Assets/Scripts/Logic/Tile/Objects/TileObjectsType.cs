@@ -6,5 +6,6 @@ public enum TileObjectsType
     FruitTree,
     Bush,
     Berries,
-    Rock
+    Rock,
+    ResourcePile
 }

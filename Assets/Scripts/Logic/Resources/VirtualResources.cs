@@ -3,6 +3,17 @@
 public class VirtualResources
 {
     Dictionary<ItemDefinition, int> resources = new();
+    public VirtualResources() { } //create empty
+    public VirtualResources(IEnumerable<KeyValuePair<ItemDefinition, int>> res) // gotta copy Dictionary, else it works on original //..also kvpair -> gives possibility to add any datatype: list, kv, dictionary etc.
+    {
+        if (res == null)
+            return;
+
+        foreach (var kv in res) 
+        {
+            resources[kv.Key] = kv.Value;
+        }
+    }
     bool isDepleted =>
         resources.Count == 0;
     public bool Depleted => isDepleted;
@@ -17,8 +28,8 @@ public class VirtualResources
     {
         resources[type] = Get(type) + amount;
     }
-    public void Add(ResourceChange entryItem)
-        => Add(entryItem.item, entryItem.delta);
+    public void Add(ResourcePile transfer)
+        => Add(transfer.item, transfer.amount);
 
     public bool Remove(ItemDefinition type, int amount)
     {
@@ -31,15 +42,15 @@ public class VirtualResources
 
         return true;
     }
-    public bool Remove(ResourceChange transfer)
-        => Remove(transfer.item, transfer.delta);
+    public bool Remove(ResourcePile transfer)
+        => Remove(transfer.item, transfer.amount);
             
     public IEnumerable<KeyValuePair<ItemDefinition, int>> All()
         => resources;
-    public IEnumerable<ResourceChange> DrainAll()
+    public IEnumerable<ResourcePile> DrainAll()
     {
         foreach(var kv  in resources)
-            yield return new ResourceChange(kv.Key, kv.Value);
+            yield return new ResourcePile(kv.Key, kv.Value);
 
         resources.Clear();
     }

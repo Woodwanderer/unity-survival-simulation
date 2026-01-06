@@ -6,6 +6,7 @@ public class TileObjectDefinition : ScriptableObject
 {
     public TileObjectsType objType;
     public int maxAge;
+    public bool spawnOnWorldGen;
 
     public ResourceRules[] resources;
 
@@ -17,10 +18,13 @@ public class TileObjectDefinition : ScriptableObject
     }
     public Dictionary<ItemDefinition, int> GenerateResources() //give age from TileObject later on
     {
+        Dictionary<ItemDefinition, int> result = new Dictionary<ItemDefinition, int>();
+
+        if (!spawnOnWorldGen) //gives empty tab
+            return result;
+
         int amount = 0;
         int age = Random.Range(1, maxAge + 1);
-
-        Dictionary<ItemDefinition, int> result = new Dictionary<ItemDefinition, int>();
 
         foreach(ResourceRules resource in resources)
         {

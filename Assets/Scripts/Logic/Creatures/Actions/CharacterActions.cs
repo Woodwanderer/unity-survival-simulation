@@ -25,7 +25,6 @@ public class CharacterActions
 
         Init();
     }
-
     public void Init()
     {
         EventBus.OnTileCommanded += MoveToTile;
@@ -36,7 +35,7 @@ public class CharacterActions
 
         if (currentAction != null && currentAction.IsFinished)
         {
-            if (currentAction is HarvestAction h && h.targetObj.Resources.Depleted)
+            if (currentAction is HarvestAction h && h.targetObj.resources.Depleted)
             {
                 world.ClearTileObject(h.targetObj);
                 renderWorld.RemoveObjectSprite(h.targetObj);
@@ -47,9 +46,7 @@ public class CharacterActions
             else
                 currentAction = null;
         }
-
     }
-
     //EAT
     public bool TryEat()
     {
@@ -72,9 +69,11 @@ public class CharacterActions
     //HARVEST
     public void TryHarvest(TileObject target, ItemDefinition item)
     {
-        IAction harvest = new HarvestAction(target, item, stats.harvestSpeed, world.resources);
+        IAction harvest = new HarvestAction(target, item, stats.harvestSpeed, world, renderWorld);
         if (protagonistData.mapCoords == target.tileCoords)
+        {
             SetAction(harvest);
+        }
         else
         {
             bool canMove = TryMoveToTile(target.tileCoords);

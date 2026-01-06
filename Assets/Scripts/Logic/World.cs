@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
+using System.Collections.Generic;
 
 
 public class World
@@ -15,8 +17,9 @@ public class World
     //Tiles
     private TileData[,] tileData;
     public TileData lastTileSelected;
+
     //Tile Objects
-    public TileObjectsDatabase database;
+    public TileObjectsDatabase objDatabase;
     public ItemsDatabase itemsDatabase;
     public Pathfinder pathfinder;
 
@@ -29,7 +32,7 @@ public class World
     
     public World(TileObjectsDatabase data_in, ItemsDatabase itemsData, GameTime time)
     {
-        this.database = data_in;
+        this.objDatabase = data_in;
         this.itemsDatabase = itemsData;
         gameTime = time;
         pathfinder = new Pathfinder(this);
@@ -120,22 +123,35 @@ public class World
             }
         }
     }
- 
-    private void PopulateTileObjects(TileData tile)
-    {
-        //Get Random TileObjectType
-        int count = System.Enum.GetValues(typeof(TileObjectsType)).Length;
-        TileObjectsType type = (TileObjectsType)(UnityEngine.Random.Range(0, count)); //no more None
-        
-        //                                                                                                              TO DO!!!!!!!!!!!!!!!!!!!!!!!!! -.all tile are filled.Make saome conditional spawn
-        TileObjectDefinition definition = database.Get(type);
-        TileObject obj = new(definition.objType, definition.GenerateResources(), tile.mapCoords);
-        tile.AddObject(obj);
-        
-    }
     private void SetProtagonist(RenderWorld render)
     {
         protagonistData = new ProtagonistData(halfWorldSize, gameTime.HourDuration, this, render);
+    }
+
+    //TileObjects
+    private void PopulateTileObjects(TileData tile)
+    {
+        // is spawned at world generation?
+        var spawnableDefs = objDatabase.definitions.Where(def => def.spawnOnWorldGen).ToArray();
+
+        TileObjectDefinition def = spawnableDefs[Random.Range(0, spawnableDefs.Length)];
+
+        TileObject obj = new(def.objType, tile.mapCoords);
+
+        obj.resources = new(def.GenerateResources());
+
+        tile.AddObject(obj);
+    }
+    public TileObject CreateResourcePile(TileData tile, ItemDefinition item, int amount)
+    {
+        TileObjectDefinition pileDef = objDatabase.Get(TileObjectsType.ResourcePile);
+
+        TileObject pile = new(pileDef.objType, tile.mapCoords);
+        pile.pile = new(item, amount);
+
+        tile.AddObject(pile);
+        return pile;
+
     }
     
     //EVENT Functions
