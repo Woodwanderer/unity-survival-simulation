@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class ContextActionBarUI : MonoBehaviour
 {
@@ -30,22 +33,23 @@ public class ContextActionBarUI : MonoBehaviour
 
         Refresh();
     }
+
+    
     void Refresh()
     {
-        if (actionSource == null || actionSource.resources == null || actionSource.resources.Depleted) //ress or pile? ;p
+        //Resources    
+        if (actionSource == null || !actionSource.GetRes().Any())
         {
             Hide();
             return;
         }
-            
+
         int i = 0;
-        foreach (var kv in actionSource.resources.All())
+        foreach (var kv in actionSource.GetRes())
         {
             buttons[i].gameObject.SetActive(true);
 
-            Sprite icon = kv.Key.icon;
-            buttons[i].SetIcon(icon);
-
+            buttons[i].SetIcon(kv.Key.icon);
             buttons[i].SetAmount($"{kv.Value}");
 
             ItemDefinition capturedItem = kv.Key;

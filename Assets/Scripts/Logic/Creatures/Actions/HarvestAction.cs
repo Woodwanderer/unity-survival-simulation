@@ -27,6 +27,12 @@ public class HarvestAction : IAction
 
     public void Start()
     {
+        if (targetObj.resources == null)
+        {
+            EventBus.Log("I can't harvest that.");
+            return;
+        }
+            
         unitProgress = 0f;
         progress = 0f;
         targetAmount = targetObj.resources.Get(targetItem);

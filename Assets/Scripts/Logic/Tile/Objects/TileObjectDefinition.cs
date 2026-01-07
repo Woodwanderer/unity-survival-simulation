@@ -33,5 +33,13 @@ public class TileObjectDefinition : ScriptableObject
         }
         return result;
     }
+    #if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if(!Application.isPlaying)
+            return;
 
+        Debug.LogError($"[TileObjectDefinition] {name} was modified during Play Mode!", this);
+    }
+    #endif
 }

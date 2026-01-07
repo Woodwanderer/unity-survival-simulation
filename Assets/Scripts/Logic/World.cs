@@ -113,7 +113,6 @@ public class World
                     elevation = ElevationType.Water;
                 }
 
-
                     tileData[x, y] = new TileData(tilePos, terrain, elevation);
 
                 if (terrain != TerrainType.Water) 
@@ -151,7 +150,6 @@ public class World
 
         tile.AddObject(pile);
         return pile;
-
     }
     
     //EVENT Functions

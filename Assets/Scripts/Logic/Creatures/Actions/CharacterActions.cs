@@ -7,6 +7,7 @@ public class CharacterActions
     ProtagonistData protagonistData;
     RenderWorld renderWorld;
     public CharacterSheet stats;
+    public VirtualResources inventory = new();
 
     Queue<IAction> actionQueue = new Queue<IAction>();
     public IAction currentAction;
@@ -40,6 +41,11 @@ public class CharacterActions
                 world.ClearTileObject(h.targetObj);
                 renderWorld.RemoveObjectSprite(h.targetObj);
             }
+            if (currentAction is CollectItem c && c.targetObj.pile.amount <= 0)
+            {
+                world.ClearTileObject(c.targetObj);
+                renderWorld.RemoveObjectSprite(c.targetObj);
+            }
 
             if (actionQueue.Count > 0)
                 SetAction(actionQueue.Dequeue());
@@ -69,17 +75,26 @@ public class CharacterActions
     //HARVEST
     public void TryHarvest(TileObject target, ItemDefinition item)
     {
-        IAction harvest = new HarvestAction(target, item, stats.harvestSpeed, world, renderWorld);
+        IAction transfer;
+
+        if (target.type == TileObjectsType.ResourcePile)
+        {
+            transfer = new CollectItem(target, item, stats.harvestSpeed, inventory);
+        }
+        else
+        {
+            transfer = new HarvestAction(target, item, stats.harvestSpeed, world, renderWorld);
+        }
         if (protagonistData.mapCoords == target.tileCoords)
         {
-            SetAction(harvest);
+            SetAction(transfer);
         }
         else
         {
             bool canMove = TryMoveToTile(target.tileCoords);
 
             if (canMove)
-                actionQueue.Enqueue(harvest);
+                actionQueue.Enqueue(transfer);
             else
                 EventBus.Log("I can't reach this destination.");
         }

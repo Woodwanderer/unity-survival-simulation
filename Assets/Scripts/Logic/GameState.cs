@@ -25,7 +25,7 @@ public class GameState
 
     public void Initialise()
     {
-        inventoryUI.Init(world.resources);
+        inventoryUI.Init(world.protagonistData.actions.inventory);
         EventBus.OnTileClicked += HandleTileClicked; // send by tile
         EventBus.OnObjectClick += HandleObjectClick;
     }

@@ -8,11 +8,22 @@ public class TileObject
     public VirtualResources resources;
     public ResourcePile pile;
     public bool IsInit => pile != null || resources != null;
-
     public TileObject(TileObjectsType type, Vector2Int tileCoords)
     {
         this.type = type;
         this.tileCoords = tileCoords;
+
+        if (type == TileObjectsType.ResourcePile)
+            pile = new(null, 0);
+        else
+            resources = new VirtualResources();
+    }
+    public IEnumerable<KeyValuePair<ItemDefinition, int>> GetRes()
+    {
+        if (type == TileObjectsType.ResourcePile)
+            return pile.Get();
+        
+        return resources.All();
     }
 
 }

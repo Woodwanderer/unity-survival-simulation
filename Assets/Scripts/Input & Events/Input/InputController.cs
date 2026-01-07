@@ -44,6 +44,7 @@ public class InputController: MonoBehaviour
         {
             cancelPressed = true;
         }
+
         //INVENTORY
         if (Input.GetKeyDown(toggleInventory)) // I
         {
