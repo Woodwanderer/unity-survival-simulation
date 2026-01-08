@@ -10,10 +10,13 @@ public class GameState
     //UI
     InventoryUI inventoryUI;
     ContextActionBarUI contextActionBarUI;
+    BuildBarUI buildBarUI;
+    ActionBarUI actionBarUI;
+    TaskBarUI taskBarUI;
 
     TileObjectView currentObj;
     
-    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inventoryUI, ContextActionBarUI contextActionBarUI)
+    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inventoryUI, ContextActionBarUI contextActionBarUI, BuildBarUI buildBarUI, ActionBarUI actionBarUI, TaskBarUI taskBarUI)
     {
         this.world = world;
         this.renderWorld = render;
@@ -21,6 +24,9 @@ public class GameState
         this.inputContr = input_in;
         this.inventoryUI = inventoryUI;
         this.contextActionBarUI = contextActionBarUI;
+        this.buildBarUI = buildBarUI;
+        this.actionBarUI = actionBarUI;
+        this.taskBarUI = taskBarUI;
     }
 
     public void Initialise()
@@ -35,6 +41,7 @@ public class GameState
             HandleCancel();
 
         SelectZoneInput();
+
     }
     //Select Tiles
     bool isDragging = false;
@@ -55,7 +62,7 @@ public class GameState
         {
             Vector2Int dragEnd = GetMouseTile();
 
-            world.SelectConditionedZone(dragStart, dragEnd);
+            world.SelectConnectedZone(dragStart, dragEnd);
             isDragging = false;
         }
     }

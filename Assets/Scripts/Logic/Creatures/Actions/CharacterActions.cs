@@ -60,13 +60,13 @@ public class CharacterActions
 
         ItemDefinition foodRaw = world.itemsDatabase.Get("foodRaw");
 
-        if (!world.resources.Has(foodRaw, ration))
+        if (!inventory.Has(foodRaw, ration))
         {
             EventBus.Log("You don't have enough food.");
             return false;
         }
 
-        IAction eat = new EatAction(world.resources, foodRaw, stats);
+        IAction eat = new EatAction(inventory, foodRaw, stats);
         SetAction(eat);
 
         return true;

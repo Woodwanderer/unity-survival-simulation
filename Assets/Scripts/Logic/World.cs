@@ -17,6 +17,7 @@ public class World
 
     //Tiles
     private TileData[,] tileData;
+    public Area area;
     public List<Vector2Int> tilesSelected = new();
 
     //Tile Objects
@@ -24,12 +25,8 @@ public class World
     public ItemsDatabase itemsDatabase;
     public Pathfinder pathfinder;
 
-
     //Protagonist
     public ProtagonistData protagonistData { get; private set; }
-
-    //Resources
-    public VirtualResources resources = new();
 
     public World(TileObjectsDatabase data_in, ItemsDatabase itemsData, RenderWorld render, GameTime time)
     {
@@ -158,20 +155,15 @@ public class World
     }
 
     //Tile SELECTION
+
     public List<Vector2Int> GetTileCoordsInRect(Vector2Int a,  Vector2Int b)
     {
-        int minX = Mathf.Min(a.x, b.x);
-        int maxX = Mathf.Max(a.x, b.x);
-        int minY = Mathf.Min(a.y, b.y);
-        int maxY = Mathf.Max(a.y, b.y);
-
-        Vector2Int starMin = new(minX, minY);
-        Vector2Int endMax = new(maxX, maxY);
-
+        TileRect rect = new(a, b);
         List<Vector2Int> tileCoords = new List<Vector2Int>();
-        for(int x = minX; x <= maxX; x++)
+
+        for(int x = rect.Min.x; x <= rect.Max.x; x++)
         {
-            for(int y = minY; y <= maxY; y++)
+            for(int y = rect.Min.y; y <= rect.Max.y; y++)
             {   
                 tileCoords.Add(new Vector2Int(x, y));
             }
@@ -186,21 +178,37 @@ public class World
         tilesSelected = selection;
         render.SelectTiles(tilesSelected, true);
     }
-    public void SelectConditionedZone(Vector2Int a, Vector2Int b)
+    public void SelectConnectedZone(Vector2Int a, Vector2Int b)
     {
-        List<Vector2Int> selection = pathfinder.FloodFillInRect(a, b);
-
+        List<Vector2Int> selection = pathfinder.FloodFill(a, b);
+        
         render.SelectTiles(tilesSelected, false);
         tilesSelected = selection;
-
         render.AnimateZoneSelection(selection);
-        //render.SelectTiles(tilesSelected, true); -> not animated
     }
     public void ClearZoneSelection()
     {
         render.SelectTiles(tilesSelected, false);
         tilesSelected.Clear();
     }
+}
 
+public struct TileRect
+{
+    public Vector2Int Min;
+    public Vector2Int Max;
 
+    public TileRect(Vector2Int a, Vector2Int b)
+    {
+        Min = new(Mathf.Min(a.x, b.x), Mathf.Min(a.y, b.y));
+        Max = new(Mathf.Max(a.x, b.x), Mathf.Max(a.y, b.y));
+    }
+    public bool Contains(Vector2Int pos)
+    {
+        return ( pos.x >= Min.x &&
+                 pos.y >= Min.y &&
+                 pos.x <= Max.x &&
+                 pos.y <= Max.y
+               );
+    }
 }

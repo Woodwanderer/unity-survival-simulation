@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21484ef74098ecf4d96504ae9403271b, type: 3}
   m_Name: 0.foodRaw
   m_EditorClassIdentifier: 
-  id: FoodRaw
+  id: foodRaw
   icon: {fileID: 21300000, guid: f6a78b1c416e98843b1ea05beff4cf36, type: 3}
   weight: 1
   nutrition: 5

@@ -9,35 +9,36 @@ public class GameGo: MonoBehaviour
     public InputController inputController;
     public CameraMovement cam;
     public InventoryUI inventoryUI;
+    public GameTime gameTime = new();
+
     //Data Assets
     public TileObjectsDatabase objDatabase;
     public ItemsDatabase itemsDatabase;
 
-    public GameTime gameTime = new();
-
     //UI
-    public ActionBarUI actionBar;          
+    public ActionBarUI actionBarUI;          
     public TimePanelUI timePanelUI;
     public CharacterSheetUI charSheetUI;
     public ContextActionBarUI contextActionbar;
-
+    public BuildBarUI buildBarUI;
+    public TaskBarUI taskBarUI;
 
     private void Start()
     {
         world = new World(objDatabase, itemsDatabase, renderWorld, gameTime); //dlaczego nie moglem dac database w Initialise? spytac gpt stowrzyony tylko pod to przekazanie konstruktor.. aha.. bo te dane. sa wstrzykiwane chyba. reszta genralnie istnieje. To ne jest mono, wiec rzeba podac tak
         world.Initialise(renderWorld);
         renderWorld.Initialise(world);
-        gameState = new GameState(world, renderWorld, cam, inputController, inventoryUI, contextActionbar);
+        gameState = new GameState(world, renderWorld, cam, inputController, inventoryUI, contextActionbar, buildBarUI, actionBarUI, taskBarUI);
         gameState.Initialise();
 
         //UI
-        actionBar.Init(world.protagonistData.actions);
+        actionBarUI.Init(world.protagonistData.actions);
         timePanelUI.Init(gameTime);
         charSheetUI.Init(world.protagonistData.actions.stats);
         contextActionbar.Init(world.protagonistData.actions);
-
+        buildBarUI.Init(gameState);
+        taskBarUI.Init(gameState);
     }
-
     private void Update()
     {
         float dt = Time.deltaTime;
@@ -47,10 +48,7 @@ public class GameGo: MonoBehaviour
         gameState.Tick(dt);
         world.Tick(dt);
 
-
         //not used yet
         renderWorld.Tick(dt);
-
-
     }
 }

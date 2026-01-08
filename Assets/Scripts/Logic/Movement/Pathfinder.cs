@@ -25,14 +25,6 @@ public class Pathfinder //BFS -> Deijkstra later ;)
                  pos.y < world.WorldSize.y
                );
     }
-    bool IsWithingRect(Vector2Int pos, Vector2Int rectMin, Vector2Int rectMax )
-    {
-        return ( pos.x >= rectMin.x &&
-                 pos.y >= rectMin.y &&
-                 pos.x <=  rectMax.x &&
-                 pos.y <=  rectMax.y
-               );
-    }
     IEnumerable<Vector2Int> GetNeighbours(Vector2Int pos)
     {
         foreach (Vector2Int dir in Directions)
@@ -47,30 +39,14 @@ public class Pathfinder //BFS -> Deijkstra later ;)
             yield return next;
         }
     }
-    public class Rect
+    public List<Vector2Int> FloodFill(Vector2Int start, Vector2Int b)
     {
-        public Vector2Int startMin;
-        public Vector2Int endMax;
-
-        public Rect(Vector2Int a,  Vector2Int b)
-        {
-            int minX = Mathf.Min(a.x, b.x);
-            int maxX = Mathf.Max(a.x, b.x);
-            int minY = Mathf.Min(a.y, b.y);
-            int maxY = Mathf.Max(a.y, b.y);
-
-            startMin = new(minX, minY);
-            endMax = new(maxX, maxY);
-        }
-    }
-    public List<Vector2Int> FloodFillInRect(Vector2Int start, Vector2Int b)
-    {
-        Rect rect = new(start, b);
+        TileRect rect = new(start, b);
         List<Vector2Int> result = new();
         Queue<Vector2Int> frontier = new();
         HashSet<Vector2Int> visited = new();
 
-        if (!IsWithingRect(start, rect.startMin, rect.endMax)) 
+        if (!rect.Contains(start)) 
             return result;
         if (!world.GetTileData(start).isWalkable)
             return result;
@@ -88,13 +64,12 @@ public class Pathfinder //BFS -> Deijkstra later ;)
                 if (visited.Contains(next))
                     continue;
 
-                if (!IsWithingRect(next, rect.startMin, rect.endMax)) 
+                if (!rect.Contains(next)) 
                     continue;
 
                 visited.Add(next);
                 frontier.Enqueue(next);
             }
-
         }
         return result;
     }

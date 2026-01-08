@@ -31,6 +31,7 @@ public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by r
     {
         if (!isInitialised)
             return;
+
         if (actions.currentAction == null)
         {
             progressUI.Hide();
@@ -38,8 +39,7 @@ public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by r
         }
             
         bool isEating = actions.currentAction is EatAction;
-        if (isEating)
-            SetEatingAnimation(isEating);
+        SetEatingAnimation(isEating);
 
         SetMiniBar();
     }

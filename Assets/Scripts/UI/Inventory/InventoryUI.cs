@@ -4,7 +4,6 @@ public class InventoryUI : MonoBehaviour
 {
     InventorySlot[] slots;
     VirtualResources resources;
-
     void Awake()
     {
         gameObject.SetActive(false);

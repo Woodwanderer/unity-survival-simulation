@@ -22,7 +22,6 @@ public class InputController: MonoBehaviour
 
     bool cancelPressed;
     
-
     public void Tick(float deltaTime)
     {
         // Movement
