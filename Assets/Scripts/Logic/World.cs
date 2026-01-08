@@ -13,10 +13,11 @@ public class World
     public Vector2Int WorldSize => worldSize;
     public Vector2Int halfWorldSize { get; private set; }
     public GameTime gameTime;
+    RenderWorld render;
 
     //Tiles
     private TileData[,] tileData;
-    public TileData lastTileSelected;
+    public List<Vector2Int> tilesSelected = new();
 
     //Tile Objects
     public TileObjectsDatabase objDatabase;
@@ -29,11 +30,12 @@ public class World
 
     //Resources
     public VirtualResources resources = new();
-    
-    public World(TileObjectsDatabase data_in, ItemsDatabase itemsData, GameTime time)
+
+    public World(TileObjectsDatabase data_in, ItemsDatabase itemsData, RenderWorld render, GameTime time)
     {
         this.objDatabase = data_in;
         this.itemsDatabase = itemsData;
+        this.render = render;
         gameTime = time;
         pathfinder = new Pathfinder(this);
     }
@@ -53,10 +55,6 @@ public class World
     public Vector2Int GetTileCoords(TileData tileData)
     {
         return tileData.mapCoords;
-    }
-    public Vector2Int GetLastTileSelectedCoords()
-    {
-        return GetTileCoords(lastTileSelected);
     }
     //Protagonist
     public ProtagonistData GetProtagonistData() => protagonistData;
@@ -160,30 +158,49 @@ public class World
     }
 
     //Tile SELECTION
-    public bool TrySelectTile(TileData tileData)
+    public List<Vector2Int> GetTileCoordsInRect(Vector2Int a,  Vector2Int b)
     {
-        if (tileData == lastTileSelected)
-            return false;
-        else
+        int minX = Mathf.Min(a.x, b.x);
+        int maxX = Mathf.Max(a.x, b.x);
+        int minY = Mathf.Min(a.y, b.y);
+        int maxY = Mathf.Max(a.y, b.y);
+
+        Vector2Int starMin = new(minX, minY);
+        Vector2Int endMax = new(maxX, maxY);
+
+        List<Vector2Int> tileCoords = new List<Vector2Int>();
+        for(int x = minX; x <= maxX; x++)
         {
-            EventBus.TileHighlight(lastTileSelected, tileData);
-            lastTileSelected = tileData;
-            EventBus.Log("You selected tile: " + lastTileSelected.mapCoords.ToString());
-            return true;
+            for(int y = minY; y <= maxY; y++)
+            {   
+                tileCoords.Add(new Vector2Int(x, y));
+            }
         }
-
+        return tileCoords;
     }
-    public bool CancelSelection()
+    public void SelectZone(Vector2Int a, Vector2Int b)
     {
-        if (lastTileSelected != null)
-        { 
-            EventBus.TileHighlight(lastTileSelected, null);
-        }
-        lastTileSelected = null;
-        return true;
+        List<Vector2Int> selection = GetTileCoordsInRect(a, b);
+
+        render.SelectTiles(tilesSelected, false);
+        tilesSelected = selection;
+        render.SelectTiles(tilesSelected, true);
     }
+    public void SelectConditionedZone(Vector2Int a, Vector2Int b)
+    {
+        List<Vector2Int> selection = pathfinder.FloodFillInRect(a, b);
 
+        render.SelectTiles(tilesSelected, false);
+        tilesSelected = selection;
 
+        render.AnimateZoneSelection(selection);
+        //render.SelectTiles(tilesSelected, true); -> not animated
+    }
+    public void ClearZoneSelection()
+    {
+        render.SelectTiles(tilesSelected, false);
+        tilesSelected.Clear();
+    }
 
 
 }

@@ -30,7 +30,7 @@ public class HarvestAction : IAction
         if (targetObj.resources == null)
         {
             EventBus.Log("I can't harvest that.");
-            return;
+            Cancel();   
         }
             
         unitProgress = 0f;
@@ -38,9 +38,8 @@ public class HarvestAction : IAction
         targetAmount = targetObj.resources.Get(targetItem);
         if(targetAmount <= 0 )
         {
-            progress = 1f;
             EventBus.Log("target is depleted.");
-            return;
+            Cancel();
         }
 
         CreateNewPile(0);
@@ -49,11 +48,8 @@ public class HarvestAction : IAction
     public void Tick(float dt)
     {
         if (!targetObj.resources.Has(targetItem))
-        {
-            progress = 1f;
-            return;
-        }
-            
+            Cancel();
+        
         unitProgress += dt * speed;
         progress += dt * speed / targetAmount;
 
@@ -78,6 +74,7 @@ public class HarvestAction : IAction
     }
     public void Cancel()
     {
-
+        progress = 1f;
+        return;
     }
 }

@@ -111,17 +111,7 @@ public class CharacterActions
         if (newPath == null || newPath.Count == 0)
             return false;
 
-        world.CancelSelection();
-
         SetAction(new Movement(protagonistData, renderWorld, stats.speed, newPath));
         return true;
-    }
-    public void HandleConfirm()
-    {
-        // Move
-        if (world.lastTileSelected != null)
-        {
-            MoveToTile(world.lastTileSelected.mapCoords);
-        }
     }
 }

@@ -20,17 +20,12 @@ public class InputController: MonoBehaviour
     KeyCode cameraCenter = KeyCode.C;
     KeyCode cameraFollowProtagonist = KeyCode.F1;
 
-    bool confirmPressed;
     bool cancelPressed;
     
 
     public void Tick(float deltaTime)
     {
         // Movement
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || doubleLeftClickDetector.CheckDoubleClick()) 
-        {
-            confirmPressed = true;
-        }
         if(Input.GetMouseButtonDown(1))
         {
             Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -59,13 +54,6 @@ public class InputController: MonoBehaviour
         //CAMERA
         CameraPointAtProtagonist(); // C
         CameraFollowPlayer();       // F1
-    }
-    public bool ConsumeConfirm()
-    {
-        if (!confirmPressed)
-            return false;
-        confirmPressed = false;
-        return true;
     }
     public bool ConsumeCancel()
     {

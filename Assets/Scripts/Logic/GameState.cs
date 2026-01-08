@@ -12,7 +12,7 @@ public class GameState
     ContextActionBarUI contextActionBarUI;
 
     TileObjectView currentObj;
-
+    
     public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inventoryUI, ContextActionBarUI contextActionBarUI)
     {
         this.world = world;
@@ -26,22 +26,46 @@ public class GameState
     public void Initialise()
     {
         inventoryUI.Init(world.protagonistData.actions.inventory);
-        EventBus.OnTileClicked += HandleTileClicked; // send by tile
         EventBus.OnObjectClick += HandleObjectClick;
     }
     public void Tick(float deltaTime)
-    {
-        //CONFIRM
-        if (inputContr.ConsumeConfirm())
-            world.protagonistData.actions.HandleConfirm();
+    {   
         //CANCEL
         if(inputContr.ConsumeCancel()) 
             HandleCancel();
+
+        SelectZoneInput();
     }
-    void HandleTileClicked(TileData tile)
+    //Select Tiles
+    bool isDragging = false;
+    Vector2Int dragStart;
+    public void SelectZoneInput()
     {
-        world.TrySelectTile(tile);
+        if (Input.GetMouseButtonDown(0) && isDragging == false) 
+        {
+            dragStart = GetMouseTile();
+            isDragging = true;
+        }
+        if (Input.GetMouseButton(0) && isDragging) 
+        {
+            Vector2Int current = GetMouseTile();
+            world.SelectZone(dragStart, current);
+        }
+        if (Input.GetMouseButtonUp(0) && isDragging)
+        {
+            Vector2Int dragEnd = GetMouseTile();
+
+            world.SelectConditionedZone(dragStart, dragEnd);
+            isDragging = false;
+        }
     }
+    Vector2Int GetMouseTile()
+    {
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        worldPos.z = 0;
+        return  renderWorld.WorldToMap(worldPos);
+    }
+
     void HandleObjectClick(TileObjectView obj)
     {
         if (currentObj == obj)
@@ -75,9 +99,7 @@ public class GameState
             cam.StopFollow();
             return;
         }
-     
-        world.CancelSelection(); // Clear Highlight on Tile
-
+        world.ClearZoneSelection();
         DeselectCurrentObj();
     }
 

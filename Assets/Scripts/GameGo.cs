@@ -24,7 +24,7 @@ public class GameGo: MonoBehaviour
 
     private void Start()
     {
-        world = new World(objDatabase, itemsDatabase, gameTime); //dlaczego nie moglem dac database w Initialise? spytac gpt stowrzyony tylko pod to przekazanie konstruktor.. aha.. bo te dane. sa wstrzykiwane chyba. reszta genralnie istnieje. To ne jest mono, wiec rzeba podac tak
+        world = new World(objDatabase, itemsDatabase, renderWorld, gameTime); //dlaczego nie moglem dac database w Initialise? spytac gpt stowrzyony tylko pod to przekazanie konstruktor.. aha.. bo te dane. sa wstrzykiwane chyba. reszta genralnie istnieje. To ne jest mono, wiec rzeba podac tak
         world.Initialise(renderWorld);
         renderWorld.Initialise(world);
         gameState = new GameState(world, renderWorld, cam, inputController, inventoryUI, contextActionbar);

@@ -10,14 +10,13 @@ public class TilePrefab: MonoBehaviour
     //SPRITES
     public SpriteRenderer terrain;
     public SpriteRenderer elevation;
-    public SpriteRenderer highlight;
-
     public SpriteRenderer path;
+    public SpriteRenderer selection;
 
     public GameObject tileObjectPrefab;
     List<TileObjectView> objects = new(); //Instance
 
-    private Vector3 centerToBottLeft = new(-0.5f, 0f, -0.5f);
+    //private Vector3 centerToBottLeft = new(-0.5f, 0f, -0.5f);
 
     //Referencja do danych świata
     private TileData tileData;
@@ -36,6 +35,15 @@ public class TilePrefab: MonoBehaviour
     {
         elevation.sprite = _elevation;
     }
+    public void ShowPath(bool visible)
+    {
+        path.enabled = visible;
+    }
+    public void SetSelected(bool active)
+    {
+        selection.enabled = active;
+    }
+    //Objects
     public void SetObject(TileObject objData, Sprite _object, float tileSize)
     {
         GameObject obj = Instantiate(tileObjectPrefab, this.transform);
@@ -51,17 +59,5 @@ public class TilePrefab: MonoBehaviour
                 o.SetDepleted();
         }
     }
-    public void ShowPath(bool visible)
-    {
-        path.enabled = visible;
-    }
-
-    public void OnMouseDown()
-    {
-        if (EventSystem.current.IsPointerOverGameObject())
-            return;
-        EventBus.TileClicked(tileData);
-    }
     
-
 }

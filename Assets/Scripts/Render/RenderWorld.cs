@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System.Collections;
 using UnityEngine;
 
 
@@ -14,6 +14,7 @@ public class RenderWorld : MonoBehaviour
     public TileAppearance config;
     public TileObjectAppearance objectAppearance;
     public readonly float tileSize = 1.0f; //basicaly it's the scale 
+    Coroutine zoneAnim;
 
     //Creatures
     public GameObject DeerPrefab;
@@ -23,12 +24,12 @@ public class RenderWorld : MonoBehaviour
     public GameObject protagonistPrefab; //Link do prefaba Protagonisty - podpiąć w Unity
     public GameObject protagonist; //Instance
     public AnimateActions animator;
-    
+
     private Vector2 mapToCenter;
 
     //INITIALISE
     public void Initialise(World world)
-    {        
+    {
         this.world = world;
         mapToCenter = world.halfWorldSize; // used by MapToWorld()
         TilePrefabs = new TilePrefab[world.WorldSize.x, world.WorldSize.y];
@@ -94,17 +95,32 @@ public class RenderWorld : MonoBehaviour
     {
         return TilePrefabs[coords.x, coords.y];
     }
-    private void TileHighlight(TileData previousTile, TileData currentTile)
+    public void SelectTiles(List<Vector2Int> tileCoords, bool active)
     {
-        if (previousTile != null)
+        foreach (Vector2Int tileCoord in tileCoords)
         {
-            TilePrefabs[previousTile.mapCoords.x, previousTile.mapCoords.y].highlight.enabled = false;
+            TilePrefab current = GetTileP(tileCoord);
+            current.SetSelected(active);
         }
-        if (currentTile != null)
-            TilePrefabs[currentTile.mapCoords.x, currentTile.mapCoords.y].highlight.enabled = true;
-        else return;
     }
-    
+    public void AnimateZoneSelection(List<Vector2Int> tiles, float delay = 0.015f)
+    {
+        if (zoneAnim != null)
+            StopCoroutine(zoneAnim);
+
+        zoneAnim = StartCoroutine(AnimateZone(tiles, delay));
+    }
+    IEnumerator AnimateZone(List<Vector2Int> tiles, float delay)
+    {
+        foreach(Vector2Int tileCoords in tiles)
+        {
+            TilePrefab tile = GetTileP(tileCoords);
+            tile.SetSelected(true);
+            yield return new WaitForSeconds(delay);
+        }
+        world.tilesSelected = tiles;
+    }
+
     //Objects
     public void SpawnResourcePile(TileObject obj)
     {
@@ -178,16 +194,6 @@ public class RenderWorld : MonoBehaviour
 
         CreatureMovement movement = deer.GetComponent<CreatureMovement>();
         movement.Initialise(data, this);
-    }
-    
-    //EVENTS
-    private void OnEnable()
-    {
-        EventBus.OnTileHighlight += TileHighlight;
-    }
-    private void OnDisable()
-    {
-        EventBus.OnTileHighlight -= TileHighlight;
     }
 
 }

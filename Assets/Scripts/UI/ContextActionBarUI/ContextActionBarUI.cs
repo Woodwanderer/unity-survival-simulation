@@ -20,7 +20,7 @@ public class ContextActionBarUI : MonoBehaviour
     }
     private void Update()
     {
-        if (characterActions.currentAction is HarvestAction) 
+        if (characterActions.currentAction is HarvestAction || characterActions.currentAction is CollectItem) 
             Refresh();
     }
     public void Show(TileObject obj)

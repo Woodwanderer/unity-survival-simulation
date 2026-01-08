@@ -7,6 +7,4 @@ public interface IAction
     void Tick(float dt);
     void Cancel();
     bool IsFinished {  get; }
-
-
 }
