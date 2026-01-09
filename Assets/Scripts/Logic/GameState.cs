@@ -1,27 +1,26 @@
 ﻿using UnityEngine;
-using UnityEngine.InputSystem.XR.Haptics;
-
 public class GameState
 {
-    InputController inputContr;
+    public InputController input;
     World world;
     RenderWorld renderWorld;
     CameraMovement cam;
     //UI
     InventoryUI inventoryUI;
     ContextActionBarUI contextActionBarUI;
-    BuildBarUI buildBarUI;
+    public BuildBarUI buildBarUI;
     ActionBarUI actionBarUI;
     TaskBarUI taskBarUI;
 
     TileObjectView currentObj;
-    
+
+    public IGameTool currentTool;
     public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inventoryUI, ContextActionBarUI contextActionBarUI, BuildBarUI buildBarUI, ActionBarUI actionBarUI, TaskBarUI taskBarUI)
     {
         this.world = world;
         this.renderWorld = render;
         this.cam = cam;
-        this.inputContr = input_in;
+        this.input = input_in;
         this.inventoryUI = inventoryUI;
         this.contextActionBarUI = contextActionBarUI;
         this.buildBarUI = buildBarUI;
@@ -34,11 +33,22 @@ public class GameState
         inventoryUI.Init(world.protagonistData.actions.inventory);
         EventBus.OnObjectClick += HandleObjectClick;
     }
+    public void SetTool(IGameTool newTool)
+    {
+        currentTool?.Exit();
+        currentTool = newTool;
+        currentTool?.Enter();
+    }
     public void Tick(float deltaTime)
     {   
+        currentTool?.Tick(deltaTime);
+
         //CANCEL
-        if(inputContr.ConsumeCancel()) 
+        if(input.ConsumeCancel()) 
             HandleCancel();
+
+        if(taskBarUI)
+            //button is pressed?
 
         SelectZoneInput();
 
@@ -101,6 +111,7 @@ public class GameState
     }
     void HandleCancel()
     {
+        SetTool(null);
         if (cam.cameraFollow)
         {
             cam.StopFollow();

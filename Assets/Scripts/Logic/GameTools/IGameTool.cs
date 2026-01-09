@@ -1,6 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class IGameTool
+public interface IGameTool
 {
-    
+    void Enter();
+    void Exit();
+    void Tick(float dt);
 }
