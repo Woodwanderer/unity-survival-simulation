@@ -7,7 +7,7 @@ public class TileData
     public TerrainType Terrain {  get; private set; }
     public ElevationType Elevation { get; private set; }
     public List<TileObject> objects { get; private set; } = new();
-    Stockpile stockpile = null;
+    public Stockpile stockpile = null;
     public bool isWalkable => Terrain != TerrainType.Water; // hard restriction on WATER tiles only for now
     public bool HasBuilding => stockpile != null;
 

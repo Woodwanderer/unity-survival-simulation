@@ -15,7 +15,7 @@ public class CharacterActions
     {
         currentAction?.Cancel(); //cancel previous
         currentAction = newAction;
-        currentAction.Start();
+        currentAction?.Start();
     }
     public CharacterActions(float hourDuration, World world, ProtagonistData protagonistData, RenderWorld renderWorld)
     {
@@ -50,7 +50,7 @@ public class CharacterActions
             if (actionQueue.Count > 0)
                 SetAction(actionQueue.Dequeue());
             else
-                currentAction = null;
+                SetAction(null);
         }
     }
     //EAT

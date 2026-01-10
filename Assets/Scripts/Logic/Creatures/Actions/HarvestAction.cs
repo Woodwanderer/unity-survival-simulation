@@ -9,7 +9,7 @@ public class HarvestAction : IAction
     public bool IsFinished => progress >= 1f;
     
     public TileObject targetObj;
-    TileObject stockpile = null;
+    TileObject resPile = null;
     ItemDefinition targetItem;
     World world;
     RenderWorld render;
@@ -57,10 +57,10 @@ public class HarvestAction : IAction
         {
             unitProgress -= 1;
             targetObj.resources.Remove(targetItem, 1);
-            int overflow = stockpile.pile.Add(1);
+            int overflow = resPile.pile.Add(1);
             if (overflow > 0) 
             {
-                stockpile = CreateNewPile(overflow);
+                resPile = CreateNewPile(overflow);
             }
         }
     }
@@ -68,9 +68,9 @@ public class HarvestAction : IAction
     TileObject CreateNewPile(int amount = 0)
     {
         TileData tile = world.GetTileData(targetObj.tileCoords);
-        stockpile = world.CreateResourcePile(tile, targetItem, amount);
-        render.SpawnResourcePile(stockpile);
-        return stockpile;
+        resPile = world.CreateResourcePile(tile, targetItem, amount);
+        render.SpawnResourcePile(resPile);
+        return resPile;
     }
     public void Cancel()
     {

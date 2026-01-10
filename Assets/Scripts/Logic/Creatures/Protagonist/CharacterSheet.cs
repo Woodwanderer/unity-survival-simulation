@@ -15,6 +15,7 @@ public class CharacterSheet
     //stats
     public float eatSpeed;
     public float harvestSpeed;
+    public float buildSpeed;
     public float speed { get; private set; } = 2.0f; //walking
 
     public CharacterSheet(float hourDuration, CharacterActions actions)
@@ -29,6 +30,7 @@ public class CharacterSheet
         hungerRate = hourDuration * 24;
         eatSpeed = 30 / hourDuration;
         harvestSpeed = 100 / hourDuration;
+        buildSpeed = 1; //basicaly it's set by building type.. only modifiers applied here from character
     }
 
     public void Tick(float deltaTime)

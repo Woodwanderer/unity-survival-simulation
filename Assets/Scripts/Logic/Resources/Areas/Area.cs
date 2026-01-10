@@ -6,7 +6,7 @@ public class Area
     public HashSet<Vector2Int> tiles { get; }
     public int count;
     public Vector2Int center;
-    public Area(IEnumerable<Vector2Int> tiles) //result ()
+    public Area(IEnumerable<Vector2Int> tiles)
     {
         this.tiles = new HashSet<Vector2Int>(tiles);
         count = this.tiles.Count;

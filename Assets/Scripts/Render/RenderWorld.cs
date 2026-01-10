@@ -93,13 +93,17 @@ public class RenderWorld : MonoBehaviour
     {
         return TilePrefabs[coords.x, coords.y];
     }
-    public void SelectTiles(List<Vector2Int> tiles, bool active)
+    public void SelectTiles(IEnumerable<Vector2Int> tiles, bool active)
     {
         foreach (Vector2Int tileCoord in tiles)
         {
             TilePrefab current = GetTileP(tileCoord);
             current.SetSelected(active);
         }
+    }
+    public void SelectAreaBuilding(Stockpile stockpile, bool active)
+    {
+        SelectTiles(stockpile.area.tiles, active);
     }
     public void AnimateZoneSelection(List<Vector2Int> tiles, float delay = 0.015f)
     {

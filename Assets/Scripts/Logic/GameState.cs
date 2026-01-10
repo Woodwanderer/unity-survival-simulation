@@ -13,6 +13,7 @@ public class GameState
     ModeBarUI taskBarUI;
 
     TileObjectView currentObj;
+    Stockpile currentBuilding;
 
     public IGameMode currentMode;
     public IGameTool currentTool;
@@ -50,6 +51,8 @@ public class GameState
     {   
         currentTool?.Tick(deltaTime);
 
+        SelectAreaBuilding();
+
         //CANCEL
         if(input.ConsumeCancel()) 
             HandleCancel();
@@ -58,7 +61,7 @@ public class GameState
     //Select Tiles
     bool isDragging = false;
     Vector2Int dragStart;
-    public void SelectZoneInput()
+    public void SelectZoneDrag()
     {
         if (Input.GetMouseButtonDown(0) && isDragging == false) 
         {
@@ -85,6 +88,30 @@ public class GameState
         return  renderWorld.WorldToMap(worldPos);
     }
 
+    //Buildings
+    void SelectAreaBuilding()
+    {
+        if (Input.GetMouseButtonDown(0)) 
+        {
+            Vector2Int tileCoords = GetMouseTile();
+            TileData tile = world.GetTileData(tileCoords);
+            if (tile.HasBuilding)
+            {
+                DeselectCurrentBuilding();
+                currentBuilding = tile.stockpile;
+                renderWorld.SelectAreaBuilding(currentBuilding, true);
+            }
+        }
+    }
+    void DeselectCurrentBuilding()
+    {
+        if (currentBuilding == null)
+            return;
+        renderWorld.SelectAreaBuilding(currentBuilding, false);
+        currentBuilding = null;
+    }
+
+    //Objects
     void HandleObjectClick(TileObjectView obj)
     {
         if (currentObj == obj)

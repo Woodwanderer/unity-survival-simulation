@@ -23,11 +23,12 @@ public class BuildStockpileTool : IGameTool
         if (gameState.input.ConsumeConfirm()) 
         {
             gameState.world.BuildStockpile();
+            gameState.SetTool(null);
         }
     }
     public void Tick(float dt)
     {
-        gameState.SelectZoneInput();
+        gameState.SelectZoneDrag();
         OnConfirm();
         
     }
