@@ -1,8 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using System.Collections.Generic;
-
-
 public class World
 {
     //Variables
@@ -17,8 +15,9 @@ public class World
 
     //Tiles
     private TileData[,] tileData;
-    public Area area;
     public List<Vector2Int> tilesSelected = new();
+    public Area area;
+    public List<Stockpile> stockpiles = new();
 
     //Tile Objects
     public TileObjectsDatabase objDatabase;
@@ -112,8 +111,6 @@ public class World
 
                 if (terrain != TerrainType.Water) 
                     PopulateTileObjects(tileData[x, y]);
-                else
-                    tileData[x, y].isWalkable = false;
             }
         }
     }
@@ -155,7 +152,6 @@ public class World
     }
 
     //Tile SELECTION
-
     public List<Vector2Int> GetTileCoordsInRect(Vector2Int a,  Vector2Int b)
     {
         TileRect rect = new(a, b);
@@ -181,15 +177,35 @@ public class World
     public void SelectConnectedZone(Vector2Int a, Vector2Int b)
     {
         List<Vector2Int> selection = pathfinder.FloodFill(a, b);
-        
+        if (selection.Count == 0)
+        {
+            EventBus.Log("Can't build here.");
+            return;
+        }
+
         render.SelectTiles(tilesSelected, false);
         tilesSelected = selection;
         render.AnimateZoneSelection(selection);
+        area = new(selection);
+        EventBus.Log($"Area of {area.count} tiles selected. Press ENTER to confirm building here.");
     }
     public void ClearZoneSelection()
     {
         render.SelectTiles(tilesSelected, false);
         tilesSelected.Clear();
+        area = null;
+    }
+    //Buidling
+    public void BuildStockpile()
+    {
+        if (area == null) 
+            return;
+
+        Stockpile stockpile = new(area, this);
+        stockpiles.Add(stockpile);
+        render.SpawnStockpile(stockpile);
+        EventBus.Log("Stockpile established.");
+        area = null;
     }
 }
 

@@ -21,14 +21,14 @@ public class GameGo: MonoBehaviour
     public CharacterSheetUI charSheetUI;
     public ContextActionBarUI contextActionbar;
     public BuildBarUI buildBarUI;
-    public TaskBarUI taskBarUI;
+    public ModeBarUI modeBarUI;
 
     private void Start()
     {
         world = new World(objDatabase, itemsDatabase, renderWorld, gameTime); //dlaczego nie moglem dac database w Initialise? spytac gpt stowrzyony tylko pod to przekazanie konstruktor.. aha.. bo te dane. sa wstrzykiwane chyba. reszta genralnie istnieje. To ne jest mono, wiec rzeba podac tak
         world.Initialise(renderWorld);
         renderWorld.Initialise(world);
-        gameState = new GameState(world, renderWorld, cam, inputController, inventoryUI, contextActionbar, buildBarUI, actionBarUI, taskBarUI);
+        gameState = new GameState(world, renderWorld, cam, inputController, inventoryUI, contextActionbar, buildBarUI, actionBarUI, modeBarUI);
         gameState.Initialise();
 
         //UI
@@ -37,7 +37,7 @@ public class GameGo: MonoBehaviour
         charSheetUI.Init(world.protagonistData.actions.stats);
         contextActionbar.Init(world.protagonistData.actions);
         buildBarUI.Init(gameState);
-        taskBarUI.Init(gameState);
+        modeBarUI.Init(gameState);
     }
     private void Update()
     {

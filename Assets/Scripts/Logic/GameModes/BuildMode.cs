@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-public class BuildModeTool : IGameTool
+public class BuildMode : IGameMode
 {
     BuildBarUI buildBarUI;
-    public BuildModeTool(BuildBarUI buildBarUI)
-    {        
+    public BuildMode(BuildBarUI buildBarUI)
+    {
         this.buildBarUI = buildBarUI;
     }
     public void Enter()
@@ -14,9 +14,5 @@ public class BuildModeTool : IGameTool
     public void Exit()
     {
         buildBarUI.Show(false);
-    }
-    public void Tick(float dt)
-    {
-
     }
 }

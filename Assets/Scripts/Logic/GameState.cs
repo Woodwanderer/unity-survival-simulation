@@ -2,20 +2,21 @@
 public class GameState
 {
     public InputController input;
-    World world;
-    RenderWorld renderWorld;
+    public World world;
+    public RenderWorld renderWorld;
     CameraMovement cam;
     //UI
     InventoryUI inventoryUI;
     ContextActionBarUI contextActionBarUI;
     public BuildBarUI buildBarUI;
     ActionBarUI actionBarUI;
-    TaskBarUI taskBarUI;
+    ModeBarUI taskBarUI;
 
     TileObjectView currentObj;
 
+    public IGameMode currentMode;
     public IGameTool currentTool;
-    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inventoryUI, ContextActionBarUI contextActionBarUI, BuildBarUI buildBarUI, ActionBarUI actionBarUI, TaskBarUI taskBarUI)
+    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inventoryUI, ContextActionBarUI contextActionBarUI, BuildBarUI buildBarUI, ActionBarUI actionBarUI, ModeBarUI taskBarUI)
     {
         this.world = world;
         this.renderWorld = render;
@@ -33,6 +34,12 @@ public class GameState
         inventoryUI.Init(world.protagonistData.actions.inventory);
         EventBus.OnObjectClick += HandleObjectClick;
     }
+    public void SetMode(IGameMode newMode)
+    {
+        currentMode?.Exit();
+        currentMode = newMode;
+        currentMode?.Enter();
+    }
     public void SetTool(IGameTool newTool)
     {
         currentTool?.Exit();
@@ -46,11 +53,6 @@ public class GameState
         //CANCEL
         if(input.ConsumeCancel()) 
             HandleCancel();
-
-        if(taskBarUI)
-            //button is pressed?
-
-        SelectZoneInput();
 
     }
     //Select Tiles
@@ -112,6 +114,7 @@ public class GameState
     void HandleCancel()
     {
         SetTool(null);
+        SetMode(null);
         if (cam.cameraFollow)
         {
             cam.StopFollow();

@@ -12,11 +12,10 @@ public class TilePrefab: MonoBehaviour
     public SpriteRenderer elevation;
     public SpriteRenderer path;
     public SpriteRenderer selection;
+    public SpriteRenderer building;
 
     public GameObject tileObjectPrefab;
-    List<TileObjectView> objects = new(); //Instance
-
-    //private Vector3 centerToBottLeft = new(-0.5f, 0f, -0.5f);
+    List<TileObjectView> objects = new();
 
     //Referencja do danych świata
     private TileData tileData;
@@ -38,6 +37,10 @@ public class TilePrefab: MonoBehaviour
     public void ShowPath(bool visible)
     {
         path.enabled = visible;
+    }
+    public void ShowBuilding(bool visible)
+    {
+        building.enabled = visible;
     }
     public void SetSelected(bool active)
     {

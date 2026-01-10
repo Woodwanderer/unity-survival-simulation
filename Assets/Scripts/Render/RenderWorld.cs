@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-
-
 public class RenderWorld : MonoBehaviour
 {
     //VARIABLES
@@ -95,9 +93,9 @@ public class RenderWorld : MonoBehaviour
     {
         return TilePrefabs[coords.x, coords.y];
     }
-    public void SelectTiles(List<Vector2Int> tileCoords, bool active)
+    public void SelectTiles(List<Vector2Int> tiles, bool active)
     {
-        foreach (Vector2Int tileCoord in tileCoords)
+        foreach (Vector2Int tileCoord in tiles)
         {
             TilePrefab current = GetTileP(tileCoord);
             current.SetSelected(active);
@@ -118,7 +116,22 @@ public class RenderWorld : MonoBehaviour
             tile.SetSelected(true);
             yield return new WaitForSeconds(delay);
         }
-        world.tilesSelected = tiles;
+    }
+
+    //Building
+    public void SpawnStockpile(Stockpile stockpile)
+    {
+        if (stockpile == null)
+        {
+            EventBus.Log("No proper design.");
+            return;
+        }
+        foreach (var tile in stockpile.area.tiles)
+        {
+            TilePrefab tileP = GetTileP(tile);
+            tileP.ShowBuilding(true);
+        }
+
     }
 
     //Objects

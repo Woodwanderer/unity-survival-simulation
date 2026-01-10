@@ -50,6 +50,8 @@ public class Pathfinder //BFS -> Deijkstra later ;)
             return result;
         if (!world.GetTileData(start).isWalkable)
             return result;
+        if (world.GetTileData(start).HasBuilding) 
+            return result;
 
         frontier.Enqueue(start);
         visited.Add(start);
@@ -65,6 +67,9 @@ public class Pathfinder //BFS -> Deijkstra later ;)
                     continue;
 
                 if (!rect.Contains(next)) 
+                    continue;
+
+                if (world.GetTileData(next).HasBuilding) 
                     continue;
 
                 visited.Add(next);

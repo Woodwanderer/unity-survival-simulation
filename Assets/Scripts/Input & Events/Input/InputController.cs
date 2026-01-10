@@ -21,6 +21,7 @@ public class InputController: MonoBehaviour
     KeyCode cameraFollowProtagonist = KeyCode.F1;
 
     bool cancelPressed;
+    bool confirmPressed;
     
     public void Tick(float deltaTime)
     {
@@ -33,6 +34,13 @@ public class InputController: MonoBehaviour
 
             EventBus.TileCommanded(mapPos);
         }
+
+        //Confirm
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            confirmPressed = true;
+        }
+
         // Cancel
         if (Input.GetKeyDown(KeyCode.Escape)) 
         {
@@ -53,6 +61,13 @@ public class InputController: MonoBehaviour
         //CAMERA
         CameraPointAtProtagonist(); // C
         CameraFollowPlayer();       // F1
+    }
+    public bool ConsumeConfirm()
+    {
+        if (!confirmPressed)
+            return false;
+        confirmPressed = false;
+        return true;
     }
     public bool ConsumeCancel()
     {
