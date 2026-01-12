@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class Pathfinder //BFS -> Deijkstra later ;)
 {
@@ -77,6 +78,40 @@ public class Pathfinder //BFS -> Deijkstra later ;)
             }
         }
         return result;
+    }
+    public TileObject FindObject(Vector2Int start, ItemDefinition item)
+    {
+        Queue<Vector2Int> frontier = new();
+        HashSet<Vector2Int> visited = new();
+
+        frontier.Enqueue(start);
+        visited.Add(start);
+
+        TileObject obj = world.GetTileData(start).Contains(item);
+
+        if (obj != null) 
+            return obj;
+
+        while (frontier.Count > 0)
+        {
+            Vector2Int current = frontier.Dequeue();
+
+            foreach (Vector2Int next in GetNeighbours(current))
+            {
+                if (visited.Contains(next))
+                    continue;
+
+                visited.Add(next);
+
+                TileObject found = world.GetTileData(next).Contains(item);
+                if (found != null)
+                {
+                    return found;
+                }
+                frontier.Enqueue(next);
+            }
+        }
+        return null;
     }
     public List<Vector2Int> FindPath(Vector2Int start, Vector2Int target)
     {

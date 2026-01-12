@@ -6,31 +6,27 @@ public class CollectItem : IAction
     public float unitProgress = 0f;
     int targetAmount;
     float speed;
-    public bool IsFinished => progress >= 1f;
+    public bool IsFinished => progress >= 1f || WasCanceled;
+    public bool WasCanceled { get; private set; }
 
     public TileObject targetObj;
     VirtualResources inventory = null;
     ItemDefinition targetItem;
-    RenderWorld render;
+    CharacterSheet stats;
 
-    public CollectItem(TileObject targetObj, ItemDefinition targetItem, float speed, VirtualResources inv)
+    public CollectItem(TileObject targetObj, ItemDefinition targetItem, CharacterSheet stats)
     {
-        inventory = inv;
+        this.stats = stats;
+        inventory = stats.inventory;
         this.targetObj = targetObj;
         this.targetItem = targetItem;
         
         //Set stats
-        this.speed = speed;
+        this.speed = stats.harvestSpeed;
     }
 
     public void Start()
-    {
-        if (targetObj.pile == null)
-        {
-            EventBus.Log("I can't pick that.");
-            return;
-        }
-
+    {        
         unitProgress = 0f;
         progress = 0f;
         targetAmount = targetObj.pile.amount;
@@ -44,6 +40,13 @@ public class CollectItem : IAction
 
     public void Tick(float dt)
     {
+        if (inventory.CalculateWeight(targetItem) >= stats.carryWeight)
+        {
+            EventBus.Log("Can't carry any more.");
+            Cancel();
+            return;
+        }
+        
         unitProgress += dt * speed;
         progress += dt * speed / targetAmount;
 
@@ -57,6 +60,6 @@ public class CollectItem : IAction
 
     public void Cancel()
     {
-
+        WasCanceled = true;
     }
 }

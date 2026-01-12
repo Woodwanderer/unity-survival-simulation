@@ -10,12 +10,6 @@ public class CharacterSheetUI : MonoBehaviour
     {
        dataState = stats;
     }
-
-    private void Awake()
-    {
-        //gameObject.SetActive(false);        
-
-    }
     private void Update()
     {
         conditionBar.fillAmount = dataState.Hunger;

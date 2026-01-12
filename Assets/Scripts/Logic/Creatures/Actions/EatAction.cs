@@ -3,14 +3,14 @@
 public class EatAction : IAction
 {
     VirtualResources resources; //Eating from
-    ItemDefinition foodType;          //Eating that
+    ItemDefinition foodType;    //Eating that
     float nutritionValue;
-    public float nutrition;
+    public float nutrition;     //-hunger: used by CharacterSheet
     CharacterSheet stats;
 
     public bool IsFinished => progress >= 1;
 
-    public float progress = 0f;
+    public float progress = 0f; //used by UI
     float unitProgress = 0f;
     float speed;
     int mealAmount;
@@ -23,16 +23,12 @@ public class EatAction : IAction
     }
     public void Start()
     {
-        //foodRaw stats -> get stats later from consumed ItemType
         nutritionValue = 0.25f; //percent of full HUNGER bar -> how much of a bar it will fill
-        mealAmount = 5; // minimum amount per meal -> gives: nutrition value
+        mealAmount = 5;         //minimum amount per meal -> gives: nutrition value
         speed = stats.eatSpeed;
     }
     public void Tick(float dt)
     {
-        //consume full portion -> in case of canceling action -> food is wasted (gone) -> END VERSIOn FAIR
-        //for now nice Ticking ;p ONE by ONE
-
         unitProgress += dt * speed;
         progress += dt * speed / mealAmount;
 
@@ -45,7 +41,6 @@ public class EatAction : IAction
     }
     public void Cancel()
     {
-
+        progress = 1f;
     }
-
 }

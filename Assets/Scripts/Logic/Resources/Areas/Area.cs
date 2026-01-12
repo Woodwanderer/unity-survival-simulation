@@ -12,6 +12,10 @@ public class Area
         count = this.tiles.Count;
         CalculateCenter();
     }
+    public bool Contains(Vector2Int coords)
+    {
+        return tiles.Contains(coords); 
+    }
     public void CalculateCenter()
     {
         Vector2 sum = new();

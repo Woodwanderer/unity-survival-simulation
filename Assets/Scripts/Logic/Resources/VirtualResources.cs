@@ -54,5 +54,18 @@ public class VirtualResources
 
         resources.Clear();
     }
+    public float CalculateWeight(ItemDefinition additionalItem = null)
+    {
+        float weight = 0;
+        foreach (var (item, amount) in resources) 
+        {
+            weight += item.weight * amount;
+        }
+
+        if (additionalItem != null)
+            weight += additionalItem.weight;
+
+        return weight;
+    }
 
 }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 public class GameState
 {
     public InputController input;
@@ -8,6 +9,7 @@ public class GameState
     //UI
     InventoryUI inventoryUI;
     ContextActionBarUI contextActionBarUI;
+    BuildingActionBarUI buildingActionBarUI;
     public BuildBarUI buildBarUI;
     ActionBarUI actionBarUI;
     ModeBarUI taskBarUI;
@@ -17,7 +19,7 @@ public class GameState
 
     public IGameMode currentMode;
     public IGameTool currentTool;
-    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inventoryUI, ContextActionBarUI contextActionBarUI, BuildBarUI buildBarUI, ActionBarUI actionBarUI, ModeBarUI taskBarUI)
+    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inventoryUI, ContextActionBarUI contextActionBarUI, BuildBarUI buildBarUI, ActionBarUI actionBarUI, ModeBarUI taskBarUI, BuildingActionBarUI buildingActionBarUI)
     {
         this.world = world;
         this.renderWorld = render;
@@ -25,6 +27,7 @@ public class GameState
         this.input = input_in;
         this.inventoryUI = inventoryUI;
         this.contextActionBarUI = contextActionBarUI;
+        this.buildingActionBarUI = buildingActionBarUI;
         this.buildBarUI = buildBarUI;
         this.actionBarUI = actionBarUI;
         this.taskBarUI = taskBarUI;
@@ -33,7 +36,7 @@ public class GameState
     public void Initialise()
     {
         inventoryUI.Init(world.protagonistData.actions.inventory);
-        EventBus.OnObjectClick += HandleObjectClick;
+        EventBus.OnObjectClick += SelectObj;
     }
     public void SetMode(IGameMode newMode)
     {
@@ -56,7 +59,6 @@ public class GameState
         //CANCEL
         if(input.ConsumeCancel()) 
             HandleCancel();
-
     }
     //Select Tiles
     bool isDragging = false;
@@ -91,16 +93,21 @@ public class GameState
     //Buildings
     void SelectAreaBuilding()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
         if (Input.GetMouseButtonDown(0)) 
         {
+            DeselectCurrentBuilding();
             Vector2Int tileCoords = GetMouseTile();
             TileData tile = world.GetTileData(tileCoords);
-            if (tile.HasBuilding)
-            {
-                DeselectCurrentBuilding();
-                currentBuilding = tile.stockpile;
-                renderWorld.SelectAreaBuilding(currentBuilding, true);
-            }
+
+            if (!tile.HasBuilding)
+                return;
+
+            currentBuilding = tile.stockpile;
+            renderWorld.SelectAreaBuilding(currentBuilding, true);
+            buildingActionBarUI.Show(tile.stockpile, world.protagonistData.actions);
         }
     }
     void DeselectCurrentBuilding()
@@ -108,20 +115,11 @@ public class GameState
         if (currentBuilding == null)
             return;
         renderWorld.SelectAreaBuilding(currentBuilding, false);
+        buildingActionBarUI.Hide();
         currentBuilding = null;
     }
 
     //Objects
-    void HandleObjectClick(TileObjectView obj)
-    {
-        if (currentObj == obj)
-        {
-            DeselectCurrentObj();
-            return;
-        }
-
-        SelectObj(obj);
-    }
     void SelectObj(TileObjectView obj)
     {
         DeselectCurrentObj();
@@ -149,6 +147,7 @@ public class GameState
         }
         world.ClearZoneSelection();
         DeselectCurrentObj();
+        DeselectCurrentBuilding();
     }
 
 }

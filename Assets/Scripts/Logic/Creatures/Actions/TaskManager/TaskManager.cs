@@ -8,7 +8,9 @@ public class TaskManager
     Queue<HarvestAction> harvestTasks;
     Queue<EatAction> eatTasks;
 
-
-
     IAction currentTask;
+
+
+    
+
 }

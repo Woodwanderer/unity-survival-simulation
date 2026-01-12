@@ -41,15 +41,11 @@ public class HarvestAction : IAction
             EventBus.Log("target is depleted.");
             Cancel();
         }
-
-        CreateNewPile(0);
+        resPile = EstablishPile(0);
     }
 
     public void Tick(float dt)
     {
-        if (!targetObj.resources.Has(targetItem))
-            Cancel();
-        
         unitProgress += dt * speed;
         progress += dt * speed / targetAmount;
 
@@ -60,21 +56,29 @@ public class HarvestAction : IAction
             int overflow = resPile.pile.Add(1);
             if (overflow > 0) 
             {
-                resPile = CreateNewPile(overflow);
+                resPile = EstablishPile(overflow);
             }
         }
     }
 
-    TileObject CreateNewPile(int amount = 0)
+    TileObject EstablishPile(int amount = 0)
     {
         TileData tile = world.GetTileData(targetObj.tileCoords);
-        resPile = world.CreateResourcePile(tile, targetItem, amount);
-        render.SpawnResourcePile(resPile);
+        TileObject pileObj = tile.ContainsPileOf(targetItem);
+        if (pileObj != null)
+        {
+            pileObj.pile.Add(amount);
+            resPile = pileObj;
+        }
+        else
+        {
+            resPile = world.CreateResourcePile(tile, targetItem, amount);
+            render.SpawnResourcePile(resPile);
+        }
         return resPile;
     }
     public void Cancel()
     {
-        progress = 1f;
-        return;
+      
     }
 }

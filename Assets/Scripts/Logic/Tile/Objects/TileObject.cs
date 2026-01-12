@@ -25,6 +25,13 @@ public class TileObject
         
         return resources.All();
     }
+    public bool Has(ItemDefinition item)
+    {
+        if (type == TileObjectsType.ResourcePile)
+            return pile.Has(item);
+
+        return resources.Has(item);
+    }
 
 }
 

@@ -4,15 +4,18 @@ using System.Collections.Generic;
 public class Stockpile
 {
     World world;
-    public string name;
+
     public Area area;
     public List<TileData> tiles = new();
+
+    VirtualResources resources;    
+
+    //construction
     public float workTime;
     public float constructionProgress = 0;
     public bool IsConstructed => constructionProgress == 1;
 
-    VirtualResources resources;
-    Vector2Int center;
+    
     public Stockpile(Area area, World world)
     {
         this.area = area;

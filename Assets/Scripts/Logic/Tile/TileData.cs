@@ -29,4 +29,24 @@ public class TileData
     {
         objects.Remove(tileObject);
     }
+    public TileObject Contains(ItemDefinition item)
+    {
+        foreach (TileObject obj in objects)
+        {
+            if (obj.Has(item)) 
+                return obj;
+        }
+        return null;
+    }
+    public TileObject ContainsPileOf(ItemDefinition item)
+    {
+        foreach (TileObject obj in objects)
+        {
+            if (obj.pile == null)
+                continue;
+            if (obj.Has(item))
+                return obj;
+        }
+        return null;
+    }
 }

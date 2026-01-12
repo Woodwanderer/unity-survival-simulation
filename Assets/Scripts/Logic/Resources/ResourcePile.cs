@@ -41,4 +41,8 @@ public class ResourcePile
             yield break; // Returns Enumerable.Empty<KeyValuePair..>
         yield return new KeyValuePair<ItemDefinition, int>(item, amount);
     }
+    public bool Has(ItemDefinition soughtItem)
+    {
+        return item == soughtItem && amount > 0;
+    }
 }

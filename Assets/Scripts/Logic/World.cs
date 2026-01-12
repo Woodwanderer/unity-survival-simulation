@@ -81,7 +81,6 @@ public class World
     }
     public void GenerateTiles()
     {
-
         tileData = new TileData[worldSizeX, worldSizeY];
 
         for (int x = 0; x < worldSizeX; x++)
@@ -142,6 +141,10 @@ public class World
 
         tile.AddObject(pile);
         return pile;
+    }
+    public TileObject FindNearestItem(ItemDefinition item, Vector2Int to)
+    {
+        return pathfinder.FindObject(to, item);
     }
     
     //EVENT Functions

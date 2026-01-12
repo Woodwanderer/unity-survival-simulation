@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
+using UnityEngine;
 public class CharacterActions
 {
     World world;
@@ -9,11 +8,11 @@ public class CharacterActions
     public CharacterSheet stats;
     public VirtualResources inventory = new();
 
-    Queue<IAction> actionQueue = new Queue<IAction>();
+    public Queue<IAction> actionQueue = new Queue<IAction>();
     public IAction currentAction;
     void SetAction(IAction newAction)
     {
-        currentAction?.Cancel(); //cancel previous
+        currentAction?.Cancel();
         currentAction = newAction;
         currentAction?.Start();
     }
@@ -32,7 +31,11 @@ public class CharacterActions
     }
     public void Tick(float dt)
     {
+        stats.Tick(dt);
         currentAction?.Tick(dt);
+
+        if (stats.Starvation) 
+            EnsureFood();
 
         if (currentAction != null && currentAction.IsFinished)
         {
@@ -53,7 +56,33 @@ public class CharacterActions
                 SetAction(null);
         }
     }
+    //Build
+    public void TryBuild(Stockpile stockpile)
+    {
+        IAction build = new BuildAction(stockpile, stats);
+        if (stockpile.area.Contains(world.GetProtagonistCoords()))
+            SetAction(build);
+        else
+        {
+            bool canMove = TryMoveToTile(stockpile.area.center);
+
+            if (canMove)
+                actionQueue.Enqueue(build);
+            else
+                EventBus.Log("I can't reach this destination.");
+        }
+    }
     //EAT
+    void EnsureFood()
+    {
+        if (currentAction != null && !(currentAction is BuildAction)) 
+            return;
+        if (TryEat())
+            return;
+
+        ItemDefinition foodRaw = world.itemsDatabase.Get("foodRaw");
+        FindNearestRes(foodRaw);
+    }
     public bool TryEat()
     {
         int ration = 5;
@@ -68,7 +97,6 @@ public class CharacterActions
 
         IAction eat = new EatAction(inventory, foodRaw, stats);
         SetAction(eat);
-
         return true;
     }
 
@@ -79,7 +107,7 @@ public class CharacterActions
 
         if (target.type == TileObjectsType.ResourcePile)
         {
-            transfer = new CollectItem(target, item, stats.harvestSpeed, inventory);
+            transfer = new CollectItem(target, item, stats);
         }
         else
         {
@@ -111,7 +139,15 @@ public class CharacterActions
         if (newPath == null || newPath.Count == 0)
             return false;
 
-        SetAction(new Movement(protagonistData, renderWorld, stats.speed, newPath));
+        SetAction(new Movement(protagonistData, renderWorld, stats.Speed, newPath));
         return true;
+    }
+    void FindNearestRes(ItemDefinition item)
+    {
+        TileObject obj = world.FindNearestItem(item, protagonistData.mapCoords);
+        if (obj != null)
+        {
+            TryHarvest(obj, item);
+        }
     }
 }

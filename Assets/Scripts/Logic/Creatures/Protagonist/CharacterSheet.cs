@@ -1,42 +1,55 @@
-﻿using JetBrains.Annotations;
-using System;
-using UnityEngine;
-
+﻿using UnityEngine;
 public class CharacterSheet
 {
     float hunger = 1f;
     public float Hunger => hunger;
     float hungerRate;
+    float starvationThreshold = 0.5f;
+    public bool Starvation => hunger < starvationThreshold;
+    
+    float hourDuration;
 
-    float hourDuration; //calculate stats    
-
-    //ACTIONS
-    public CharacterActions actions;
+    CharacterActions actions;
+    public VirtualResources inventory;
     //stats
+    public float carryWeight = 200;
+    //speed
     public float eatSpeed;
     public float harvestSpeed;
-    public float buildSpeed;
-    public float speed { get; private set; } = 2.0f; //walking
+    public float buildSpeed = 1f;
+    float speedDefault = 2.0f; //walking
+    float SpeedMod 
+    { 
+        get
+        {
+            if (hunger > starvationThreshold) 
+                return 1f;
+
+            float t = Mathf.InverseLerp(starvationThreshold, 0f, hunger);
+            t = t * t; //ease-in
+            return Mathf.Lerp(0.8f, 0.5f, t);
+        }
+    }
+    public float Speed => speedDefault * SpeedMod;
 
     public CharacterSheet(float hourDuration, CharacterActions actions)
     {
-        this.actions = actions;
         this.hourDuration = hourDuration;
+        this.actions = actions;
+        this.inventory = actions.inventory;
 
         InitStats();
     }
-    void InitStats()
+    public void InitStats()
     {
         hungerRate = hourDuration * 24;
         eatSpeed = 30 / hourDuration;
+
         harvestSpeed = 100 / hourDuration;
-        buildSpeed = 1; //basicaly it's set by building type.. only modifiers applied here from character
     }
 
     public void Tick(float deltaTime)
     {
-        actions.Tick(deltaTime);
-
         if (!(actions.currentAction is EatAction e))  
         {
             hunger -= deltaTime / hungerRate; // full bar / day
@@ -48,4 +61,5 @@ public class CharacterSheet
             hunger = Mathf.Clamp01(hunger);
         }
     }
+
 }
