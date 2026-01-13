@@ -39,8 +39,6 @@ public class TerrainEntry
     }
 }
 
-
-
 [System.Serializable]
 public class ElevationEntry
 {

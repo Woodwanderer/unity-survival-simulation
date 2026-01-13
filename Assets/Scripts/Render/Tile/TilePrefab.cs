@@ -12,6 +12,7 @@ public class TilePrefab: MonoBehaviour
     public SpriteRenderer elevation;
     public SpriteRenderer path;
     public SpriteRenderer selection;
+
     public SpriteRenderer building;
 
     public GameObject tileObjectPrefab;
@@ -38,8 +39,11 @@ public class TilePrefab: MonoBehaviour
     {
         path.enabled = visible;
     }
-    public void ShowBuilding(bool visible)
+    public void ShowBuilding(bool visible, Sprite build, bool setColour = false)
     {
+        building.sprite = build;
+        if (setColour)
+            building.color = Color.white;
         building.enabled = visible;
     }
     public void SetSelected(bool active)

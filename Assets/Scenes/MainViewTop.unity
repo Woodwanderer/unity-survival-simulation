@@ -4256,6 +4256,7 @@ MonoBehaviour:
   tilePrefab: {fileID: 6577966962343997752, guid: a8754831c6113b140bfa59acc08258c0, type: 3}
   config: {fileID: 11400000, guid: efe1c994bb098c84dbd27f2bdf40e1cd, type: 2}
   objectAppearance: {fileID: 11400000, guid: b81c043f122d91c449adb5a18918ce40, type: 2}
+  buildingAppearance: {fileID: 11400000, guid: eda3171e454301c43bb0e865a1c26082, type: 2}
   DeerPrefab: {fileID: 8731488479123900441, guid: 9cfc52c168d2dab4aa1616b62df8100c, type: 3}
   protagonistPrefab: {fileID: 6081129243382996873, guid: 4cf1669bf83d2dd4085e25d4426b0bb4, type: 3}
   protagonist: {fileID: 0}

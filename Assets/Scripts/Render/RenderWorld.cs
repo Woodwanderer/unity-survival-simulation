@@ -9,8 +9,12 @@ public class RenderWorld : MonoBehaviour
     //Tiles
     public GameObject tilePrefab;
     private TilePrefab[,] TilePrefabs;
+
     public TileAppearance config;
     public TileObjectAppearance objectAppearance;
+
+    public BuildingAppearance buildingAppearance;
+
     public readonly float tileSize = 1.0f; //basicaly it's the scale 
     Coroutine zoneAnim;
 
@@ -123,7 +127,7 @@ public class RenderWorld : MonoBehaviour
     }
 
     //Building
-    public void SpawnStockpile(Stockpile stockpile)
+    public void ShowStockpile(Stockpile stockpile)
     {
         if (stockpile == null)
         {
@@ -132,10 +136,28 @@ public class RenderWorld : MonoBehaviour
         }
         foreach (var tile in stockpile.area.tiles)
         {
-            TilePrefab tileP = GetTileP(tile);
-            tileP.ShowBuilding(true);
+            SetBuildingAppearance(stockpile);
         }
-
+    }
+    void SetBuildingAppearance(Stockpile stockpile)
+    {
+        foreach (var tile in stockpile.area.tiles)
+        {
+            TilePrefab tileP = GetTileP(tile);
+            Sprite build;
+            if (stockpile.IsConstructed)
+            {
+                build = buildingAppearance.Get(BuildingType.stockpile).building;
+                bool setColour = true;
+                tileP.ShowBuilding(true, build, setColour);
+            }
+            else
+            {
+                build = buildingAppearance.Get(BuildingType.stockpile).construction;
+                tileP.ShowBuilding(true, build);
+            }
+            
+        }
     }
 
     //Objects

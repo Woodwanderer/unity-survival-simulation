@@ -4,6 +4,7 @@ public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by r
 {
     public CharacterActions actions;
     public SpriteRenderer foodRaw;
+    public SpriteRenderer axe;
     [SerializeField] GameObject progressBarPrefab;
     GameObject progressBar;
     ActionProgressUI progressUI;
@@ -26,28 +27,49 @@ public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by r
     {
         foodRaw.enabled = active;
     }
+    void SetHarvestAnimation(bool active)
+    {
+        axe.enabled = active;
+    }
 
     private void Update()
     {
         if (!isInitialised)
             return;
-
-        if (actions.currentAction == null)
+        if (actions.currentAction == null) 
         {
-            progressUI.Hide();
             SetEatingAnimation(false);
+            SetHarvestAnimation(false);
+            progressUI.Hide();
             return;
         }
-            
-        bool isEating = actions.currentAction is EatAction;
-        SetEatingAnimation(isEating);
+        SetAnimation();
 
         SetMiniBar();
     }
 
+    void SetAnimation()
+    {
+
+        bool isHarvesting = actions.currentAction is HarvestAction;
+        if (isHarvesting)
+        {
+            SetHarvestAnimation(isHarvesting);
+            return;
+        }
+        
+        bool isEating = actions.currentAction is EatAction;
+        if (isEating)
+        {
+            SetEatingAnimation(isEating);
+            return;
+        }
+    }
+ 
+
     void SetMiniBar()
     {
-        if(actions.currentAction.IsFinished)
+        if(actions.currentAction.IsFinished || actions.currentAction == null)
         {
             progressUI.Hide();
             return;
@@ -60,18 +82,22 @@ public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by r
         if (actions.currentAction is HarvestAction h)
         {
             progressUI.SetProgress(h.progress);
+            return;
         }
         if (actions.currentAction is CollectItem c)
         {
             progressUI.SetProgress(c.progress);
+            return;
         }
         if (actions.currentAction is EatAction e)
         {
             progressUI.SetProgress(e.progress);
+            return;
         }
         if (actions.currentAction is BuildAction b)
         {
             progressUI.SetProgress(b.progress);
+            return;
         }
     }
 

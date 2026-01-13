@@ -16,8 +16,7 @@ public class World
     //Tiles
     private TileData[,] tileData;
     public List<Vector2Int> tilesSelected = new();
-    public Area area;
-    public List<Stockpile> stockpiles = new();
+    public Area area;    
 
     //Tile Objects
     public TileObjectsDatabase objDatabase;
@@ -27,18 +26,22 @@ public class World
     //Protagonist
     public ProtagonistData protagonistData { get; private set; }
 
+    //Tasks 
+    public TaskManager taskManager = new();
+
     public World(TileObjectsDatabase data_in, ItemsDatabase itemsData, RenderWorld render, GameTime time)
     {
         this.objDatabase = data_in;
         this.itemsDatabase = itemsData;
         this.render = render;
         gameTime = time;
+
         pathfinder = new Pathfinder(this);
     }
     public void Tick(float deltaTime)
     {
+        taskManager.Tick(deltaTime);
         protagonistData.Tick(deltaTime);
-
     }
 
     //GETTERS
@@ -205,9 +208,9 @@ public class World
             return;
 
         Stockpile stockpile = new(area, this);
-        stockpiles.Add(stockpile);
-        render.SpawnStockpile(stockpile);
-        EventBus.Log("Stockpile established.");
+        taskManager.stockpiles.Add(stockpile);
+        render.ShowStockpile(stockpile);
+        EventBus.Log("Stockpile construction site established.");
         area = null;
     }
 }

@@ -1,10 +1,8 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 public class Stockpile
 {
     World world;
-
     public Area area;
     public List<TileData> tiles = new();
 
@@ -13,7 +11,7 @@ public class Stockpile
     //construction
     public float workTime;
     public float constructionProgress = 0;
-    public bool IsConstructed => constructionProgress == 1;
+    public bool IsConstructed => constructionProgress >= 1f;
 
     
     public Stockpile(Area area, World world)

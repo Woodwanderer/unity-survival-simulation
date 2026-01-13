@@ -1,7 +1,4 @@
-﻿using System.Xml.Serialization;
-using UnityEngine;
-
-public interface IAction
+﻿public interface IAction
 {
     void Start();
     void Tick(float dt);

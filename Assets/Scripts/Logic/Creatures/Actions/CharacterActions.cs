@@ -4,7 +4,7 @@ public class CharacterActions
 {
     World world;
     ProtagonistData protagonistData;
-    RenderWorld renderWorld;
+    RenderWorld render;
     public CharacterSheet stats;
     public VirtualResources inventory = new();
 
@@ -16,11 +16,11 @@ public class CharacterActions
         currentAction = newAction;
         currentAction?.Start();
     }
-    public CharacterActions(float hourDuration, World world, ProtagonistData protagonistData, RenderWorld renderWorld)
+    public CharacterActions(float hourDuration, World world, ProtagonistData protagonistData, RenderWorld render)
     {
         this.world = world;
         this.protagonistData = protagonistData;
-        this.renderWorld = renderWorld;
+        this.render = render;
         stats = new CharacterSheet(hourDuration, this);
 
         Init();
@@ -42,12 +42,12 @@ public class CharacterActions
             if (currentAction is HarvestAction h && h.targetObj.resources.Depleted)
             {
                 world.ClearTileObject(h.targetObj);
-                renderWorld.RemoveObjectSprite(h.targetObj);
+                render.RemoveObjectSprite(h.targetObj);
             }
             if (currentAction is CollectItem c && c.targetObj.pile.amount <= 0)
             {
                 world.ClearTileObject(c.targetObj);
-                renderWorld.RemoveObjectSprite(c.targetObj);
+                render.RemoveObjectSprite(c.targetObj);
             }
 
             if (actionQueue.Count > 0)
@@ -55,11 +55,20 @@ public class CharacterActions
             else
                 SetAction(null);
         }
+        if (currentAction == null)
+        {
+            ITask task = world.taskManager.TakeTask();
+            if (task is BuildTask t)
+            {
+                TryBuild(t.stockpile);
+            }
+        }
+
     }
     //Build
     public void TryBuild(Stockpile stockpile)
     {
-        IAction build = new BuildAction(stockpile, stats);
+        IAction build = new BuildAction(stockpile, stats, render);
         if (stockpile.area.Contains(world.GetProtagonistCoords()))
             SetAction(build);
         else
@@ -111,7 +120,7 @@ public class CharacterActions
         }
         else
         {
-            transfer = new HarvestAction(target, item, stats.harvestSpeed, world, renderWorld);
+            transfer = new HarvestAction(target, item, stats.harvestSpeed, world, render);
         }
         if (protagonistData.mapCoords == target.tileCoords)
         {
@@ -139,7 +148,7 @@ public class CharacterActions
         if (newPath == null || newPath.Count == 0)
             return false;
 
-        SetAction(new Movement(protagonistData, renderWorld, stats.Speed, newPath));
+        SetAction(new Movement(protagonistData, render, stats.Speed, newPath));
         return true;
     }
     void FindNearestRes(ItemDefinition item)
