@@ -12,7 +12,7 @@ public class BuildAction : IAction
     {
         this.render = render;
         this.stockpile = stockpile;
-        workTime = stockpile.workTime;
+        workTime = stockpile.WorkTime;
         speed = stats.buildSpeed;
     }
     public void Start()

@@ -10,7 +10,7 @@ public class CollectItem : IAction
     public bool WasCanceled { get; private set; }
 
     public TileObject targetObj;
-    VirtualResources inventory = null;
+    Inventory inventory = null;
     ItemDefinition targetItem;
     CharacterSheet stats;
 
@@ -29,7 +29,7 @@ public class CollectItem : IAction
     {        
         unitProgress = 0f;
         progress = 0f;
-        targetAmount = targetObj.pile.amount;
+        targetAmount = targetObj.itemSlot.Amount;
         if (targetAmount <= 0)
         {
             progress = 1f;
@@ -53,7 +53,7 @@ public class CollectItem : IAction
         while (unitProgress >= 1f)
         {
             unitProgress -= 1;
-            targetObj.pile.Remove(1);
+            targetObj.itemSlot.Remove(1);
             inventory.Add(targetItem, 1);
         }
     }

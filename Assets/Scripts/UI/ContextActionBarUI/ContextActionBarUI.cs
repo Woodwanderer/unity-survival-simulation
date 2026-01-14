@@ -36,21 +36,23 @@ public class ContextActionBarUI : MonoBehaviour
     void Refresh()
     {
         //Resources    
-        if (actionSource == null || !actionSource.GetRes().Any())
+        if (actionSource == null || !actionSource.HasItems)
         {
             Hide();
             return;
         }
 
         int i = 0;
-        foreach (var kv in actionSource.GetRes())
+        foreach (ItemSlot slot in actionSource.GetItemSlots())
         {
             buttons[i].gameObject.SetActive(true);
 
-            buttons[i].SetIcon(kv.Key.icon);
-            buttons[i].SetAmount($"{kv.Value}");
 
-            ItemDefinition capturedItem = kv.Key;
+            ItemDefinition capturedItem = slot.Item;
+
+            buttons[i].SetIcon(capturedItem.icon);
+            buttons[i].SetAmount($"{slot.Amount}");
+
             buttons[i].SetAction(() =>
             {
                 HarvestObject(capturedItem);

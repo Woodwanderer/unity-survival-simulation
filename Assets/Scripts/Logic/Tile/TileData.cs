@@ -33,18 +33,19 @@ public class TileData
     {
         foreach (TileObject obj in objects)
         {
-            if (obj.Has(item)) 
+            if (obj.harvestSource != null && obj.harvestSource.Has(item)) 
                 return obj;
         }
         return null;
     }
-    public TileObject ContainsPileOf(ItemDefinition item)
+    public TileObject ContainsItemSlotOf(ItemDefinition item)
     {
         foreach (TileObject obj in objects)
         {
-            if (obj.pile == null)
+            if (obj.itemSlot == null)
                 continue;
-            if (obj.Has(item))
+
+            if (obj.itemSlot.Item == item)
                 return obj;
         }
         return null;

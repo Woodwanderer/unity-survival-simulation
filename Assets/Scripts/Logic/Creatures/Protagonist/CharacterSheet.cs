@@ -10,7 +10,7 @@ public class CharacterSheet
     float hourDuration;
 
     CharacterActions actions;
-    public VirtualResources inventory;
+    public Inventory inventory;
     //stats
     public float carryWeight = 200;
     //speed

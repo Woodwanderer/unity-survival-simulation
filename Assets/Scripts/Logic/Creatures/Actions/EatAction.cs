@@ -2,22 +2,23 @@
 
 public class EatAction : IAction
 {
-    VirtualResources resources; //Eating from
+    Inventory inventory; //Eating from
     ItemDefinition foodType;    //Eating that
     float nutritionValue;
     public float nutrition;     //-hunger: used by CharacterSheet
     CharacterSheet stats;
 
-    public bool IsFinished => progress >= 1;
+    bool wasCanceled;
+    public bool IsFinished => progress >= 1 || wasCanceled;
 
     public float progress = 0f; //used by UI
     float unitProgress = 0f;
     float speed;
     int mealAmount;
 
-    public EatAction(VirtualResources resources, ItemDefinition foodType, CharacterSheet stats)
+    public EatAction(Inventory inventory, ItemDefinition foodType, CharacterSheet stats)
     {
-        this.resources = resources;
+        this.inventory = inventory;
         this.foodType = foodType;
         this.stats = stats;
     }
@@ -35,12 +36,12 @@ public class EatAction : IAction
         while (unitProgress >= 1f)
         {
             unitProgress -= 1f;
-            resources.Remove(foodType, 1);
+            inventory.Remove(foodType, 1);
         }
         nutrition += dt * speed * nutritionValue;
     }
     public void Cancel()
     {
-        progress = 1f;
+        wasCanceled = true;
     }
 }

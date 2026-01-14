@@ -131,7 +131,7 @@ public class World
 
         TileObject obj = new(def.objType, tile.mapCoords);
 
-        obj.resources = new(def.GenerateResources());
+        obj.harvestSource = new HarvestSource(def.GenerateResources());
 
         tile.AddObject(obj);
     }
@@ -140,7 +140,7 @@ public class World
         TileObjectDefinition pileDef = objDatabase.Get(TileObjectsType.ResourcePile);
 
         TileObject pile = new(pileDef.objType, tile.mapCoords);
-        pile.pile = new(item, amount);
+        pile.itemSlot = new(item, amount);
 
         tile.AddObject(pile);
         return pile;
@@ -193,7 +193,7 @@ public class World
         tilesSelected = selection;
         render.AnimateZoneSelection(selection);
         area = new(selection);
-        EventBus.Log($"Area of {area.count} tiles selected. Press ENTER to confirm building here.");
+        EventBus.Log($"Area of {area.Count} tiles selected. Press ENTER to confirm building here.");
     }
     public void ClearZoneSelection()
     {

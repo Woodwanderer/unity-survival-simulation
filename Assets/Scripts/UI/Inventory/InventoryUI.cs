@@ -3,31 +3,32 @@
 public class InventoryUI : MonoBehaviour
 {
     InventorySlot[] slots;
-    VirtualResources resources;
+    Inventory Inventory;
     void Awake()
     {
         gameObject.SetActive(false);
         slots = GetComponentsInChildren<InventorySlot>();
     }
-    public void Init(VirtualResources resources)
+    public void Init(Inventory inventory)
     {
-        this.resources = resources;
+        this.Inventory = inventory;
     }
     private void Update()
     {
         if(!gameObject.activeSelf)
             return;
+
         Refresh();
     }
     void Refresh()
     {
-        if (resources == null) 
+        if (Inventory == null) 
             return;
 
         int i = 0;
-        foreach (var entry in resources.All())
+        foreach (var slot in Inventory.Slots)
         {
-            slots[i].Set(entry.Key, entry.Value);
+            slots[i].Set(slot.Item, slot.Amount);
             i++;
         }
 

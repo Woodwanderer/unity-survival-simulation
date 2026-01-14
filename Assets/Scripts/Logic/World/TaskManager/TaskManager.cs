@@ -6,18 +6,18 @@ public class TaskManager
 
     public void Tick(float dt)
     {
-        foreach(Stockpile stockpile in stockpiles)
-        {
-            if (!stockpile.IsConstructed)
-            {
-                if (!HasTaskFor(stockpile)) 
-                    Add(new BuildTask(stockpile));
-            }
-        }
+        GenerateBuildTasks();
     }
     void GenerateBuildTasks()
     {
-        
+        foreach (Stockpile stockpile in stockpiles)
+        {
+            if (!stockpile.IsConstructed)
+            {
+                if (!HasTaskFor(stockpile))
+                    Add(new BuildTask(stockpile));
+            }
+        }
     }
     bool HasTaskFor(Stockpile stockpile)
     {

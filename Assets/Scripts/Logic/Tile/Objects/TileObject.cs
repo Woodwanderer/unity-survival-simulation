@@ -5,32 +5,33 @@ public class TileObject
 {
     public TileObjectsType type { get; }
     public Vector2Int tileCoords { get; }
-    public VirtualResources resources;
-    public ResourcePile pile;
-    public bool IsInit => pile != null || resources != null;
+
+    public ItemSlot itemSlot;
+    public HarvestSource harvestSource;
+    public bool HasItems => itemSlot != null && !itemSlot.IsEmpty ||
+        harvestSource != null && !harvestSource.Depleted;
     public TileObject(TileObjectsType type, Vector2Int tileCoords)
     {
         this.type = type;
         this.tileCoords = tileCoords;
 
         if (type == TileObjectsType.ResourcePile)
-            pile = new(null, 0);
-        else
-            resources = new VirtualResources();
+            itemSlot = new ItemSlot();
     }
-    public IEnumerable<KeyValuePair<ItemDefinition, int>> GetRes()
+    public IEnumerable<ItemSlot> GetItemSlots()
     {
-        if (type == TileObjectsType.ResourcePile)
-            return pile.Get();
-        
-        return resources.All();
-    }
-    public bool Has(ItemDefinition item)
-    {
-        if (type == TileObjectsType.ResourcePile)
-            return pile.Has(item);
+        // Harvest source (trees, rocks)
+        if (harvestSource != null)
+        {
+            foreach (ItemSlot itemSlot in harvestSource.Snapshot())
+                yield return itemSlot;
+        }
 
-        return resources.Has(item);
+        // Resource pile (ItemSlot)
+        if (itemSlot != null && !itemSlot.IsEmpty)
+        {
+            yield return itemSlot;
+        }
     }
 
 }

@@ -166,7 +166,7 @@ public class RenderWorld : MonoBehaviour
         TilePrefab tileP = GetTileP(obj.tileCoords);
 
         TileObjectEntry entry = objectAppearance.Get(obj.type);
-        ItemDefinition item = obj.pile.item;
+        ItemDefinition item = obj.itemSlot.Item;
         Sprite icon = item.icon;
         
         tileP.SetObject(obj, icon, tileSize);

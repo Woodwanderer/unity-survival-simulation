@@ -6,7 +6,7 @@ public class CharacterActions
     ProtagonistData protagonistData;
     RenderWorld render;
     public CharacterSheet stats;
-    public VirtualResources inventory = new();
+    public Inventory inventory = new(16);
 
     public Queue<IAction> actionQueue = new Queue<IAction>();
     public IAction currentAction;
@@ -39,12 +39,12 @@ public class CharacterActions
 
         if (currentAction != null && currentAction.IsFinished)
         {
-            if (currentAction is HarvestAction h && h.targetObj.resources.Depleted)
+            if (currentAction is HarvestAction h && h.targetObj.harvestSource.Depleted)
             {
                 world.ClearTileObject(h.targetObj);
                 render.RemoveObjectSprite(h.targetObj);
             }
-            if (currentAction is CollectItem c && c.targetObj.pile.amount <= 0)
+            if (currentAction is CollectItem c && c.targetObj.itemSlot.Amount <= 0)
             {
                 world.ClearTileObject(c.targetObj);
                 render.RemoveObjectSprite(c.targetObj);
@@ -98,7 +98,7 @@ public class CharacterActions
 
         ItemDefinition foodRaw = world.itemsDatabase.Get("foodRaw");
 
-        if (!inventory.Has(foodRaw, ration))
+        if (!inventory.Snapshot().Has(foodRaw, ration))
         {
             EventBus.Log("You don't have enough food.");
             return false;
