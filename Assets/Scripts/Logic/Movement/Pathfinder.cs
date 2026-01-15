@@ -79,7 +79,7 @@ public class Pathfinder //BFS -> Deijkstra later ;)
         }
         return result;
     }
-    public TileObject FindObject(Vector2Int start, ItemDefinition item)
+    public TileEntity FindEntity(Vector2Int start, ItemDefinition item)
     {
         Queue<Vector2Int> frontier = new();
         HashSet<Vector2Int> visited = new();
@@ -87,10 +87,10 @@ public class Pathfinder //BFS -> Deijkstra later ;)
         frontier.Enqueue(start);
         visited.Add(start);
 
-        TileObject obj = world.GetTileData(start).Contains(item);
+        TileEntity ent = world.GetTileData(start).Contains(item);
 
-        if (obj != null) 
-            return obj;
+        if (ent != null) 
+            return ent;
 
         while (frontier.Count > 0)
         {
@@ -103,7 +103,7 @@ public class Pathfinder //BFS -> Deijkstra later ;)
 
                 visited.Add(next);
 
-                TileObject found = world.GetTileData(next).Contains(item);
+                TileEntity found = world.GetTileData(next).Contains(item);
                 if (found != null)
                 {
                     return found;

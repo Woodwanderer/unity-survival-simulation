@@ -112,7 +112,7 @@ public class World
                     tileData[x, y] = new TileData(tilePos, terrain, elevation);
 
                 if (terrain != TerrainType.Water) 
-                    PopulateTileObjects(tileData[x, y]);
+                    PopulateWorldObjects(tileData[x, y]);
             }
         }
     }
@@ -122,39 +122,34 @@ public class World
     }
 
     //TileObjects
-    private void PopulateTileObjects(TileData tile)
+    private void PopulateWorldObjects(TileData tile)
     {
-        // is spawned at world generation?
         var spawnableDefs = objDatabase.definitions.Where(def => def.spawnOnWorldGen).ToArray();
 
         TileObjectDefinition def = spawnableDefs[Random.Range(0, spawnableDefs.Length)];
 
-        TileObject obj = new(def.objType, tile.mapCoords);
+        WorldObject obj = new(def, tile.mapCoords);
 
         obj.harvestSource = new HarvestSource(def.GenerateResources());
 
-        tile.AddObject(obj);
+        tile.AddEntity(obj);
     }
-    public TileObject CreateResourcePile(TileData tile, ItemDefinition item, int amount)
+    public ResourcePile CreateResourcePile(TileData tile, ItemDefinition item, int amount)
     {
-        TileObjectDefinition pileDef = objDatabase.Get(TileObjectsType.ResourcePile);
-
-        TileObject pile = new(pileDef.objType, tile.mapCoords);
-        pile.itemSlot = new(item, amount);
-
-        tile.AddObject(pile);
+        ResourcePile pile = new(tile.mapCoords, item, amount);
+        tile.AddEntity(pile);
         return pile;
     }
-    public TileObject FindNearestItem(ItemDefinition item, Vector2Int to)
+    public TileEntity FindNearestItem(ItemDefinition item, Vector2Int to)
     {
-        return pathfinder.FindObject(to, item);
+        return pathfinder.FindEntity(to, item);
     }
     
     //EVENT Functions
-    public void ClearTileObject(TileObject obj)
+    public void ClearTileEntity(TileEntity ent)
     {
-        TileData tile = GetTileData(obj.tileCoords);
-        tile.objects.Remove(obj);
+        TileData tile = GetTileData(ent.TileCoords);
+        tile.entities.Remove(ent);
     }
 
     //Tile SELECTION

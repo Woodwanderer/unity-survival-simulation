@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 public interface IItemContainer
 {
     IEnumerable<ItemSlot> Slots { get; }

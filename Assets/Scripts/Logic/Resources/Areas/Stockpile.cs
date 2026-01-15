@@ -28,6 +28,38 @@ public class Stockpile : IItemContainer
     public VirtualResources Snapshot() => new VirtualResources(Slots);
   
     public int Capacity => slots.Count;
+    
+    //construction
+    public float WorkTime => 6 * world.gameTime.HourDuration * area.Count; //work units: 6hours/tile
+    public float constructionProgress = 0;
+    public bool IsConstructed => constructionProgress >= 1f;
+
+    public Stockpile(Area area, World world)
+    {
+        this.area = area;
+        this.world = world;
+        SetBuildingOnTiles();
+        SetSlots();
+    }
+    void SetBuildingOnTiles()
+    {
+        foreach (var tile in area.tiles)
+        {
+            TileData current = world.GetTileData(tile);
+            tiles.Add(current);
+            current.SetBuilding(this);
+        }
+    }
+    void SetSlots()
+    {
+        foreach (TileData tile in tiles)
+        {
+            for (int i = 0; i < StockpileSlot.slotsInTile; i++)
+            {
+                slots.Add(new StockpileSlot(tile, i));
+            }
+        }
+    }
     public int Add(ItemDefinition item, int amount)
     {
         int remaining = amount;
@@ -65,39 +97,6 @@ public class Stockpile : IItemContainer
             if (remaining <= 0)
                 return 0;
         }
-
         return remaining;
-    }
-
-    //construction
-    public float WorkTime => 6 * world.gameTime.HourDuration * area.Count; //work units: 6hours/tile
-    public float constructionProgress = 0;
-    public bool IsConstructed => constructionProgress >= 1f;
-
-    public Stockpile(Area area, World world)
-    {
-        this.area = area;
-        this.world = world;
-        SetBuildingOnTiles();
-        SetSlots();
-    }
-    void SetBuildingOnTiles()
-    {
-        foreach (var tile in area.tiles)
-        {
-            TileData current = world.GetTileData(tile);
-            tiles.Add(current);
-            current.SetBuilding(this);
-        }
-    }
-    void SetSlots()
-    {
-        foreach(TileData tile in tiles)
-        {
-            for (int i = 0; i < StockpileSlot.slotsInTile; i++)
-            {
-                slots.Add( new StockpileSlot(tile, i));
-            }
-        }
     }
 }

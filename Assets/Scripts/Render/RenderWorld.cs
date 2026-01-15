@@ -11,7 +11,7 @@ public class RenderWorld : MonoBehaviour
     private TilePrefab[,] TilePrefabs;
 
     public TileAppearance config;
-    public TileObjectAppearance objectAppearance;
+    public WorldObjectAppearance objectAppearance;
 
     public BuildingAppearance buildingAppearance;
 
@@ -47,7 +47,6 @@ public class RenderWorld : MonoBehaviour
                 SpawnTile(world.GetTileData(x, y));
             }
         }
-
         SpawnProtagonist(world.GetProtagonistData());
         SpawnDeer();
     }
@@ -62,7 +61,6 @@ public class RenderWorld : MonoBehaviour
         int y = Mathf.RoundToInt(worldPos.y / tileSize + mapToCenter.y);
         return new Vector2Int(x, y);
     }
-
     public void Tick(float deltaTime)
     {
 
@@ -88,8 +86,13 @@ public class RenderWorld : MonoBehaviour
         tileP.SetTerrain(GetTerrainSprite(tileData.Terrain));
         tileP.SetElevation(GetElevationSprite(tileData.Elevation));
 
-        foreach (TileObject obj in tileData.objects)
-            tileP.SetObject(obj, GetTileObjectSprite(tileData, obj), tileSize);
+        foreach (TileEntity ent in tileData.entities)
+        {
+            if (ent is WorldObject wo)
+            {
+                tileP.SetEntity(wo, GetWorldObjectSprite(tileData, wo), tileSize);
+            }
+        }
 
         TilePrefabs[tileData.mapCoords.x, tileData.mapCoords.y] = tileP;
     }
@@ -161,29 +164,26 @@ public class RenderWorld : MonoBehaviour
     }
 
     //Objects
-    public void SpawnResourcePile(TileObject obj)
+    public void SpawnResourcePile(ResourcePile pile)
     {
-        TilePrefab tileP = GetTileP(obj.tileCoords);
-
-        TileObjectEntry entry = objectAppearance.Get(obj.type);
-        ItemDefinition item = obj.itemSlot.Item;
-        Sprite icon = item.icon;
+        TilePrefab tileP = GetTileP(pile.TileCoords);
+        Sprite icon = pile.Item.icon;
         
-        tileP.SetObject(obj, icon, tileSize);
+        tileP.SetEntity(pile, icon, tileSize);
     }
-    private Sprite GetTileObjectSprite(TileData tileD, TileObject obj)
+    private Sprite GetWorldObjectSprite(TileData tileD, WorldObject obj)
     {
-        if (tileD.objects.Count == 0) return null;
+        if (tileD.entities.Count == 0) return null;
 
-        TileObjectEntry entry = objectAppearance.Get(obj.type);
+        WorldObjectEntry entry = objectAppearance.Get(obj.Definition.objType);
         if (entry == null) return null;
 
         return entry.GetRandomSprite();
     }
-    public void RemoveObjectSprite(TileObject obj)
+    public void RemoveObjectSprite(TileEntity ent)
     {
-        TilePrefab tileP = TilePrefabs[obj.tileCoords.x, obj.tileCoords.y];
-        tileP.HideObjectSprite(obj);
+        TilePrefab tileP = TilePrefabs[ent.TileCoords.x, ent.TileCoords.y];
+        tileP.HideEntitySprite(ent);
     }
 
     //PATH

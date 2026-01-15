@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bed6638f0b6d17348b5375a4815a3a30, type: 3}
-  m_Name: TileObjectAppearance
+  m_Name: WorldObjectAppearance
   m_EditorClassIdentifier: 
   entries:
   - type: 0
@@ -32,6 +32,3 @@ MonoBehaviour:
   - type: 4
     variants:
     - {fileID: 21300000, guid: 3f5c2fc6dcc7fb84c9ad0b6737eb1fc6, type: 3}
-  - type: 5
-    variants:
-    - {fileID: 21300000, guid: 8cc1a3d1054c9f04389033ac39257c46, type: 3}

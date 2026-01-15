@@ -41,13 +41,13 @@ public class CharacterActions
         {
             if (currentAction is HarvestAction h && h.targetObj.harvestSource.Depleted)
             {
-                world.ClearTileObject(h.targetObj);
+                world.ClearTileEntity(h.targetObj);
                 render.RemoveObjectSprite(h.targetObj);
             }
-            if (currentAction is CollectItem c && c.targetObj.itemSlot.Amount <= 0)
+            if (currentAction is CollectItem c && c.pile.Amount <= 0)
             {
-                world.ClearTileObject(c.targetObj);
-                render.RemoveObjectSprite(c.targetObj);
+                world.ClearTileEntity(c.pile);
+                render.RemoveObjectSprite(c.pile);
             }
 
             if (actionQueue.Count > 0)
@@ -110,25 +110,30 @@ public class CharacterActions
     }
 
     //HARVEST
-    public void TryHarvest(TileObject target, ItemDefinition item)
+    public void TryHarvest(TileEntity target, ItemDefinition item)
     {
-        IAction transfer;
+        IAction transfer = null;
 
-        if (target.type == TileObjectsType.ResourcePile)
+        if (target is ResourcePile pile && pile != null) 
         {
-            transfer = new CollectItem(target, item, stats);
+            transfer = new CollectItem(pile, item, stats);
+        }
+        else if(target is WorldObject wo)
+        {
+            transfer = new HarvestAction(wo, item, stats.harvestSpeed, world, render);
         }
         else
         {
-            transfer = new HarvestAction(target, item, stats.harvestSpeed, world, render);
+            return;
         }
-        if (protagonistData.mapCoords == target.tileCoords)
+
+        if (protagonistData.mapCoords == target.TileCoords)
         {
             SetAction(transfer);
         }
         else
         {
-            bool canMove = TryMoveToTile(target.tileCoords);
+            bool canMove = TryMoveToTile(target.TileCoords);
 
             if (canMove)
                 actionQueue.Enqueue(transfer);
@@ -153,10 +158,10 @@ public class CharacterActions
     }
     void FindNearestRes(ItemDefinition item)
     {
-        TileObject obj = world.FindNearestItem(item, protagonistData.mapCoords);
-        if (obj != null)
+        TileEntity ent = world.FindNearestItem(item, protagonistData.mapCoords);
+        if (ent != null)
         {
-            TryHarvest(obj, item);
+            TryHarvest(ent, item);
         }
     }
 }

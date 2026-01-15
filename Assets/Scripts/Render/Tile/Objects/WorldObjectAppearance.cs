@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "TileObjectAppearance", menuName = "Scriptable Objects/TileObjectAppearance")]
-public class TileObjectAppearance : ScriptableObject
+public class WorldObjectAppearance : ScriptableObject
 {
-    public TileObjectEntry[] entries;
-    public TileObjectEntry Get(TileObjectsType type)
+    public WorldObjectEntry[] entries;
+    public WorldObjectEntry Get(TileObjectsType type)
     {
         foreach (var entry in entries)
         {
@@ -16,7 +16,7 @@ public class TileObjectAppearance : ScriptableObject
 }
 
 [System.Serializable]
-public class TileObjectEntry
+public class WorldObjectEntry
 {
     public TileObjectsType type;
     public Sprite[] variants;

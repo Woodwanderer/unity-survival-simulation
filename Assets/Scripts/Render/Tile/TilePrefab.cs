@@ -51,19 +51,19 @@ public class TilePrefab: MonoBehaviour
         selection.enabled = active;
     }
     //Objects
-    public void SetObject(TileObject objData, Sprite _object, float tileSize)
+    public void SetEntity(TileEntity ent, Sprite _object, float tileSize)
     {
         GameObject obj = Instantiate(tileObjectPrefab, this.transform);
         TileObjectView current = obj.GetComponent<TileObjectView>();
         objects.Add(current);
-        current.Init(_object, tileSize, objData);
+        current.Init(_object, tileSize, ent);
     }
-    public void HideObjectSprite(TileObject obj)
+    public void HideEntitySprite(TileEntity ent)
     {
-        foreach (TileObjectView o in objects) 
+        foreach (TileObjectView e in objects) 
         {
-            if (o.Data == obj)
-                o.SetDepleted();
+            if (e.Data == ent)
+                e.SetDepleted();
         }
     }
     

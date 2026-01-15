@@ -6,7 +6,7 @@ public class TileData
     public Vector2Int mapCoords { get; private set; }
     public TerrainType Terrain {  get; private set; }
     public ElevationType Elevation { get; private set; }
-    public List<TileObject> objects { get; private set; } = new();
+    public List<TileEntity> entities { get; private set; } = new();
     public Stockpile stockpile = null;
     public bool isWalkable => Terrain != TerrainType.Water; // hard restriction on WATER tiles only for now
     public bool HasBuilding => stockpile != null;
@@ -21,32 +21,39 @@ public class TileData
     {
         this.stockpile = stockpile;
     }
-    public void AddObject(TileObject tileObject)
+    public void AddEntity(TileEntity entity)
     {
-        objects.Add(tileObject);
+        entities.Add(entity);
     }
-    public void RemoveObject(TileObject tileObject)
+    public void RemoveObject(TileEntity tileObject)
     {
-        objects.Remove(tileObject);
+        entities.Remove(tileObject);
     }
-    public TileObject Contains(ItemDefinition item)
+    public TileEntity Contains(ItemDefinition item)
     {
-        foreach (TileObject obj in objects)
+        TileEntity entity = null;
+        entity = FindInPiles(item);
+        if (entity != null) 
+            return entity;
+
+        entity = FindInWorldObj(item);
+        return entity;
+    }
+    public WorldObject FindInWorldObj(ItemDefinition item)
+    {
+        foreach (TileEntity ent in entities)
         {
-            if (obj.harvestSource != null && obj.harvestSource.Has(item)) 
+            if (ent is WorldObject obj && obj.harvestSource != null && obj.harvestSource.Has(item))
                 return obj;
         }
         return null;
     }
-    public TileObject ContainsItemSlotOf(ItemDefinition item)
+    public ResourcePile FindInPiles(ItemDefinition item)
     {
-        foreach (TileObject obj in objects)
+        foreach (TileEntity ent in entities)
         {
-            if (obj.itemSlot == null)
-                continue;
-
-            if (obj.itemSlot.Item == item)
-                return obj;
+            if (ent is ResourcePile pile && pile != null && pile.Item == item)
+                return pile;
         }
         return null;
     }

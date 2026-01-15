@@ -9,15 +9,15 @@ public class HarvestAction : IAction
     bool wasCanceled;
     public bool IsFinished => progress >= 1f || wasCanceled;
     
-    public TileObject targetObj;
-    TileObject resPile = null;
+    public WorldObject targetObj;
+    ResourcePile resPile = null;
     ItemDefinition targetItem;
     World world;
     RenderWorld render;
 
-    public HarvestAction(TileObject targetObj, ItemDefinition targetItem, float speed, World world, RenderWorld render)
+    public HarvestAction(WorldObject wo, ItemDefinition targetItem, float speed, World world, RenderWorld render)
     {
-        this.targetObj = targetObj;
+        this.targetObj = wo;
         this.targetItem = targetItem;
         this.world = world;
         this.render = render;
@@ -25,16 +25,12 @@ public class HarvestAction : IAction
         //Set stats
         this.speed = speed;
     }
-
     public void Start()
     {
         unitProgress = 0f;
         progress = 0f;
         targetAmount = targetObj.harvestSource.Get(targetItem);
-
-        resPile = EstablishPile(0);
     }
-
     public void Tick(float dt)
     {
         unitProgress += dt * speed;
@@ -44,21 +40,26 @@ public class HarvestAction : IAction
         {
             unitProgress -= 1;
             targetObj.harvestSource.Harvest(targetItem, 1);
-            int overflow = resPile.itemSlot.Add(targetItem, 1);
-            if (overflow > 0) 
+
+            if (resPile == null)
+                resPile = EstablishPile(1);
+            else
             {
-                resPile = EstablishPile(overflow);
+                int overflow = resPile.Add(targetItem, 1);
+                if (overflow > 0)
+                {
+                    resPile = EstablishPile(overflow);
+                }
             }
         }
     }
-
-    TileObject EstablishPile(int amount = 0)
+    ResourcePile EstablishPile(int amount)
     {
-        TileData tile = world.GetTileData(targetObj.tileCoords);
-        TileObject pileObj = tile.ContainsItemSlotOf(targetItem);
+        TileData tile = world.GetTileData(targetObj.TileCoords);
+        ResourcePile pileObj = tile.FindInPiles(targetItem);
         if (pileObj != null)
         {
-            pileObj.itemSlot.Add(targetItem, amount);
+            pileObj.Add(targetItem, amount);
             resPile = pileObj;
         }
         else

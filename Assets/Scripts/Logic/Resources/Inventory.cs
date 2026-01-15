@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
-
 public class Inventory : IItemContainer
 {
     List<ItemSlot> slots;

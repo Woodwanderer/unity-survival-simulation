@@ -9,16 +9,16 @@ public class CollectItem : IAction
     public bool IsFinished => progress >= 1f || WasCanceled;
     public bool WasCanceled { get; private set; }
 
-    public TileObject targetObj;
+    public ResourcePile pile;
     Inventory inventory = null;
     ItemDefinition targetItem;
     CharacterSheet stats;
 
-    public CollectItem(TileObject targetObj, ItemDefinition targetItem, CharacterSheet stats)
+    public CollectItem(ResourcePile pile, ItemDefinition targetItem, CharacterSheet stats)
     {
         this.stats = stats;
         inventory = stats.inventory;
-        this.targetObj = targetObj;
+        this.pile = pile;
         this.targetItem = targetItem;
         
         //Set stats
@@ -29,7 +29,7 @@ public class CollectItem : IAction
     {        
         unitProgress = 0f;
         progress = 0f;
-        targetAmount = targetObj.itemSlot.Amount;
+        targetAmount = pile.Amount;
         if (targetAmount <= 0)
         {
             progress = 1f;
@@ -53,7 +53,7 @@ public class CollectItem : IAction
         while (unitProgress >= 1f)
         {
             unitProgress -= 1;
-            targetObj.itemSlot.Remove(1);
+            pile.Remove(targetItem, 1);
             inventory.Add(targetItem, 1);
         }
     }

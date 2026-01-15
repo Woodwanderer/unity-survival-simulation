@@ -3,17 +3,17 @@ using UnityEngine.EventSystems;
 
 public class TileObjectView : MonoBehaviour
 {
-    TileObject data;
-    public TileObject Data => data;
+    TileEntity data;
+    public TileEntity Data => data;
 
     SpriteRenderer sR;
     bool selected = false;
     float size;
     void Awake()
     {
-        sR = GetComponent<SpriteRenderer>(); //Nie trzeba podpinac z Unity, sR jest private
+        sR = GetComponent<SpriteRenderer>();
     }
-    public void Init(Sprite spr, float tileSize, TileObject objData)
+    public void Init(Sprite spr, float tileSize, TileEntity objData)
     {
         data = objData;
         sR.sprite = spr;

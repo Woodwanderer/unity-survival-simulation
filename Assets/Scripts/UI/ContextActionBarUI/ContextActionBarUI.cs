@@ -4,7 +4,7 @@ using UnityEngine;
 public class ContextActionBarUI : MonoBehaviour
 {
     CharacterActions characterActions;
-    TileObject actionSource = null;
+    TileEntity actionSource = null;
     ContextABButton[] buttons;
 
     void Awake()
@@ -21,48 +21,71 @@ public class ContextActionBarUI : MonoBehaviour
         if (characterActions.currentAction is HarvestAction || characterActions.currentAction is CollectItem) 
             Refresh();
     }
-    public void Show(TileObject obj)
+    public void Show(TileEntity ent)
     {
-        if (obj == null)
+        if (ent == null)
             return;
 
         gameObject.SetActive(true);
-        actionSource = obj;
+        actionSource = ent;
 
         Refresh();
     }
-
-    
     void Refresh()
     {
         //Resources    
-        if (actionSource == null || !actionSource.HasItems)
+        /*if (characterActions.currentAction == null) 
         {
             Hide();
             return;
-        }
-
-        int i = 0;
-        foreach (ItemSlot slot in actionSource.GetItemSlots())
+        }*/
+        if (actionSource is ResourcePile rp)
         {
-            buttons[i].gameObject.SetActive(true);
-
-
-            ItemDefinition capturedItem = slot.Item;
-
-            buttons[i].SetIcon(capturedItem.icon);
-            buttons[i].SetAmount($"{slot.Amount}");
-
-            buttons[i].SetAction(() =>
+            int i = 0;
+            foreach (ItemSlot slot in rp.Slots)
             {
-                HarvestObject(capturedItem);
-            });
-            i++;
+                buttons[i].gameObject.SetActive(true);
+
+                ItemDefinition capturedItem = slot.Item;
+
+                buttons[i].SetIcon(capturedItem.icon);
+                buttons[i].SetAmount($"{slot.Amount}");
+
+                buttons[i].SetAction(() =>
+                {
+                    HarvestObject(capturedItem);
+                });
+                i++;
+            }
+            while (i < buttons.Length)
+            {
+                buttons[i].gameObject.SetActive(false);
+                i++;
+            }
         }
-        while (i < buttons.Length)
+        else if (actionSource is WorldObject wo)
         {
-            buttons[i].gameObject.SetActive(false);
-            i++;
+            int i = 0;
+            foreach (ItemSlot slot in wo.GetItemSlots())
+            {
+                buttons[i].gameObject.SetActive(true);
+
+                ItemDefinition capturedItem = slot.Item;
+
+                buttons[i].SetIcon(capturedItem.icon);
+                buttons[i].SetAmount($"{slot.Amount}");
+
+                buttons[i].SetAction(() =>
+                {
+                    HarvestObject(capturedItem);
+                });
+                i++;
+            }
+            while (i < buttons.Length)
+            {
+                buttons[i].gameObject.SetActive(false);
+                i++;
+            }
         }
     }
     public void Hide()
