@@ -2,9 +2,7 @@
 public class Inventory : IItemContainer
 {
     List<ItemSlot> slots;
-
     public IEnumerable<ItemSlot> Slots => slots;
-
     public Inventory(int slotCount)
     {
         slots = new();
@@ -71,4 +69,15 @@ public class Inventory : IItemContainer
 
         return weight;
     }
+    public bool IsEmpty
+    {
+        get
+        {
+            foreach (var slot in slots)
+                if (!slot.IsEmpty) 
+                    return false;
+            return true;
+        }
+    }
+
 }

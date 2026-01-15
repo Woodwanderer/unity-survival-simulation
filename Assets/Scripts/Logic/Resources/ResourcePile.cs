@@ -1,33 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
-public class ResourcePile : TileEntity, IItemContainer
+public class ResourcePile : TileEntity
 {
-    ItemSlot slot;
+    public ItemSlot Slot { get; }
     public ResourcePile(Vector2Int tileCoords, ItemDefinition item, int amount) : base(tileCoords)
     {
         if (item == null || amount <= 0)
             throw new ArgumentException("ResourcePile must be created with item and amount.");
-        slot = new(item, amount);
+        Slot = new(item, amount);
     }
-    public IEnumerable<ItemSlot> Slots
-    {
-        get
-        {
-            yield return slot;
-        }
-    }
-    public bool IsEmpty => slot.IsEmpty;
-    public int Amount => slot.Amount;
-    public ItemDefinition Item => slot.Item;
+    public bool IsEmpty => Slot.IsEmpty;
+    public int Amount => Slot.Amount;
+    public ItemDefinition Item => Slot.Item;
     public int Add(ItemDefinition item, int amount)
     {
-        return slot.Add(item, amount);
+        return Slot.Add(item, amount);
     }
     public int Remove(ItemDefinition item, int amount)
     {
-        return slot.Remove(amount);
+        return Slot.Remove(amount);
     }
-    public VirtualResources Snapshot() => new VirtualResources(Slots);
-
 }

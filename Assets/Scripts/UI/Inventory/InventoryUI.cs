@@ -2,12 +2,12 @@
 
 public class InventoryUI : MonoBehaviour
 {
-    InventorySlot[] slots;
+    InventoryUISlot[] slotsUI;
     Inventory Inventory;
     void Awake()
     {
         gameObject.SetActive(false);
-        slots = GetComponentsInChildren<InventorySlot>();
+        slotsUI = GetComponentsInChildren<InventoryUISlot>();
     }
     public void Init(Inventory inventory)
     {
@@ -28,12 +28,19 @@ public class InventoryUI : MonoBehaviour
         int i = 0;
         foreach (var slot in Inventory.Slots)
         {
-            slots[i].Set(slot.Item, slot.Amount);
+            if (slot.IsEmpty)
+            {
+                slotsUI[i].Clear();
+            }
+            else
+            {
+                slotsUI[i].Set(slot.Item, slot.Amount);
+            }
             i++;
         }
 
-        for (; i < slots.Length; i++)
-            slots[i].Clear();
+        for (; i < slotsUI.Length; i++)
+            slotsUI[i].Clear();
     }
     public void Show()
     {

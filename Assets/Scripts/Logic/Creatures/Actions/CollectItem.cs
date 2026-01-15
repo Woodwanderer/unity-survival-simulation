@@ -13,7 +13,6 @@ public class CollectItem : IAction
     Inventory inventory = null;
     ItemDefinition targetItem;
     CharacterSheet stats;
-
     public CollectItem(ResourcePile pile, ItemDefinition targetItem, CharacterSheet stats)
     {
         this.stats = stats;
@@ -24,25 +23,17 @@ public class CollectItem : IAction
         //Set stats
         this.speed = stats.harvestSpeed;
     }
-
     public void Start()
     {        
         unitProgress = 0f;
         progress = 0f;
         targetAmount = pile.Amount;
-        if (targetAmount <= 0)
-        {
-            progress = 1f;
-            EventBus.Log("No more items here.");
-            return;
-        }
     }
 
     public void Tick(float dt)
     {
         if (inventory.CalculateWeight(targetItem) >= stats.carryWeight)
         {
-            EventBus.Log("Can't carry any more.");
             Cancel();
             return;
         }

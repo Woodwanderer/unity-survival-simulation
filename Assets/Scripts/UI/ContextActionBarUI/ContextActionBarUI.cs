@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ContextActionBarUI : MonoBehaviour
 {
@@ -33,30 +32,25 @@ public class ContextActionBarUI : MonoBehaviour
     }
     void Refresh()
     {
-        //Resources    
-        /*if (characterActions.currentAction == null) 
-        {
-            Hide();
-            return;
-        }*/
         if (actionSource is ResourcePile rp)
         {
-            int i = 0;
-            foreach (ItemSlot slot in rp.Slots)
+            if (rp == null)
             {
-                buttons[i].gameObject.SetActive(true);
-
-                ItemDefinition capturedItem = slot.Item;
-
-                buttons[i].SetIcon(capturedItem.icon);
-                buttons[i].SetAmount($"{slot.Amount}");
-
-                buttons[i].SetAction(() =>
-                {
-                    HarvestObject(capturedItem);
-                });
-                i++;
+                Hide();
+                return;
             }
+
+            buttons[0].gameObject.SetActive(true);
+
+            buttons[0].SetIcon(rp.Item.icon);
+            buttons[0].SetAmount($"{rp.Amount}");
+
+            buttons[0].SetAction(() =>
+            {
+                HarvestObject(rp.Item);
+            });
+
+            int i = 1;
             while (i < buttons.Length)
             {
                 buttons[i].gameObject.SetActive(false);
@@ -65,6 +59,11 @@ public class ContextActionBarUI : MonoBehaviour
         }
         else if (actionSource is WorldObject wo)
         {
+            if (wo == null) 
+            {
+                Hide();
+                return;
+            }
             int i = 0;
             foreach (ItemSlot slot in wo.GetItemSlots())
             {

@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class Stockpile : IItemContainer
 {
@@ -28,6 +29,23 @@ public class Stockpile : IItemContainer
     public VirtualResources Snapshot() => new VirtualResources(Slots);
   
     public int Capacity => slots.Count;
+    public int CalculateCapacityFor(ItemSlot income)
+    {
+        foreach(var slot in Slots)
+        {
+            if (slot.IsEmpty)
+                return income.Amount;
+        }
+
+        //no empty slots - calculate any free space
+        int freeSpace = 0;
+        foreach (var slot in Slots)
+        {
+            if (slot.Item == income.Item)
+                freeSpace += slot.FreeSpace;
+        }
+        return Mathf.Min(freeSpace, income.Amount);
+    }
     
     //construction
     public float WorkTime => 6 * world.gameTime.HourDuration * area.Count; //work units: 6hours/tile

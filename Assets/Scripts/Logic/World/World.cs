@@ -18,16 +18,17 @@ public class World
     public List<Vector2Int> tilesSelected = new();
     public Area area;    
 
-    //Tile Objects
+    //Tile Entities
     public TileObjectsDatabase objDatabase;
     public ItemsDatabase itemsDatabase;
+
     public Pathfinder pathfinder;
 
     //Protagonist
     public ProtagonistData protagonistData { get; private set; }
 
     //Tasks 
-    public TaskManager taskManager = new();
+    public TaskManager taskManager;
 
     public World(TileObjectsDatabase data_in, ItemsDatabase itemsData, RenderWorld render, GameTime time)
     {
@@ -81,6 +82,7 @@ public class World
 
         GenerateTiles();
         SetProtagonist(render);
+        taskManager = new(pathfinder);
     }
     public void GenerateTiles()
     {
@@ -137,6 +139,7 @@ public class World
     public ResourcePile CreateResourcePile(TileData tile, ItemDefinition item, int amount)
     {
         ResourcePile pile = new(tile.mapCoords, item, amount);
+        taskManager.piles.Add(pile);
         tile.AddEntity(pile);
         return pile;
     }

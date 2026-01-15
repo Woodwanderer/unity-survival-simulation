@@ -4,8 +4,8 @@ public class ItemSlot
     public ItemDefinition Item { get; private set; }
     public int Amount { get; private set; }
     public bool IsEmpty => Item == null || Amount <= 0;
-    public int Capacity =>
-        Item != null ? Item.maxStockpileSize : int.MaxValue;
+    public int FreeSpace =>
+        Item != null ? Item.maxStockpileSize - Amount : Item.maxStockpileSize;
     public bool IsFull => Amount >= Item.maxStockpileSize;
     public ItemSlot(ItemDefinition item = null, int amount = 0)
     {
@@ -20,9 +20,8 @@ public class ItemSlot
             Item = item;
         if (Item != item) 
             return amount;
-
-        int space = Capacity - Amount;
-        int added = Mathf.Min(space, amount);
+        
+        int added = Mathf.Min(FreeSpace, amount);
         Amount += added;
         return amount - added; //overflow
     }

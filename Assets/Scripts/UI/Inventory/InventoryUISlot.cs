@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 
-public class InventorySlot : MonoBehaviour
+public class InventoryUISlot : MonoBehaviour
 {
     public Image icon;
     public TMP_Text amountText;

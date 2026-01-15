@@ -58,13 +58,40 @@ public class CharacterActions
         if (currentAction == null)
         {
             ITask task = world.taskManager.TakeTask();
-            if (task is BuildTask t)
+            if (task is BuildTask bt)
             {
-                TryBuild(t.stockpile);
+                TryBuild(bt.stockpile);
             }
+            if (task is HaulTask ht)
+            {
+                TryHaul(ht);
+            }
+
         }
 
     }
+    public void TryHaul(HaulTask ht)
+    {
+
+        IAction collect = new CollectItem(ht.source, ht.source.Item, stats);
+        if (ht.source.TileCoords == protagonistData.mapCoords) 
+            SetAction(collect);
+        else
+        {
+            bool canMove = TryMoveToTile(ht.source.TileCoords);
+            if (canMove)
+            {
+                actionQueue.Enqueue(collect);
+                IAction moveToStockpile = new Movement(protagonistData, render, stats.Speed, ht.deliveryPath);
+                actionQueue.Enqueue(moveToStockpile);
+                IAction deliver = new Deliver(ht.source.Slot, stats, ht.destination);
+                actionQueue.Enqueue(deliver);
+            }
+            else
+                EventBus.Log("I can't reach this destination.");
+        }
+    }
+
     //Build
     public void TryBuild(Stockpile stockpile)
     {
