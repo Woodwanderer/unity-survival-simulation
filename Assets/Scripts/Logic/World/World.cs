@@ -153,6 +153,7 @@ public class World
     {
         TileData tile = GetTileData(ent.TileCoords);
         tile.entities.Remove(ent);
+
     }
 
     //Tile SELECTION

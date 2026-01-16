@@ -27,24 +27,20 @@ public class Stockpile : IItemContainer
     List<StockpileSlot> slots = new();
     public IEnumerable<ItemSlot> Slots => slots.Select(s => s.itemSlot);
     public VirtualResources Snapshot() => new VirtualResources(Slots);
-  
     public int Capacity => slots.Count;
-    public int CalculateCapacityFor(ItemSlot income)
+    public int CalculateFreeSpaceFor(ItemSlot income)
     {
-        foreach(var slot in Slots)
-        {
-            if (slot.IsEmpty)
-                return income.Amount;
-        }
+        if (income == null || income.IsEmpty) 
+            return 0;
 
-        //no empty slots - calculate any free space
         int freeSpace = 0;
         foreach (var slot in Slots)
         {
-            if (slot.Item == income.Item)
-                freeSpace += slot.FreeSpace;
+            freeSpace += slot.FreeSpaceFor(income.Item);
+            if (freeSpace > income.Amount)
+                return income.Amount;
         }
-        return Mathf.Min(freeSpace, income.Amount);
+        return freeSpace;
     }
     
     //construction

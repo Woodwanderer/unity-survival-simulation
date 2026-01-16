@@ -66,9 +66,7 @@ public class CharacterActions
             {
                 TryHaul(ht);
             }
-
         }
-
     }
     public void TryHaul(HaulTask ht)
     {
@@ -84,7 +82,7 @@ public class CharacterActions
                 actionQueue.Enqueue(collect);
                 IAction moveToStockpile = new Movement(protagonistData, render, stats.Speed, ht.deliveryPath);
                 actionQueue.Enqueue(moveToStockpile);
-                IAction deliver = new Deliver(ht.source.Slot, stats, ht.destination);
+                IAction deliver = new Deliver(inventory, stats, ht.destination);
                 actionQueue.Enqueue(deliver);
             }
             else

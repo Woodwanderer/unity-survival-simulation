@@ -22,13 +22,14 @@ public class TaskManager
     }
     void GenerateHaulTasks()
     {
+        piles.RemoveAll(pile => pile.IsEmpty);
+
         foreach(var pile  in piles)
         {
             if (HasHaulTaskFor(pile))
+            {
                 continue;
-
-            if (pile.IsEmpty) 
-                continue; 
+            }
 
             Stockpile closest = GetClosestStockpile(pile);
 
@@ -49,7 +50,7 @@ public class TaskManager
         {
             if (!stockpile.IsConstructed)
                 continue;
-            int capacity = stockpile.CalculateCapacityFor(pile.Slot);
+            int capacity = stockpile.CalculateFreeSpaceFor(pile.Slot);
             if (capacity == 0) 
                 continue;
 
@@ -85,10 +86,12 @@ public class TaskManager
     }
     bool HasHaulTaskFor(ResourcePile pile)
     {
-        foreach (HaulTask haulTask in haulTasks) 
+        foreach (HaulTask haulTask in haulTasks)
         {
-            if (haulTask.source == pile) 
+            if (haulTask.source == pile)
+            {
                 return true;
+            }
         }
         return false;
     }
@@ -103,14 +106,19 @@ public class TaskManager
     public ITask TakeTask()
     {
         ITask task = null;
-        if (buildTasks.Count > 0)
+        while (buildTasks.Count > 0) 
         {
             task = buildTasks.Dequeue();
+            if (task.IsValid) 
+                return task;
         }
-        if (haulTasks.Count > 0)
+        while (haulTasks.Count > 0)
         {
             task = haulTasks.Dequeue();
+            if (task.IsValid)
+                return task;
         }
-        return task;
+
+        return null;
     }
 }

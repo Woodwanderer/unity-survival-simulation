@@ -1,4 +1,4 @@
 ﻿public interface ITask
 {
-    //bool IsAvailable { get; }
+    bool IsValid { get; }
 }
