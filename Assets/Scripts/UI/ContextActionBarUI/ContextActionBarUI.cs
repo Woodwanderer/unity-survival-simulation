@@ -17,12 +17,17 @@ public class ContextActionBarUI : MonoBehaviour
     }
     private void Update()
     {
-        if (characterActions.currentAction is HarvestAction || characterActions.currentAction is CollectItem) 
-            Refresh();
+        if (actionSource == null || !actionSource.isValid)
+        {
+            Hide();
+            return;
+        }
+
+        Refresh();
     }
     public void Show(TileEntity ent)
     {
-        if (ent == null)
+        if (ent == null || !ent.isValid) 
             return;
 
         gameObject.SetActive(true);
@@ -34,12 +39,6 @@ public class ContextActionBarUI : MonoBehaviour
     {
         if (actionSource is ResourcePile rp)
         {
-            if (rp == null)
-            {
-                Hide();
-                return;
-            }
-
             buttons[0].gameObject.SetActive(true);
 
             buttons[0].SetIcon(rp.Item.icon);
@@ -59,11 +58,6 @@ public class ContextActionBarUI : MonoBehaviour
         }
         else if (actionSource is WorldObject wo)
         {
-            if (wo == null) 
-            {
-                Hide();
-                return;
-            }
             int i = 0;
             foreach (ItemSlot slot in wo.GetItemSlots())
             {

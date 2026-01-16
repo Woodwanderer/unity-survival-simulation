@@ -15,7 +15,10 @@ public class WorldObject : TileEntity
         if (harvestSource != null)
         {
             foreach (ItemSlot slot in harvestSource.Snapshot())
+            {
+                if (slot.Amount > 0) 
                 yield return slot;
+            }
         }
     }
 }

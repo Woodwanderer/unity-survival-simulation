@@ -151,9 +151,9 @@ public class World
     //EVENT Functions
     public void ClearTileEntity(TileEntity ent)
     {
+        ent.isValid = false;
         TileData tile = GetTileData(ent.TileCoords);
         tile.entities.Remove(ent);
-
     }
 
     //Tile SELECTION

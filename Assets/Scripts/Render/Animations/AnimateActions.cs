@@ -3,102 +3,86 @@
 public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by renderWorld
 {
     public CharacterActions actions;
+
     public SpriteRenderer foodRaw;
     public SpriteRenderer axe;
+    public SpriteRenderer hammer;
+
     [SerializeField] GameObject progressBarPrefab;
     GameObject progressBar;
     ActionProgressUI progressUI;
 
     bool isInitialised = false;
 
+    IAction previous = null;
+
     public void Init(CharacterActions actions)
     {
         this.actions = actions;
         isInitialised = true;
     }
-
     private void Awake()
     {
         progressBar = Instantiate(progressBarPrefab, transform);
         progressUI = progressBar.GetComponentInChildren<ActionProgressUI>();
     }
-
-    public void SetEatingAnimation(bool active)
-    {
-        foodRaw.enabled = active;
-    }
-    void SetHarvestAnimation(bool active)
-    {
-        axe.enabled = active;
-    }
-
     private void Update()
     {
         if (!isInitialised)
             return;
-        if (actions.currentAction == null) 
+
+        if (actions.currentAction == null || actions.currentAction.IsFinished)
         {
-            SetEatingAnimation(false);
-            SetHarvestAnimation(false);
             progressUI.Hide();
             return;
         }
-        SetAnimation();
 
-        SetMiniBar();
+        SetUIFor(actions.currentAction);
     }
-
-    void SetAnimation()
+    void SetUIFor(IAction current)
     {
+        if (previous != current)
+        {
+            if (previous != null)
+                SetAnimationFor(previous, false);
 
-        bool isHarvesting = actions.currentAction is HarvestAction;
-        if (isHarvesting)
-        {
-            SetHarvestAnimation(isHarvesting);
-            return;
+            SetAnimationFor(current, true);
+
+            previous = current;
         }
-        
-        bool isEating = actions.currentAction is EatAction;
-        if (isEating)
+
+        switch (current)
         {
-            SetEatingAnimation(isEating);
-            return;
+            case Movement:
+                progressUI.Hide();
+                break;
+            case CollectItem c:
+                progressUI.SetProgress(c.progress);
+                break;
+            case HarvestAction h:
+                progressUI.SetProgress(h.progress);
+                break;
+            case EatAction e:
+                progressUI.SetProgress(e.progress);
+                break;
+            case BuildAction b:                
+                progressUI.SetProgress(b.progress);
+                break;
         }
     }
- 
-
-    void SetMiniBar()
+    void SetAnimationFor(IAction curent, bool active)
     {
-        if(actions.currentAction.IsFinished || actions.currentAction == null)
+        switch(curent)
         {
-            progressUI.Hide();
-            return;
-        }
-        if (actions.currentAction is Movement m)
-        {
-            progressUI.Hide();
-            return;
-        }
-        if (actions.currentAction is HarvestAction h)
-        {
-            progressUI.SetProgress(h.progress);
-            return;
-        }
-        if (actions.currentAction is CollectItem c)
-        {
-            progressUI.SetProgress(c.progress);
-            return;
-        }
-        if (actions.currentAction is EatAction e)
-        {
-            progressUI.SetProgress(e.progress);
-            return;
-        }
-        if (actions.currentAction is BuildAction b)
-        {
-            progressUI.SetProgress(b.progress);
-            return;
+            case HarvestAction h:
+                axe.enabled = active;
+                break;
+            case EatAction e:
+                foodRaw.enabled = active;
+                break;
+            case BuildAction b:
+                hammer.enabled = active;
+                break;
         }
     }
-
 }
