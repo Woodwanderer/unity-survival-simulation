@@ -34,6 +34,8 @@ public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by r
         if (actions.currentAction == null || actions.currentAction.IsFinished)
         {
             progressUI.Hide();
+            SetAnimationFor(previous, false);
+            previous = null;
             return;
         }
 

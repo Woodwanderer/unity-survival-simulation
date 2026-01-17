@@ -9,7 +9,7 @@ public class GameState
     //UI
     InventoryUI inventoryUI;
     ContextActionBarUI contextActionBarUI;
-    BuildingActionBarUI buildingActionBarUI;
+    BuildingBarUI buildingBarUI;
     public BuildBarUI buildBarUI;
     ActionBarUI actionBarUI;
     ModeBarUI taskBarUI;
@@ -19,7 +19,7 @@ public class GameState
 
     public IGameMode currentMode;
     public IGameTool currentTool;
-    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inventoryUI, ContextActionBarUI contextActionBarUI, BuildBarUI buildBarUI, ActionBarUI actionBarUI, ModeBarUI taskBarUI, BuildingActionBarUI buildingActionBarUI)
+    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inventoryUI, ContextActionBarUI contextActionBarUI, BuildBarUI buildBarUI, ActionBarUI actionBarUI, ModeBarUI taskBarUI, BuildingBarUI buildingBarUI)
     {
         this.world = world;
         this.renderWorld = render;
@@ -27,7 +27,7 @@ public class GameState
         this.input = input_in;
         this.inventoryUI = inventoryUI;
         this.contextActionBarUI = contextActionBarUI;
-        this.buildingActionBarUI = buildingActionBarUI;
+        this.buildingBarUI = buildingBarUI;
         this.buildBarUI = buildBarUI;
         this.actionBarUI = actionBarUI;
         this.taskBarUI = taskBarUI;
@@ -107,7 +107,7 @@ public class GameState
 
             currentBuilding = tile.stockpile;
             renderWorld.SelectAreaBuilding(currentBuilding, true);
-            buildingActionBarUI.Show(tile.stockpile, world.protagonistData.actions);
+            buildingBarUI.Show(tile.stockpile, world.protagonistData.actions);
         }
     }
     void DeselectCurrentBuilding()
@@ -115,7 +115,7 @@ public class GameState
         if (currentBuilding == null)
             return;
         renderWorld.SelectAreaBuilding(currentBuilding, false);
-        buildingActionBarUI.Hide();
+        buildingBarUI.Hide();
         currentBuilding = null;
     }
 

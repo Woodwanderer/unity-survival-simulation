@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+//Class used by InventoryUI for: protagonist. Inventory with fixed size
 public class InventoryUI : MonoBehaviour
 {
     InventoryUISlot[] slotsUI;

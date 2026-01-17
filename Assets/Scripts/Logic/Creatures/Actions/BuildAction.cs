@@ -22,6 +22,7 @@ public class BuildAction : IAction
     public void Tick(float dt)
     {
         progress += dt * speed / workTime;        
+        stockpile.constructionProgress = progress;
 
         if (progress >= 1f)
             OnFinished();

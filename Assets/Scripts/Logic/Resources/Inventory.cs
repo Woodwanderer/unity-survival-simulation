@@ -11,6 +11,7 @@ public class Inventory : IItemContainer
             slots.Add(new ItemSlot());
         }
     }
+    public int Capacity => slots.Count;
 
     public int Add(ItemDefinition item, int amount)
     {

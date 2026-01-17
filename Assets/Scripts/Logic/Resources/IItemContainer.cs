@@ -7,4 +7,5 @@ public interface IItemContainer
     int Remove(ItemDefinition item, int amount);
 
     VirtualResources Snapshot();
+    int Capacity { get; }
 }

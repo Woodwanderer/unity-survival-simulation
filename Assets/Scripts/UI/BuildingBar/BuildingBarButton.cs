@@ -2,22 +2,23 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-
-public class BuildingActionBarButton : MonoBehaviour
+public class BuildingBarButton : MonoBehaviour
 {
     Image image;
     Button button;
-    TMP_Text lowerText;
+    TMP_Text bottomText;
+    TMP_Text topText;
     private void Awake()
     {
         button = GetComponent<Button>();
         image = transform.Find("BtnSprite").GetComponent<Image>();
-        lowerText = transform.Find("LowerText").GetComponent<TMP_Text>();
+        bottomText = transform.Find("BottomText").GetComponent<TMP_Text>();
+        topText = transform.Find("TopText").GetComponent<TMP_Text>();
     }
-    public void Set(Sprite icon, string lowerText, Action action)
+    public void Set(Sprite icon, string bottomText, Action action)
     {
         SetIcon(icon);
-        SetLowerText(lowerText);
+        SetBottomText(bottomText);
         SetAction(action);
     }
     public void SetIcon(Sprite icon)
@@ -25,22 +26,31 @@ public class BuildingActionBarButton : MonoBehaviour
         image.sprite = icon;
         image.enabled = true;
     }
-    public void SetLowerText(string lowerText)
+    public void SetTopText(string text)
     {
-        this.lowerText.text = lowerText;
-        this.lowerText.enabled = true;
+        this.topText.text = text;
+        this.topText.enabled = true;
+    }
+    public void SetBottomText(string bottomText)
+    {
+        this.bottomText.text = bottomText;
+        this.bottomText.enabled = true;
     }
     public void SetAction(Action action)
     {
         button.onClick.RemoveAllListeners();
         button.onClick.AddListener(() => action());
     }
+    public void DestroySelf()
+    {
+        Destroy(gameObject);
+    }
     public void Clear()
     {
         image.sprite = null;
         image.enabled = false;
-        lowerText.text = "";
-        lowerText.enabled = false;
+        bottomText.text = "";
+        bottomText.enabled = false;
         button.onClick.RemoveAllListeners();
     }
     public void Show(bool active)

@@ -19,7 +19,6 @@ public class DropItem : IAction
         this.world = world;
         this.render = render;
     }
-
     public void Start()
     {
         targetAmount = source.Amount;
