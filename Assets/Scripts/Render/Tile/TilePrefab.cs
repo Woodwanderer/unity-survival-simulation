@@ -1,9 +1,5 @@
 ﻿using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
-
 public class TilePrefab: MonoBehaviour
 {
     float size;
@@ -35,6 +31,7 @@ public class TilePrefab: MonoBehaviour
     {
         elevation.sprite = _elevation;
     }
+
     public void ShowPath(bool visible)
     {
         path.enabled = visible;

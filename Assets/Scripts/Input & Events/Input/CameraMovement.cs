@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class CameraMovement : MonoBehaviour
 {
+    Camera cam;
     public float movementSpeed;
-    private float zDistance;
+    private float zDistance = -10;
+    Vector3 velocity; //for SmoothPointTo()
 
     public bool cameraFollow { get; private set; } = false;
     Transform target; //Reference to camera taget object
-
-    private void Start()
+    private void Awake()
     {
-        zDistance = transform.position.z;
+        cam = GetComponent<Camera>();
     }
+
     void Update()
     {
         WSADMovement();
@@ -24,7 +24,10 @@ public class CameraMovement : MonoBehaviour
             Follow(target);
         }
     }
-
+    private void LateUpdate()
+    {
+        CameraZoom();
+    }
     private void WSADMovement()
     {
         float x = Input.GetAxis("Horizontal"); //Unity has WSAD mapped already
@@ -33,9 +36,28 @@ public class CameraMovement : MonoBehaviour
         Vector3 moveVec = new(x, y, 0);
         transform.Translate(moveVec * movementSpeed * Time.deltaTime);
     }
+    void CameraZoom()
+    {
+        float scroll = Input.mouseScrollDelta.y;
+        if (scroll == 0)
+            return;
+
+        cam.orthographicSize -= scroll * 0.25f;
+        cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, 5f, 20f);
+    }
     public void PointTo(Vector3 position)
     {
         transform.position = new(position.x, position.y, zDistance);
+    }
+    public void SmoothPointTo(Vector3 target, float smoothTime = 1.5f)
+    {
+        Vector3 desired = new Vector3(target.x, target.y, zDistance);
+        transform.position = Vector3.SmoothDamp(
+            transform.position,
+            desired,
+            ref velocity,
+            smoothTime
+        );
     }
     public void StartFollow(Transform toTarget)
     {

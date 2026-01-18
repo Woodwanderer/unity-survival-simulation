@@ -29,24 +29,71 @@ public class RenderWorld : MonoBehaviour
 
     private Vector2 mapToCenter;
 
+    public CameraMovement cam;
     //INITIALISE
     public void Initialise(World world)
     {
         this.world = world;
         mapToCenter = world.halfWorldSize; // used by MapToWorld()
         TilePrefabs = new TilePrefab[world.WorldSize.x, world.WorldSize.y];
+
         Render();
+    }
+    public void StartDebugWorldGen(World world)
+    {
+        StartCoroutine(DebugGenerateCoroutine(world));
+    }
+
+    IEnumerator DebugGenerateCoroutine(World world)
+    {
+        int step = 0;
+        foreach (TileData tile in world.DebugGenerateWorldSteps())
+        {
+            Vector3 target = MapToWorld(tile.mapCoords);
+            UpdateTileVisual(tile);
+            step++;
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+    void SpawnBaseGrid()
+    {
+        for (int x = 0; x < world.WorldSize.x; x++)
+        {
+            for (int y = 0; y < world.WorldSize.y; y++)
+            {
+                Vector2Int coords = new(x, y);
+                GameObject tileObjCopy = Instantiate(tilePrefab, MapToWorld(coords), Quaternion.identity);
+                TilePrefab tileP = tileObjCopy.GetComponent<TilePrefab>();
+
+                tileP.SetTileDataRef(null);
+
+                TilePrefabs[coords.x, coords.y] = tileP;
+            }
+        }
+    }
+    public void UpdateTileVisual(TileData tileData)
+    {
+        TilePrefab tileP = TilePrefabs[tileData.mapCoords.x, tileData.mapCoords.y];
+        if (tileP == null)
+            return;
+
+        tileP.SetTileDataRef(tileData);
+        tileP.SetTerrain(GetTerrainSprite(tileData.Terrain));
+        tileP.SetElevation(GetElevationSprite(tileData.Elevation));
     }
     public void Render()
     {
         // Spawn Tile Grid
-        for (int x = 0; x < world.WorldSize.x; x++)
+        /*for (int x = 0; x < world.WorldSize.x; x++)
         {
             for (int y = 0; y < world.WorldSize.y; y++)
             {
                 SpawnTile(world.GetTileData(x, y));
             }
-        }
+        }*/
+
+        SpawnBaseGrid();
+
         SpawnProtagonist(world.GetProtagonistData());
         SpawnDeer();
     }

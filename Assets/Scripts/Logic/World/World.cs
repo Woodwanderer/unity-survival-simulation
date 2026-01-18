@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System.Collections;
 public class World
 {
     //Variables
@@ -13,6 +14,7 @@ public class World
     public GameTime gameTime;
     RenderWorld render;
 
+    LandGenerator landGenerator;
     //Tiles
     private TileData[,] tileData;
     public List<Vector2Int> tilesSelected = new();
@@ -80,9 +82,29 @@ public class World
         worldSize = new Vector2Int(worldSizeX, worldSizeY);
         halfWorldSize = worldSize / 2;
 
-        GenerateTiles();
+        landGenerator = new(worldSizeX, worldSizeY, objDatabase, pathfinder);
+
         SetProtagonist(render);
         taskManager = new(pathfinder);
+        //GenerateTiles();
+        //tileData = landGenerator.GenerateByArea();
+    }
+    public IEnumerable<TileData> DebugGenerateWorldSteps()
+    {
+        tileData = new TileData[worldSizeX, worldSizeY];
+        foreach (TileData tile in landGenerator.GenerateByAreaSteps())
+        {
+            tileData[tile.mapCoords.x, tile.mapCoords.y] = tile;
+            yield return tile;
+        }   
+    }
+    IEnumerator DebugGenerateWorld()
+    {
+        foreach(TileData tile in landGenerator.GenerateByAreaSteps())
+        {
+            render.UpdateTileVisual(tile);
+            yield return new WaitForSeconds(0.02f);
+        }
     }
     public void GenerateTiles()
     {

@@ -30,6 +30,9 @@ public class GameGo: MonoBehaviour
         world = new World(objDatabase, itemsDatabase, renderWorld, gameTime); 
         world.Initialise(renderWorld);
         renderWorld.Initialise(world);
+
+        renderWorld.StartDebugWorldGen(world);
+
         gameState = new GameState(world, renderWorld, cam, inputController, inventoryUI, contextActionbar, buildBarUI, actionBarUI, modeBarUI, buildingBarUI);
         gameState.Initialise();
 

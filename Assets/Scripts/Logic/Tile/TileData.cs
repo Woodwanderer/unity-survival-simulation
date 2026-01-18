@@ -10,12 +10,23 @@ public class TileData
     public Stockpile stockpile = null;
     public bool isWalkable => Terrain != TerrainType.Water; // hard restriction on WATER tiles only for now
     public bool HasBuilding => stockpile != null;
-
+    public bool isInit = false;
+    public TileData(Vector2Int mapCoords)
+    {
+        this.mapCoords = mapCoords;
+    }
+    public void SetLand( TerrainType Terrain, ElevationType Elevation)
+    {
+        this.Terrain = Terrain;
+        this.Elevation = Elevation;
+        isInit = true;
+    }
     public TileData(Vector2Int MapCoords, TerrainType Terrain, ElevationType Elevation)
     {
         this.mapCoords = MapCoords;
         this.Terrain = Terrain;
         this.Elevation = Elevation;
+        isInit = true;
     }
     public void SetBuilding(Stockpile stockpile)
     {

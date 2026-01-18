@@ -62,21 +62,8 @@ public class InputController: MonoBehaviour
         CameraPointAtProtagonist(); // C
         CameraFollowPlayer();       // F1
     }
-    public bool ConsumeConfirm()
-    {
-        if (!confirmPressed)
-            return false;
-        confirmPressed = false;
-        return true;
-    }
-    public bool ConsumeCancel()
-    {
-        if (!cancelPressed)
-            return false;
-        cancelPressed = false;
-        return true;
-    }
-    private void CameraPointAtProtagonist()
+    //Camera
+    void CameraPointAtProtagonist()
     {
         if (Input.GetKeyDown(cameraCenter)) //Point at Protagonist
         {
@@ -91,5 +78,19 @@ public class InputController: MonoBehaviour
         {
             cam.StartFollow(renderWorld.GetProtagonistTransform());
         }
+    }
+    public bool ConsumeConfirm()
+    {
+        if (!confirmPressed)
+            return false;
+        confirmPressed = false;
+        return true;
+    }
+    public bool ConsumeCancel()
+    {
+        if (!cancelPressed)
+            return false;
+        cancelPressed = false;
+        return true;
     }
 }

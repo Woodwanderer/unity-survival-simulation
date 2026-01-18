@@ -1215,7 +1215,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 7
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -3465,6 +3465,7 @@ MonoBehaviour:
   protagonistPrefab: {fileID: 6081129243382996873, guid: 4cf1669bf83d2dd4085e25d4426b0bb4, type: 3}
   protagonist: {fileID: 0}
   animator: {fileID: 0}
+  cam: {fileID: 330585548}
 --- !u!4 &948895214
 Transform:
   m_ObjectHideFlags: 0
