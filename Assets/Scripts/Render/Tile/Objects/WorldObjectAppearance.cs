@@ -4,7 +4,7 @@
 public class WorldObjectAppearance : ScriptableObject
 {
     public WorldObjectEntry[] entries;
-    public WorldObjectEntry Get(TileObjectsType type)
+    public WorldObjectEntry Get(WorldObjType type)
     {
         foreach (var entry in entries)
         {
@@ -18,7 +18,7 @@ public class WorldObjectAppearance : ScriptableObject
 [System.Serializable]
 public class WorldObjectEntry
 {
-    public TileObjectsType type;
+    public WorldObjType type;
     public Sprite[] variants;
 
     //Random Variant Choice

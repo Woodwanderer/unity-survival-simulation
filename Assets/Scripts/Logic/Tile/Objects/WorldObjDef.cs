@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "TileObjectDefinition", menuName = "Scriptable Objects/TileObjectDefinition")]
-public class TileObjectDefinition : ScriptableObject
+[CreateAssetMenu(fileName = "WorldObjDef", menuName = "Scriptable Objects/WorldObjDef")]
+public class WorldObjDef : ScriptableObject
 {
-    public TileObjectsType objType;
+    public WorldObjType objType;
     public int maxAge;
     public bool spawnOnWorldGen;
 
@@ -24,7 +24,7 @@ public class TileObjectDefinition : ScriptableObject
             return result;
 
         int amount = 0;
-        int age = Random.Range(1, maxAge + 1);
+        int age = UnityEngine.Random.Range(1, maxAge);
 
         foreach(ResourceRules resource in resources)
         {
@@ -39,7 +39,17 @@ public class TileObjectDefinition : ScriptableObject
         if(!Application.isPlaying)
             return;
 
-        Debug.LogError($"[TileObjectDefinition] {name} was modified during Play Mode!", this);
+        Debug.LogError($"[WorldObjDef] {name} was modified during Play Mode!", this);
     }
-    #endif
+#endif
 }
+public enum WorldObjType
+{
+    None,
+    Tree,
+    FruitTree,
+    Bush,
+    Berries,
+    Rock
+}
+

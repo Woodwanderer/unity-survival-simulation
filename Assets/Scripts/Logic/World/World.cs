@@ -16,12 +16,13 @@ public class World
 
     LandGenerator landGenerator;
     //Tiles
+    BiomeData biomeData;
     private TileData[,] tileData;
     public List<Vector2Int> tilesSelected = new();
     public Area area;    
 
     //Tile Entities
-    public TileObjectsDatabase objDatabase;
+    public WorldObjData objDatabase;
     public ItemsDatabase itemsDatabase;
 
     public Pathfinder pathfinder;
@@ -32,8 +33,9 @@ public class World
     //Tasks 
     public TaskManager taskManager;
 
-    public World(TileObjectsDatabase data_in, ItemsDatabase itemsData, RenderWorld render, GameTime time)
+    public World(WorldObjData data_in, ItemsDatabase itemsData, RenderWorld render, GameTime time, BiomeData biomeData)
     {
+        this.biomeData = biomeData;
         this.objDatabase = data_in;
         this.itemsDatabase = itemsData;
         this.render = render;
@@ -72,7 +74,7 @@ public class World
     public string ProtTileDataToString(TileData tileData)
     {
         string msg = ("You are on tile: " + protagonistData.mapCoords.ToString());
-        msg += (" There is: " + tileData.Terrain.ToString() + " and " + tileData.Elevation.ToString() + " here.");
+        msg += (" There is: " + tileData.biome.ToString() + " and " + tileData.Elevation.ToString() + " here.");
         return msg;
     }
 
@@ -82,13 +84,15 @@ public class World
         worldSize = new Vector2Int(worldSizeX, worldSizeY);
         halfWorldSize = worldSize / 2;
 
-        landGenerator = new(worldSizeX, worldSizeY, objDatabase, pathfinder);
+        landGenerator = new(worldSizeX, worldSizeY, objDatabase, pathfinder, biomeData);
 
         SetProtagonist(render);
         taskManager = new(pathfinder);
-        //GenerateTiles();
-        //tileData = landGenerator.GenerateByArea();
+        //GenerateTiles(); // Basic generator
+        tileData = landGenerator.GenerateByArea();
     }
+    ////LAND GENERATOR DEBUG PREVIEW ANIMATION
+    /*
     public IEnumerable<TileData> DebugGenerateWorldSteps()
     {
         tileData = new TileData[worldSizeX, worldSizeY];
@@ -97,15 +101,7 @@ public class World
             tileData[tile.mapCoords.x, tile.mapCoords.y] = tile;
             yield return tile;
         }   
-    }
-    IEnumerator DebugGenerateWorld()
-    {
-        foreach(TileData tile in landGenerator.GenerateByAreaSteps())
-        {
-            render.UpdateTileVisual(tile);
-            yield return new WaitForSeconds(0.02f);
-        }
-    }
+    }*/
     public void GenerateTiles()
     {
         tileData = new TileData[worldSizeX, worldSizeY];
@@ -115,15 +111,15 @@ public class World
             for (int y = 0; y < worldSizeY; y++)
             {
                 Vector2Int tilePos = new(x, y);
-                TerrainType terrain;
+                Biome terrain;
                 ElevationType elevation;
                 
                 //Set terrain
-                int countTerrainType = System.Enum.GetValues(typeof(TerrainType)).Length;
-                terrain = (TerrainType)UnityEngine.Random.Range(0, countTerrainType);
+                int countTerrainType = System.Enum.GetValues(typeof(Biome)).Length;
+                terrain = (Biome)UnityEngine.Random.Range(0, countTerrainType);
 
                 //Set elevation
-                if (!(terrain == TerrainType.Water)) 
+                if (!(terrain == Biome.Water)) 
                 {
                     int countElevationType = System.Enum.GetValues(typeof(ElevationType)).Length;
                     elevation = (ElevationType)UnityEngine.Random.Range(1, countElevationType);
@@ -135,7 +131,7 @@ public class World
 
                     tileData[x, y] = new TileData(tilePos, terrain, elevation);
 
-                if (terrain != TerrainType.Water) 
+                if (terrain != Biome.Water) 
                     PopulateWorldObjects(tileData[x, y]);
             }
         }
@@ -150,7 +146,7 @@ public class World
     {
         var spawnableDefs = objDatabase.definitions.Where(def => def.spawnOnWorldGen).ToArray();
 
-        TileObjectDefinition def = spawnableDefs[Random.Range(0, spawnableDefs.Length)];
+        WorldObjDef def = spawnableDefs[Random.Range(0, spawnableDefs.Length)];
 
         WorldObject obj = new(def, tile.mapCoords);
 

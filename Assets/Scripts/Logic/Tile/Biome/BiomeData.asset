@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49268c02ad4cc4d49a03fd2d15ac8e37, type: 3}
+  m_Name: BiomeData
+  m_EditorClassIdentifier: Assembly-CSharp::BiomeData
+  BiomeDefs:
+  - biome: 0
+    spawnEntries:
+    - worldObjDef: {fileID: 11400000, guid: 1ff83d14a4278434184813d472611ec4, type: 2}
+      weight: 5
+    - worldObjDef: {fileID: 11400000, guid: fa88680b5e413ee4489ba26b1a5d861e, type: 2}
+      weight: 5
+    - worldObjDef: {fileID: 11400000, guid: f486d472bb02f3148aa3272ee38752cb, type: 2}
+      weight: 10
+    - worldObjDef: {fileID: 11400000, guid: 2d2710016dd8b5449862fd0fa3eecd1f, type: 2}
+      weight: 10
+    - worldObjDef: {fileID: 11400000, guid: 0c426ef7e89d1fe42aeabe39fdd96783, type: 2}
+      weight: 5
+  - biome: 1
+    spawnEntries:
+    - worldObjDef: {fileID: 11400000, guid: 1ff83d14a4278434184813d472611ec4, type: 2}
+      weight: 70
+    - worldObjDef: {fileID: 11400000, guid: fa88680b5e413ee4489ba26b1a5d861e, type: 2}
+      weight: 15
+    - worldObjDef: {fileID: 11400000, guid: f486d472bb02f3148aa3272ee38752cb, type: 2}
+      weight: 25
+    - worldObjDef: {fileID: 11400000, guid: 2d2710016dd8b5449862fd0fa3eecd1f, type: 2}
+      weight: 15
+    - worldObjDef: {fileID: 11400000, guid: 0c426ef7e89d1fe42aeabe39fdd96783, type: 2}
+      weight: 5
+  - biome: 2
+    spawnEntries:
+    - worldObjDef: {fileID: 11400000, guid: 1ff83d14a4278434184813d472611ec4, type: 2}
+      weight: 80
+    - worldObjDef: {fileID: 11400000, guid: fa88680b5e413ee4489ba26b1a5d861e, type: 2}
+      weight: 15
+    - worldObjDef: {fileID: 11400000, guid: f486d472bb02f3148aa3272ee38752cb, type: 2}
+      weight: 25
+    - worldObjDef: {fileID: 11400000, guid: 2d2710016dd8b5449862fd0fa3eecd1f, type: 2}
+      weight: 15
+    - worldObjDef: {fileID: 11400000, guid: 0c426ef7e89d1fe42aeabe39fdd96783, type: 2}
+      weight: 5
+  - biome: 3
+    spawnEntries: []

@@ -6,14 +6,16 @@ public class LandGenerator
     int gridX;
     int gridY;
     TileData[,] grid;
-    TileObjectsDatabase objData;
+    BiomeData biomeData;
+    WorldObjData objData;
     Pathfinder pathfinder;
-    public LandGenerator(int gridX, int gridY, TileObjectsDatabase objData, Pathfinder pathfinder)
+    public LandGenerator(int gridX, int gridY, WorldObjData objData, Pathfinder pathfinder, BiomeData biomeData)
     {
         this.gridX = gridX;
         this.gridY = gridY;
         this.objData = objData;
         this.pathfinder = pathfinder;
+        this.biomeData = biomeData;
     }
     public TileData GetTileData(int x, int y) => grid[x, y];
     public TileData GetTileData(Vector2Int mapCoords)
@@ -22,15 +24,15 @@ public class LandGenerator
     }
     void SetTileLand(TileData tile)
     {
-        TerrainType terrain;
+        Biome terrain;
         ElevationType elevation;
 
         //Set terrain
-        int countTerrainType = System.Enum.GetValues(typeof(TerrainType)).Length;
-        terrain = (TerrainType)UnityEngine.Random.Range(0, countTerrainType);
+        int countTerrainType = System.Enum.GetValues(typeof(Biome)).Length;
+        terrain = (Biome)UnityEngine.Random.Range(0, countTerrainType);
 
         //Set elevation
-        if (!(terrain == TerrainType.Water))
+        if (!(terrain == Biome.Water))
         {
             int countElevationType = System.Enum.GetValues(typeof(ElevationType)).Length;
             elevation = (ElevationType)UnityEngine.Random.Range(1, countElevationType);
@@ -43,8 +45,8 @@ public class LandGenerator
         tile.SetLand(terrain, elevation);
 
 
-        if (terrain != TerrainType.Water)
-            PopulateWorldObjects(grid[tile.mapCoords.x, tile.mapCoords.y]);
+        if (terrain != Biome.Water)
+            PopulateWorldObjWeighted(grid[tile.mapCoords.x, tile.mapCoords.y]);
     }
     static readonly Vector2Int[] Directions =
 {
@@ -73,7 +75,7 @@ public class LandGenerator
             yield return next;
         }
     }
-    public TileData[,] GenerateByArea() // 0.0 Genrator -> equal random values for all types
+    public TileData[,] GenerateByArea() // 0.1 Generator
     {
         grid = new TileData[gridX, gridY];
         for (int x = 0; x < gridX; x++)
@@ -90,7 +92,6 @@ public class LandGenerator
         {
             notSet.Add(tile);
         }
-
 
         while (notSet.Count > 0)
         {
@@ -113,7 +114,7 @@ public class LandGenerator
                     TileData next = GetTileData(neighbour);
                     if (next.isInit)
                     {
-                        if (next.Terrain != current.Terrain)
+                        if (next.biome != current.biome)
                         {
                             chance -= chanceIncrement;
                             chance = Mathf.Clamp(chance, 0.2f, 0.8f);
@@ -136,7 +137,11 @@ public class LandGenerator
                     bool roll = Random.value <= chance;
                     if (roll)
                     {
-                        next.SetLand(current.Terrain, current.Elevation);
+                        next.SetLand(current.biome, current.Elevation);
+
+                        if (next.biome != Biome.Water) 
+                            PopulateWorldObjWeighted(next);
+
                         area.Enqueue(next);
                         notSet.Remove(next);
                     }
@@ -149,7 +154,8 @@ public class LandGenerator
         }
         return grid;
     }
-    public IEnumerable<TileData> GenerateByAreaSteps() // 0.0 Genrator -> equal random values for all types
+    ////LAND GENERATOR DEBUG PREVIEW ANIMATION
+    /*public IEnumerable<TileData> GenerateByAreaSteps()
     {
         grid = new TileData[gridX, gridY];
         for (int x = 0; x < gridX; x++)
@@ -189,7 +195,7 @@ public class LandGenerator
                     TileData next = GetTileData(neighbour);
                     if (next.isInit)
                     {
-                        if (next.Terrain != current.Terrain)
+                        if (next.biome != current.biome)
                         {
                             chance -= chanceIncrement;
                             chance = Mathf.Clamp(chance, 0.2f, 0.8f);
@@ -212,7 +218,7 @@ public class LandGenerator
                     bool roll = Random.value <= chance;
                     if (roll)
                     {
-                        next.SetLand(current.Terrain, current.Elevation);
+                        next.SetLand(current.biome, current.Elevation);
                         area.Enqueue(next);
                         notSet.Remove(next);
 
@@ -225,8 +231,9 @@ public class LandGenerator
                 }
             }
         }
-    }
-    public void GenerateTiles() // 0.0 Genrator -> equal random values for all types
+    }*/
+    // 0.0 Genrator -> equal random values for all types
+    /*public void GenerateTiles() 
     {
         grid = new TileData[gridX, gridY];
 
@@ -235,15 +242,15 @@ public class LandGenerator
             for (int y = 0; y < gridY; y++)
             {
                 Vector2Int tilePos = new(x, y);
-                TerrainType terrain;
+                Biome terrain;
                 ElevationType elevation;
 
                 //Set terrain
-                int countTerrainType = System.Enum.GetValues(typeof(TerrainType)).Length;
-                terrain = (TerrainType)UnityEngine.Random.Range(0, countTerrainType);
+                int countTerrainType = System.Enum.GetValues(typeof(Biome)).Length;
+                terrain = (Biome)UnityEngine.Random.Range(0, countTerrainType);
 
                 //Set elevation
-                if (!(terrain == TerrainType.Water))
+                if (!(terrain == Biome.Water))
                 {
                     int countElevationType = System.Enum.GetValues(typeof(ElevationType)).Length;
                     elevation = (ElevationType)UnityEngine.Random.Range(1, countElevationType);
@@ -255,20 +262,48 @@ public class LandGenerator
 
                 grid[x, y] = new TileData(tilePos, terrain, elevation);
 
-                if (terrain != TerrainType.Water)
+                if (terrain != Biome.Water)
                     PopulateWorldObjects(grid[x, y]);
             }
         }
-    }
+    }*/
     private void PopulateWorldObjects(TileData tile)
     {
         var spawnableDefs = objData.definitions.Where(def => def.spawnOnWorldGen).ToArray();
 
-        TileObjectDefinition def = spawnableDefs[Random.Range(0, spawnableDefs.Length)];
+        WorldObjDef def = spawnableDefs[Random.Range(0, spawnableDefs.Length)];
 
         WorldObject obj = new(def, tile.mapCoords);
 
         obj.harvestSource = new HarvestSource(def.GenerateResources());
+
+        tile.AddEntity(obj);
+    }
+    private void PopulateWorldObjWeighted(TileData tile)
+    {
+        BiomeData.BiomeDef biomeDef = biomeData.GetBiomeDef(tile.biome);
+        
+        float weight = biomeDef.Weight;
+        if (weight <= 0)
+            return;
+
+        float roll = Random.value * weight;
+
+        float current = 0f;
+        WorldObjDef worldObjDef = null;
+        foreach (var entry in biomeDef.spawnEntries)
+        {
+            current += entry.weight;
+            if (roll <= current)
+            {
+                worldObjDef = entry.worldObjDef;
+                break;
+            }
+        }
+
+        WorldObject obj = new(worldObjDef, tile.mapCoords);
+
+        obj.harvestSource = new HarvestSource(worldObjDef.GenerateResources());
 
         tile.AddEntity(obj);
     }

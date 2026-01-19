@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class WorldObject : TileEntity
 {
-    public TileObjectDefinition Definition {get;}
+    public WorldObjDef Definition {get;}
     public HarvestSource harvestSource;
     public bool HasItems => harvestSource != null && !harvestSource.Depleted;
-    public WorldObject(TileObjectDefinition def, Vector2Int tileCoords) : base(tileCoords)
+    public WorldObject(WorldObjDef def, Vector2Int tileCoords) : base(tileCoords)
     {
         Definition = def;
     }

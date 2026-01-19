@@ -913,9 +913,10 @@ MonoBehaviour:
   inputController: {fileID: 899128859}
   cam: {fileID: 330585548}
   inventoryUI: {fileID: 178616592}
-  objDatabase: {fileID: 11400000, guid: 23e7e62dbb56a844a8a454a4de8b6b1d, type: 2}
+  objDatabase: {fileID: 11400000, guid: d7baeb751646c73478233c0d9381adc0, type: 2}
   itemsDatabase: {fileID: 11400000, guid: 15deb01c033a20447ba78efa800af1d2, type: 2}
   IActionVisualData: {fileID: 11400000, guid: 45189134cb0b96744873255a3d21bfd7, type: 2}
+  biomeData: {fileID: 11400000, guid: 21861cd0d0dc9724191f3ad5ec78d2c0, type: 2}
   actionBarUI: {fileID: 1419749311}
   timePanelUI: {fileID: 2021315610}
   charSheetUI: {fileID: 264669006}

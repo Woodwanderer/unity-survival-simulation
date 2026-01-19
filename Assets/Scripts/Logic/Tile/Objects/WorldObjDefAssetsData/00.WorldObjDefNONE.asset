@@ -9,12 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1349607b314e15940acdbc229df89da0, type: 3}
-  m_Name: 00.TODefOakTree
-  m_EditorClassIdentifier: 
+  m_Script: {fileID: 11500000, guid: 663fa77d2dd4b1941a4136ad87a38aac, type: 3}
+  m_Name: 00.WorldObjDefNONE
+  m_EditorClassIdentifier: Assembly-CSharp::WorldObjDef
   objType: 0
-  maxAge: 100
-  spawnOnWorldGen: 1
-  resources:
-  - item: {fileID: 11400000, guid: bdc1438ad54452d4c8aa6181bccfae1a, type: 2}
-    maxAmount: 1000
+  maxAge: 0
+  spawnOnWorldGen: 0
+  resources: []

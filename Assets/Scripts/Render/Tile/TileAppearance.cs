@@ -6,7 +6,7 @@ public class TileAppearance : ScriptableObject
     public TerrainEntry[] terrainEntries;
     public ElevationEntry[] elevationEntries;
 
-    public TerrainEntry Get(TerrainType type)
+    public TerrainEntry Get(Biome type)
     {
         foreach (TerrainEntry entry in terrainEntries)
         {
@@ -29,7 +29,7 @@ public class TileAppearance : ScriptableObject
 [System.Serializable]
 public class TerrainEntry
 {
-    public TerrainType type;
+    public Biome type;
     public Sprite[] variants;
     public Sprite GetRandomSprite()
     {

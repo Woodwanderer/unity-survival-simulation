@@ -39,11 +39,12 @@ public class RenderWorld : MonoBehaviour
 
         Render();
     }
-    public void StartDebugWorldGen(World world)
+
+    //LAND GENERATOR DEBUG PREVIEW ANIMATION
+    /*public void StartDebugWorldGen(World world)
     {
         StartCoroutine(DebugGenerateCoroutine(world));
     }
-
     IEnumerator DebugGenerateCoroutine(World world)
     {
         int step = 0;
@@ -78,21 +79,21 @@ public class RenderWorld : MonoBehaviour
             return;
 
         tileP.SetTileDataRef(tileData);
-        tileP.SetTerrain(GetTerrainSprite(tileData.Terrain));
+        tileP.SetTerrain(GetTerrainSprite(tileData.biome));
         tileP.SetElevation(GetElevationSprite(tileData.Elevation));
-    }
+    }*/
     public void Render()
     {
+
         // Spawn Tile Grid
-        /*for (int x = 0; x < world.WorldSize.x; x++)
+        //SpawnBaseGrid(); // Land Generator DEBUG
+        for (int x = 0; x < world.WorldSize.x; x++)
         {
             for (int y = 0; y < world.WorldSize.y; y++)
             {
                 SpawnTile(world.GetTileData(x, y));
             }
-        }*/
-
-        SpawnBaseGrid();
+        }
 
         SpawnProtagonist(world.GetProtagonistData());
         SpawnDeer();
@@ -108,13 +109,9 @@ public class RenderWorld : MonoBehaviour
         int y = Mathf.RoundToInt(worldPos.y / tileSize + mapToCenter.y);
         return new Vector2Int(x, y);
     }
-    public void Tick(float deltaTime)
-    {
-
-    }
-
+    
     //TILES
-    private Sprite GetTerrainSprite(TerrainType type)
+    private Sprite GetTerrainSprite(Biome type)
     {
         TerrainEntry entry = config.Get(type);
         return entry.GetRandomSprite();
@@ -130,7 +127,7 @@ public class RenderWorld : MonoBehaviour
         TilePrefab tileP = tileObjCopy.GetComponent<TilePrefab>();
 
         tileP.SetTileDataRef(tileData);
-        tileP.SetTerrain(GetTerrainSprite(tileData.Terrain));
+        tileP.SetTerrain(GetTerrainSprite(tileData.biome));
         tileP.SetElevation(GetElevationSprite(tileData.Elevation));
 
         foreach (TileEntity ent in tileData.entities)

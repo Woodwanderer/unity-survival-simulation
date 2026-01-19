@@ -12,9 +12,10 @@ public class GameGo: MonoBehaviour
     public GameTime gameTime = new();
 
     //Data Assets
-    public TileObjectsDatabase objDatabase;
+    public WorldObjData objDatabase;
     public ItemsDatabase itemsDatabase;
     public IActionVisualData IActionVisualData;
+    public BiomeData biomeData;
 
     //UI
     public ActionBarUI actionBarUI;          
@@ -27,11 +28,11 @@ public class GameGo: MonoBehaviour
 
     private void Start()
     {
-        world = new World(objDatabase, itemsDatabase, renderWorld, gameTime); 
+        world = new World(objDatabase, itemsDatabase, renderWorld, gameTime, biomeData); 
         world.Initialise(renderWorld);
         renderWorld.Initialise(world);
 
-        renderWorld.StartDebugWorldGen(world);
+        //renderWorld.StartDebugWorldGen(world); // LAND GENERATOR DEBUG ANIMATION
 
         gameState = new GameState(world, renderWorld, cam, inputController, inventoryUI, contextActionbar, buildBarUI, actionBarUI, modeBarUI, buildingBarUI);
         gameState.Initialise();
@@ -52,8 +53,5 @@ public class GameGo: MonoBehaviour
         inputController.Tick(dt);
         gameState.Tick(dt);
         world.Tick(dt);
-
-        //not used yet
-        renderWorld.Tick(dt);
     }
 }

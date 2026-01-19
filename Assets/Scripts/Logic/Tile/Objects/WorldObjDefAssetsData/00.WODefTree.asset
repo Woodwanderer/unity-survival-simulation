@@ -9,14 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1349607b314e15940acdbc229df89da0, type: 3}
-  m_Name: 01.TODefFruitTree
-  m_EditorClassIdentifier: 
-  objType: 1
-  maxAge: 10
+  m_Script: {fileID: 11500000, guid: 663fa77d2dd4b1941a4136ad87a38aac, type: 3}
+  m_Name: 00.WODefTree
+  m_EditorClassIdentifier: Assembly-CSharp::WorldObjDef
+  objType: 0
+  maxAge: 500
   spawnOnWorldGen: 1
   resources:
-  - item: {fileID: 11400000, guid: 76784c41182a7a248a13b937ad4dc5f0, type: 2}
-    maxAmount: 20
   - item: {fileID: 11400000, guid: bdc1438ad54452d4c8aa6181bccfae1a, type: 2}
-    maxAmount: 50
+    maxAmount: 500
