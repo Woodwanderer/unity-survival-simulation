@@ -1,18 +1,28 @@
 ﻿using UnityEngine;
+using TMPro;
 
 //Class used by InventoryUI for: protagonist. Inventory with fixed size
 public class InventoryUI : MonoBehaviour
 {
     InventoryUISlot[] slotsUI;
-    Inventory Inventory;
+    TMP_Text weight;
+    TMP_Text weightMax;
+
+    Inventory inventory;
+    CharacterSheet stats;
     void Awake()
     {
         gameObject.SetActive(false);
         slotsUI = GetComponentsInChildren<InventoryUISlot>();
+        weight = transform.Find("CarryWeightValue").GetComponent<TMP_Text>();
+        weightMax = transform.Find("MaxCarryWeightValue").GetComponent<TMP_Text>();
+
     }
-    public void Init(Inventory inventory)
+    public void Init(Inventory inventory, CharacterSheet stats)
     {
-        this.Inventory = inventory;
+        this.inventory = inventory;
+        this.stats = stats;
+
     }
     private void Update()
     {
@@ -23,11 +33,13 @@ public class InventoryUI : MonoBehaviour
     }
     void Refresh()
     {
-        if (Inventory == null) 
+        if (inventory == null) 
             return;
 
+        SetWeightText();
+
         int i = 0;
-        foreach (var slot in Inventory.Slots)
+        foreach (var slot in inventory.Slots)
         {
             if (slot.IsEmpty)
             {
@@ -51,5 +63,10 @@ public class InventoryUI : MonoBehaviour
     public void Hide()
     {
         gameObject.SetActive(false);
+    }
+    void SetWeightText()
+    {
+        weight.text = inventory.Weight.ToString();
+        weightMax.text = stats.carryWeight.ToString();
     }
 }

@@ -12,6 +12,7 @@ public class Inventory : IItemContainer
         }
     }
     public int Capacity => slots.Count;
+    public float Weight => CalculateWeight();
 
     public int Add(ItemDefinition item, int amount)
     {

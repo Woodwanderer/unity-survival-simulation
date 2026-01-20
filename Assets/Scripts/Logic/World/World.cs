@@ -102,40 +102,6 @@ public class World
             yield return tile;
         }   
     }*/
-    public void GenerateTiles()
-    {
-        tileData = new TileData[worldSizeX, worldSizeY];
-
-        for (int x = 0; x < worldSizeX; x++)
-        {
-            for (int y = 0; y < worldSizeY; y++)
-            {
-                Vector2Int tilePos = new(x, y);
-                Biome terrain;
-                ElevationType elevation;
-                
-                //Set terrain
-                int countTerrainType = System.Enum.GetValues(typeof(Biome)).Length;
-                terrain = (Biome)UnityEngine.Random.Range(0, countTerrainType);
-
-                //Set elevation
-                if (!(terrain == Biome.Water)) 
-                {
-                    int countElevationType = System.Enum.GetValues(typeof(ElevationType)).Length;
-                    elevation = (ElevationType)UnityEngine.Random.Range(1, countElevationType);
-                }
-                else
-                {
-                    elevation = ElevationType.Water;
-                }
-
-                    tileData[x, y] = new TileData(tilePos, terrain, elevation);
-
-                if (terrain != Biome.Water) 
-                    PopulateWorldObjects(tileData[x, y]);
-            }
-        }
-    }
     private void SetProtagonist(RenderWorld render)
     {
         protagonistData = new ProtagonistData(halfWorldSize, gameTime.HourDuration, this, render);

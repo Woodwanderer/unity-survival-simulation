@@ -43,7 +43,7 @@ public class Stockpile : IItemContainer
     }
     
     //construction
-    public float WorkTime => 6 * world.gameTime.HourDuration * area.Count; //work units: 6hours/tile
+    public float WorkTime => 0.5f * world.gameTime.HourDuration * area.Count; //work units: 6hours/tile
     public float constructionProgress = 0;
     public bool IsConstructed => constructionProgress >= 1f;
 

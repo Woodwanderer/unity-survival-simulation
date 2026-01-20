@@ -2,17 +2,18 @@
 public class BuildingBarUI : MonoBehaviour
 {
     Stockpile stockpile;
+    bool lastIsConstructed;
     CharacterActions actions;
     public IActionVisualData actionVisualData;
 
     //BuildBar
     public GameObject buttonPrefab;
     public GameObject buttonsLayout;
-    BuildingBarButton build;
-    BuildingBarButton inventory;
+    BuildingBarButton buildButt;
+    BuildingBarButton invButt;
 
     //Inventory
-    public InventoryUIGneric inventoryView;
+    public InventoryUIGeneric inventoryView;
     
     void Awake()
     {
@@ -20,76 +21,93 @@ public class BuildingBarUI : MonoBehaviour
     }
     public void Show(Stockpile stockpile, CharacterActions actions)
     {
+        bool changed = this.stockpile != stockpile;
+
         this.stockpile = stockpile;
         this.actions = actions;
 
         gameObject.SetActive(true);
 
-        Refresh();
+        if (changed)
+        {
+            inventoryView.Hide();
+            ClearButtons();
+            lastIsConstructed = stockpile.IsConstructed;
+            BuildButtonsForState();
+        }
     }
     public void Hide()
     {
+        inventoryView.Hide();
         gameObject.SetActive(false);
     }
     void Update()
     {
-        Refresh();
-    }
-    void Refresh()
-    {
-        SetBuildButton();
-        SetInventoryButton();
-    }
-    void SetBuildButton()
-    {
-        if (!stockpile.IsConstructed && build == null)
-        {
-            GameObject button = Instantiate(buttonPrefab, buttonsLayout.transform);
-            build = button.GetComponent<BuildingBarButton>();
-            build.SetTopText("Build");
-            Sprite icon = actionVisualData.GetIcon(IActionName.Build);
-            build.SetIcon(icon);
-            build.SetAction(() => actions.TryBuild(stockpile));
-        }
-
-        if (!stockpile.IsConstructed && build != null)
-            build.SetBottomText($"{stockpile.constructionProgress * 100:0}%");
-
-        if (stockpile.IsConstructed && build != null)
-        {
-            build.DestroySelf();
-            build = null;
-        }
-    }
-    void SetInventoryButton() 
-    {
-        if (stockpile.IsConstructed && inventory == null)
-        {
-            SetInventory();
-
-            GameObject button = Instantiate(buttonPrefab, buttonsLayout.transform);
-            inventory = button.GetComponent<BuildingBarButton>();
-            inventory.SetTopText("Inventory");
-            Sprite icon = actionVisualData.GetIcon(IActionName.Collect);
-            inventory.SetIcon(icon);
-            inventory.SetAction(() => ToggleInventory());
-        }
-
-        if (!stockpile.IsConstructed && inventory != null)
-        {
-            inventory.DestroySelf();
-            inventory = null;
-        }
-    }
-    void SetInventory()
-    {
-        if (inventoryView.IsInit)
+        if (stockpile == null)
             return;
 
-        inventoryView.Init(stockpile);
+        if (stockpile.IsConstructed != lastIsConstructed)
+        {
+            lastIsConstructed = stockpile.IsConstructed;
+            BuildButtonsForState();
+        }
+        if (!stockpile.IsConstructed && buildButt != null)
+            buildButt.SetBottomText($"{stockpile.constructionProgress * 100:0}%");
     }
+    void BuildButtonsForState()
+    {
+        if (!stockpile.IsConstructed)
+        {
+            CreateBuildButton();
+            ClearInvButton();
+        }
+        else
+        {
+            ClearBuildButton();
+            CreateInventoryButton();
+        }
+    }
+    void ClearButtons()
+    {
+        ClearBuildButton();
+        ClearInvButton();
+    }
+    void ClearBuildButton()
+    {
+        if (buildButt == null)
+            return;
+
+        buildButt.DestroySelf();
+        buildButt = null;
+    }
+    void ClearInvButton()
+    {
+        if (invButt == null)
+            return;
+
+        invButt.DestroySelf();
+        invButt = null;
+    }
+    void CreateBuildButton()
+    {
+        GameObject button = Instantiate(buttonPrefab, buttonsLayout.transform);
+        buildButt = button.GetComponent<BuildingBarButton>();
+        buildButt.SetTopText("Build");
+        Sprite icon = actionVisualData.GetIcon(IActionName.Build);
+        buildButt.SetIcon(icon);
+        buildButt.SetAction(() => actions.TryBuild(stockpile));
+    }
+    void CreateInventoryButton() 
+    {
+        GameObject button = Instantiate(buttonPrefab, buttonsLayout.transform);
+        invButt = button.GetComponent<BuildingBarButton>();
+        invButt.SetTopText("Inventory");
+        Sprite icon = actionVisualData.GetIcon(IActionName.Collect);
+        invButt.SetIcon(icon);
+        invButt.SetAction(() => ToggleInventory());
+    } 
     void ToggleInventory()
     {
-        inventoryView.Show();
+        inventoryView.Toggle(stockpile);
     }
 }

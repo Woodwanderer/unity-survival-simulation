@@ -30,10 +30,15 @@ public class CameraMovement : MonoBehaviour
     }
     private void WSADMovement()
     {
-        float x = Input.GetAxis("Horizontal"); //Unity has WSAD mapped already
-        float y = Input.GetAxis("Vertical");
+        Vector2 input = new(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
-        Vector3 moveVec = new(x, y, 0);
+        if (input.sqrMagnitude < 0.001f) 
+            return;
+
+        StopFollow();
+
+        Vector2 clamped = Vector2.ClampMagnitude(input, 1f); // prevents diagonal speed up
+        Vector3 moveVec = new(clamped.x, clamped.y, 0);
         transform.Translate(moveVec * movementSpeed * Time.deltaTime);
     }
     void CameraZoom()
@@ -59,6 +64,7 @@ public class CameraMovement : MonoBehaviour
             smoothTime
         );
     }
+
     public void StartFollow(Transform toTarget)
     {
         cameraFollow = true;

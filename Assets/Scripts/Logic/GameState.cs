@@ -35,7 +35,7 @@ public class GameState
 
     public void Initialise()
     {
-        inventoryUI.Init(world.protagonistData.actions.inventory);
+        inventoryUI.Init(world.protagonistData.actions.inventory, world.protagonistData.actions.stats);
         EventBus.OnObjectClick += SelectObj;
     }
     public void SetMode(IGameMode newMode)

@@ -76,6 +76,12 @@ public class InputController: MonoBehaviour
     {
         if (Input.GetKeyDown(cameraFollowProtagonist))
         {
+            if (cam.cameraFollow)
+            {
+                cam.StopFollow();
+                return;
+            }
+
             cam.StartFollow(renderWorld.GetProtagonistTransform());
         }
     }

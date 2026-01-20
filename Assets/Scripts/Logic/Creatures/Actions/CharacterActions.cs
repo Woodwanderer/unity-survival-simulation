@@ -133,7 +133,6 @@ public class CharacterActions
         SetAction(eat);
         return true;
     }
-
     //HARVEST
     public void TryHarvest(TileEntity target, ItemDefinition item)
     {
@@ -151,7 +150,6 @@ public class CharacterActions
         {
             return;
         }
-
         if (protagonistData.mapCoords == target.TileCoords)
         {
             SetAction(transfer);
