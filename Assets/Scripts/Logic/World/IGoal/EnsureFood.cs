@@ -54,7 +54,6 @@ public class EnsureFood : IGoal
         if (hero.currentAction != null)
             return;
 
-        
 
         if (hero.TryEat(order)) 
         {

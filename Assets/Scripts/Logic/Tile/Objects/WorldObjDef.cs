@@ -45,7 +45,6 @@ public class WorldObjDef : ScriptableObject
 }
 public enum WorldObjType
 {
-    None,
     Tree,
     FruitTree,
     Bush,

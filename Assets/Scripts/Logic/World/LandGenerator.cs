@@ -138,10 +138,7 @@ public class LandGenerator
                     if (roll)
                     {
                         next.SetLand(current.biome, current.Elevation);
-
-                        if (next.biome != Biome.Water) 
-                            PopulateWorldObjWeighted(next);
-
+                        PopulateWorldObjWeighted(next);
                         area.Enqueue(next);
                         notSet.Remove(next);
                     }
@@ -267,7 +264,8 @@ public class LandGenerator
             }
         }
     }*/
-    private void PopulateWorldObjects(TileData tile)
+    // WorldObjects genrator v 0.0.
+    /*private void PopulateWorldObjects(TileData tile)
     {
         var spawnableDefs = objData.definitions.Where(def => def.spawnOnWorldGen).ToArray();
 
@@ -278,19 +276,26 @@ public class LandGenerator
         obj.harvestSource = new HarvestSource(def.GenerateResources());
 
         tile.AddEntity(obj);
-    }
+    }*/
+    //WorldObject Generator v 0.1.
     private void PopulateWorldObjWeighted(TileData tile)
     {
         BiomeData.BiomeDef biomeDef = biomeData.GetBiomeDef(tile.biome);
         
-        float weight = biomeDef.Weight;
-        if (weight <= 0)
+        float weight = biomeDef.TotalWeight;
+        if (weight <= 0 || biomeDef.density == 0)  //No entries biome i.e. Water now
+            return;
+
+        float rollPresence = Random.value;
+
+        if (rollPresence > biomeDef.density)
             return;
 
         float roll = Random.value * weight;
 
         float current = 0f;
         WorldObjDef worldObjDef = null;
+
         foreach (var entry in biomeDef.spawnEntries)
         {
             current += entry.weight;

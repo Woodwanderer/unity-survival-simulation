@@ -25,6 +25,7 @@ MonoBehaviour:
       weight: 10
     - worldObjDef: {fileID: 11400000, guid: 0c426ef7e89d1fe42aeabe39fdd96783, type: 2}
       weight: 5
+    totalWeight: 35
   - biome: 1
     spawnEntries:
     - worldObjDef: {fileID: 11400000, guid: 1ff83d14a4278434184813d472611ec4, type: 2}
@@ -37,6 +38,7 @@ MonoBehaviour:
       weight: 15
     - worldObjDef: {fileID: 11400000, guid: 0c426ef7e89d1fe42aeabe39fdd96783, type: 2}
       weight: 5
+    totalWeight: 130
   - biome: 2
     spawnEntries:
     - worldObjDef: {fileID: 11400000, guid: 1ff83d14a4278434184813d472611ec4, type: 2}
@@ -49,5 +51,7 @@ MonoBehaviour:
       weight: 15
     - worldObjDef: {fileID: 11400000, guid: 0c426ef7e89d1fe42aeabe39fdd96783, type: 2}
       weight: 5
+    totalWeight: 140
   - biome: 3
     spawnEntries: []
+    totalWeight: 0

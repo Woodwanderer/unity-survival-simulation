@@ -5,8 +5,6 @@ using UnityEngine;
 public class BiomeData : ScriptableObject
 {
     public BiomeDef[] BiomeDefs;
-
-
     public BiomeDef GetBiomeDef(Biome type)
     {
         foreach (BiomeDef def in BiomeDefs)
@@ -18,30 +16,54 @@ public class BiomeData : ScriptableObject
     [System.Serializable]
     public class BiomeDef
     {
-        public float Weight
+        public Biome biome;
+
+        [Range(0f, 1f)]
+        public float density = 1f;
+
+        public List<SpawnEntry> spawnEntries;
+        public float TotalWeight
         {
             get
             {
-                if (spawnEntries == null)
-                    return 0;
-                if(spawnEntries.Count == 0)
-                    return 0;
                 float weight = 0;
-                foreach (var entry in spawnEntries)
+                if (spawnEntries != null)
                 {
-                    weight += entry.weight;
+                    foreach (var entry in spawnEntries)
+                        weight += entry.weight;
                 }
                 return weight;
             }
         }
-        public Biome biome;
-        public List<SpawnEntry> spawnEntries;
+
+
+        [SerializeField, Tooltip("Sum of all entry weights (read-only)")]
+        float totalWeight;
+        public void RecalculateWeight()
+        {
+            float weight = 0;
+            if (spawnEntries != null)
+            {
+                foreach (var entry in spawnEntries)
+                    weight += entry.weight;
+            }
+            totalWeight = weight;
+        }
+        
     }
     [System.Serializable]
     public class SpawnEntry
     {
         public WorldObjDef worldObjDef;
         public float weight; //0-100 as %
+    }
+    private void OnValidate()
+    {
+        if (BiomeDefs == null)
+            return;
+
+        foreach (var def in BiomeDefs)
+            def?.RecalculateWeight();   
     }
 }
 public enum Biome

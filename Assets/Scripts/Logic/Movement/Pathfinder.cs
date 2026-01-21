@@ -15,7 +15,7 @@ public class Pathfinder //BFS -> Deijkstra later ;)
         new Vector2Int(-1, 0 ),
         new Vector2Int( 0, 1 ),
     };
-    bool IsWithinWorld(Vector2Int pos)
+    public bool IsWithinWorld(Vector2Int pos)
     {
         return ( pos.x >= 0                &&
                  pos.y >= 0                &&

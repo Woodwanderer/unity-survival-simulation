@@ -54,40 +54,70 @@ public class GameState
     {   
         currentTool?.Tick(deltaTime);
 
+        PrintMouseTileInfo();
         SelectAreaBuilding();
 
         //CANCEL
         if(input.ConsumeCancel()) 
             HandleCancel();
     }
+
     //Select Tiles
     bool isDragging = false;
     Vector2Int dragStart;
+    void PrintMouseTileInfo()
+    {
+        if (!Input.GetMouseButtonDown(0)) 
+            return;
+
+        if (!TryGetMouseTile(out Vector2Int coords))
+            return;
+
+        TileData tile = world.GetTileData(coords);
+        EventBus.Log($"There's a {tile.biome} biome here.");
+        foreach(var ent  in tile.entities)
+        {
+            if (ent is WorldObject w)
+            {
+                EventBus.Log($"There're a {w.Definition.objType} here.");
+            }
+        }
+        
+    }
     public void SelectZoneDrag()
     {
-        if (Input.GetMouseButtonDown(0) && isDragging == false) 
+        if (Input.GetMouseButtonDown(0) && !isDragging) 
         {
-            dragStart = GetMouseTile();
+            if (!TryGetMouseTile(out dragStart))
+                return;
+
             isDragging = true;
         }
         if (Input.GetMouseButton(0) && isDragging) 
         {
-            Vector2Int current = GetMouseTile();
-            world.SelectZone(dragStart, current);
+            if (TryGetMouseTile(out Vector2Int current)) 
+                world.SelectZone(dragStart, current);
         }
         if (Input.GetMouseButtonUp(0) && isDragging)
         {
-            Vector2Int dragEnd = GetMouseTile();
+            if (TryGetMouseTile(out Vector2Int dragEnd)) 
+                world.SelectConnectedZone(dragStart, dragEnd);
 
-            world.SelectConnectedZone(dragStart, dragEnd);
             isDragging = false;
         }
     }
-    Vector2Int GetMouseTile()
+    bool TryGetMouseTile(out Vector2Int tile)
     {
+        tile = default;
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        worldPos.z = 0;
-        return  renderWorld.WorldToMap(worldPos);
+        
+        Vector2Int coords = renderWorld.WorldToMap(worldPos);
+
+        if (!world.pathfinder.IsWithinWorld(coords))
+            return false;
+            
+        tile = coords;
+        return true;
     }
 
     //Buildings
@@ -99,7 +129,10 @@ public class GameState
         if (Input.GetMouseButtonDown(0)) 
         {
             DeselectCurrentBuilding();
-            Vector2Int tileCoords = GetMouseTile();
+
+            if (!TryGetMouseTile(out Vector2Int tileCoords))
+                return;
+
             TileData tile = world.GetTileData(tileCoords);
 
             if (!tile.HasBuilding)
