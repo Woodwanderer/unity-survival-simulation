@@ -33,7 +33,10 @@ public class GameTime
         }
         timeString = $"Day: {day:D2} Time: {hour:D2}: {(int)Mathf.Floor(secondsInHour):D2}";
     }
-
+    public float GameDeltaTime(float realDt)
+    {
+        return realDt * timeScale;
+    }
     public string GetTimeString()
     {
         return timeString;

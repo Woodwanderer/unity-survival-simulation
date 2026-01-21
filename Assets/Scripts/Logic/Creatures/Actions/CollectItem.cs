@@ -11,14 +11,14 @@ public class CollectItem : IAction
 
     public ResourcePile pile;
     Inventory inventory = null;
-    ItemDefinition targetItem;
+    ItemSlot order;
     CharacterSheet stats;
-    public CollectItem(ResourcePile pile, ItemDefinition targetItem, CharacterSheet stats)
+    public CollectItem(ResourcePile pile, ItemSlot order, CharacterSheet stats)
     {
         this.stats = stats;
         inventory = stats.inventory;
         this.pile = pile;
-        this.targetItem = targetItem;
+        this.order = order;
         
         //Set stats
         this.speed = stats.harvestSpeed;
@@ -27,12 +27,13 @@ public class CollectItem : IAction
     {        
         unitProgress = 0f;
         progress = 0f;
-        targetAmount = pile.Amount;
+        
+        targetAmount = order.Amount;
     }
 
     public void Tick(float dt)
     {
-        if (inventory.CalculateWeight(targetItem) >= stats.carryWeight)
+        if (inventory.CalculateWeight(order.Item) >= stats.carryWeight)
         {
             Cancel();
             return;
@@ -44,8 +45,8 @@ public class CollectItem : IAction
         while (unitProgress >= 1f)
         {
             unitProgress -= 1;
-            pile.Remove(targetItem, 1);
-            inventory.Add(targetItem, 1);
+            pile.Remove(order.Item, 1);
+            inventory.Add(order.Item, 1);
         }
     }
 

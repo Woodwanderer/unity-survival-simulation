@@ -11,14 +11,14 @@ public class HarvestAction : IAction
     
     public WorldObject targetObj;
     ResourcePile resPile = null;
-    ItemDefinition targetItem;
+    ItemSlot order;
     World world;
     RenderWorld render;
 
-    public HarvestAction(WorldObject wo, ItemDefinition targetItem, float speed, World world, RenderWorld render)
+    public HarvestAction(WorldObject wo, ItemSlot order, float speed, World world, RenderWorld render)
     {
         this.targetObj = wo;
-        this.targetItem = targetItem;
+        this.order = order;
         this.world = world;
         this.render = render;
 
@@ -29,7 +29,7 @@ public class HarvestAction : IAction
     {
         unitProgress = 0f;
         progress = 0f;
-        targetAmount = targetObj.harvestSource.Get(targetItem);
+        targetAmount = order.Amount;
     }
     public void Tick(float dt)
     {
@@ -39,13 +39,13 @@ public class HarvestAction : IAction
         while(unitProgress >= 1f)
         {
             unitProgress -= 1;
-            targetObj.harvestSource.Harvest(targetItem, 1);
+            targetObj.harvestSource.Harvest(order.Item, 1);
 
             if (resPile == null)
                 resPile = EstablishPile(1);
             else
             {
-                int overflow = resPile.Add(targetItem, 1);
+                int overflow = resPile.Add(order.Item, 1);
                 if (overflow > 0)
                 {
                     resPile = EstablishPile(overflow);
@@ -56,15 +56,15 @@ public class HarvestAction : IAction
     ResourcePile EstablishPile(int amount)
     {
         TileData tile = world.GetTileData(targetObj.TileCoords);
-        ResourcePile pileObj = tile.FindInPiles(targetItem);
+        ResourcePile pileObj = tile.FindInPiles(order.Item);
         if (pileObj != null)
         {
-            pileObj.Add(targetItem, amount);
+            pileObj.Add(order.Item, amount);
             resPile = pileObj;
         }
         else
         {
-            resPile = world.CreateResourcePile(tile, targetItem, amount);
+            resPile = world.CreateResourcePile(tile, order.Item, amount);
             render.SpawnResourcePile(resPile);
         }
         return resPile;

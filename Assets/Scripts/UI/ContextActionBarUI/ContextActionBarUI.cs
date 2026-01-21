@@ -46,7 +46,7 @@ public class ContextActionBarUI : MonoBehaviour
 
             buttons[0].SetAction(() =>
             {
-                HarvestObject(rp.Item);
+                HarvestObject(rp.Slot);
             });
 
             int i = 1;
@@ -70,7 +70,7 @@ public class ContextActionBarUI : MonoBehaviour
 
                 buttons[i].SetAction(() =>
                 {
-                    HarvestObject(capturedItem);
+                    HarvestObject(slot);
                 });
                 i++;
             }
@@ -91,7 +91,7 @@ public class ContextActionBarUI : MonoBehaviour
         actionSource = null;
         gameObject.SetActive(false);
     }
-    public void HarvestObject(ItemDefinition item)
+    public void HarvestObject(ItemSlot item)
     {
         characterActions.TryHarvest(actionSource, item);
     }

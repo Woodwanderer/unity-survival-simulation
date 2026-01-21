@@ -3,7 +3,7 @@ using UnityEngine;
 public class CharacterActions
 {
     public World world;
-    ProtagonistData protagonistData;
+    public ProtagonistData protagonistData;
     RenderWorld render;
     public CharacterSheet stats;
     public Inventory inventory = new(16);
@@ -16,15 +16,20 @@ public class CharacterActions
         {
             currentGoal = newGoal;
             currentGoal.Start(this);
+            EventBus.Log($"Added new Goal: {newGoal}");
             return;
         }
         if (currentGoal.Priority >= newGoal.Priority)
+        {
             goals.Add(newGoal);
+            EventBus.Log($"Added new Goal to queue: {newGoal}");
+        }
         else
         {
             goals.Add(currentGoal);
             currentGoal = newGoal;
             currentGoal.Start(this);
+            EventBus.Log($"Replaced current Goal with :{newGoal}");
         }
     }
     public IAction currentAction;
@@ -52,8 +57,9 @@ public class CharacterActions
     public void Tick(float dt)
     {
         stats.Tick(dt);
-        bool needNewGoal = currentGoal == null || currentGoal.IsFinished || !currentGoal.IsValid;
-        if (needNewGoal && goals.Count > 0) 
+        if (currentGoal != null && currentGoal.IsFinished)
+            currentGoal = null;
+        else if (currentGoal == null && goals.Count > 0) 
         {
             currentGoal = goals[0];
             for (int i = 1; i < goals.Count; i++) 
@@ -88,7 +94,9 @@ public class CharacterActions
             else
                 SetAction(null);
         }
-        if (currentAction == null)
+
+
+        if (currentAction == null && currentGoal == null)
         {
             ITask task = world.taskManager.TakeTask();
             if (task is BuildTask bt)
@@ -104,7 +112,7 @@ public class CharacterActions
     public void TryHaul(HaulTask ht)
     {
 
-        IAction collect = new CollectItem(ht.source, ht.source.Item, stats);
+        IAction collect = new CollectItem(ht.source, ht.source.Slot, stats);
         if (ht.source.TileCoords == protagonistData.mapCoords) 
             SetAction(collect);
         else
@@ -144,34 +152,36 @@ public class CharacterActions
     {
         SetGoal(new EnsureFood());
     }
-    public bool TryEat()
+    public bool TryEat(ItemSlot meal = null)
     {
-        int ration = 5;
+        if (meal == null)
+        {
+            ItemDefinition food = world.itemsDatabase.Get("foodRaw");
+            ItemSlot order = new(food, 5);
+        }
 
-        ItemDefinition foodRaw = world.itemsDatabase.Get("foodRaw");
-
-        if (!inventory.Snapshot().Has(foodRaw, ration))
+        if (!inventory.Snapshot().Has(meal.Item, meal.Amount))
         {
             EventBus.Log("You don't have enough food.");
             return false;
         }
 
-        IAction eat = new EatAction(inventory, foodRaw, stats);
+        IAction eat = new EatAction(inventory, meal.Item, stats);
         SetAction(eat);
         return true;
     }
     //HARVEST
-    public void TryHarvest(TileEntity target, ItemDefinition item)
+    public void TryHarvest(TileEntity target, ItemSlot order)
     {
         IAction transfer = null;
 
         if (target is ResourcePile pile && pile != null) 
         {
-            transfer = new CollectItem(pile, item, stats);
+            transfer = new CollectItem(pile, order, stats);
         }
         else if(target is WorldObject wo)
         {
-            transfer = new HarvestAction(wo, item, stats.harvestSpeed, world, render);
+            transfer = new HarvestAction(wo, order, stats.harvestSpeed, world, render);
         }
         else
         {
@@ -233,11 +243,10 @@ public class CharacterActions
             TryPickUp(order, from);
             return;
         }
-
         TileEntity ent = world.FindNearest(order, protagonistData.mapCoords);
         if (ent != null)
         {
-            TryHarvest(ent, order.Item);
+            TryHarvest(ent, order);
         }
     }
 }

@@ -108,18 +108,6 @@ public class World
     }
 
     //TileObjects
-    private void PopulateWorldObjects(TileData tile)
-    {
-        var spawnableDefs = objDatabase.definitions.Where(def => def.spawnOnWorldGen).ToArray();
-
-        WorldObjDef def = spawnableDefs[Random.Range(0, spawnableDefs.Length)];
-
-        WorldObject obj = new(def, tile.mapCoords);
-
-        obj.harvestSource = new HarvestSource(def.GenerateResources());
-
-        tile.AddEntity(obj);
-    }
     public ResourcePile CreateResourcePile(TileData tile, ItemDefinition item, int amount)
     {
         ResourcePile pile = new(tile.mapCoords, item, amount);
@@ -131,7 +119,6 @@ public class World
     {
         return pathfinder.FindEntity(to, order.Item);
     }
-    
     //EVENT Functions
     public void ClearTileEntity(TileEntity ent)
     {

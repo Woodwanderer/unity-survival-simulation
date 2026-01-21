@@ -47,11 +47,14 @@ public class GameGo: MonoBehaviour
     }
     private void Update()
     {
-        float dt = Time.deltaTime;
+        float realDt = Time.deltaTime;
 
-        gameTime.Tick(dt);
-        inputController.Tick(dt);
-        gameState.Tick(dt);
-        world.Tick(dt);
+        inputController.Tick(realDt);
+        gameTime.Tick(realDt);
+
+        float gameDt = gameTime.GameDeltaTime(realDt);
+
+        gameState.Tick(gameDt);
+        world.Tick(gameDt);
     }
 }
