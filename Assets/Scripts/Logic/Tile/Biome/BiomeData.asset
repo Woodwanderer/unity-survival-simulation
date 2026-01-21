@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BiomeData
   BiomeDefs:
   - biome: 0
+    density: 0.5
     spawnEntries:
     - worldObjDef: {fileID: 11400000, guid: 1ff83d14a4278434184813d472611ec4, type: 2}
       weight: 5
@@ -27,6 +28,7 @@ MonoBehaviour:
       weight: 5
     totalWeight: 35
   - biome: 1
+    density: 0.7
     spawnEntries:
     - worldObjDef: {fileID: 11400000, guid: 1ff83d14a4278434184813d472611ec4, type: 2}
       weight: 70
@@ -40,6 +42,7 @@ MonoBehaviour:
       weight: 5
     totalWeight: 130
   - biome: 2
+    density: 1
     spawnEntries:
     - worldObjDef: {fileID: 11400000, guid: 1ff83d14a4278434184813d472611ec4, type: 2}
       weight: 80
@@ -53,5 +56,6 @@ MonoBehaviour:
       weight: 5
     totalWeight: 140
   - biome: 3
+    density: 0
     spawnEntries: []
     totalWeight: 0

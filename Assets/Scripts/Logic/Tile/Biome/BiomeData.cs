@@ -36,7 +36,6 @@ public class BiomeData : ScriptableObject
             }
         }
 
-
         [SerializeField, Tooltip("Sum of all entry weights (read-only)")]
         float totalWeight;
         public void RecalculateWeight()
