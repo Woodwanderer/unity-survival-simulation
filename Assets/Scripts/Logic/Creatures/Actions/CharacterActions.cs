@@ -2,14 +2,33 @@
 using UnityEngine;
 public class CharacterActions
 {
-    World world;
+    public World world;
     ProtagonistData protagonistData;
     RenderWorld render;
     public CharacterSheet stats;
     public Inventory inventory = new(16);
 
-    public Queue<IAction> actionQueue = new Queue<IAction>();
+    public IGoal currentGoal;
+    public List<IGoal> goals = new();
+    void SetGoal(IGoal newGoal)
+    {
+        if (currentGoal == null)
+        {
+            currentGoal = newGoal;
+            currentGoal.Start(this);
+            return;
+        }
+        if (currentGoal.Priority >= newGoal.Priority)
+            goals.Add(newGoal);
+        else
+        {
+            goals.Add(currentGoal);
+            currentGoal = newGoal;
+            currentGoal.Start(this);
+        }
+    }
     public IAction currentAction;
+    public Queue<IAction> actionQueue = new Queue<IAction>();
     void SetAction(IAction newAction)
     {
         currentAction?.Cancel();
@@ -28,14 +47,28 @@ public class CharacterActions
     public void Init()
     {
         EventBus.OnTileCommanded += MoveToTile;
+        stats.OnStarvationStart += HandleStarvation;
     }
     public void Tick(float dt)
     {
         stats.Tick(dt);
+        bool needNewGoal = currentGoal == null || currentGoal.IsFinished || !currentGoal.IsValid;
+        if (needNewGoal && goals.Count > 0) 
+        {
+            currentGoal = goals[0];
+            for (int i = 1; i < goals.Count; i++) 
+            {
+                if (currentGoal.Priority < goals[i].Priority)
+                    currentGoal = goals[i];
+            }
+            goals.Remove(currentGoal);
+            currentGoal.Start(this);
+        }
+
+        currentGoal?.Tick(dt);
+
         currentAction?.Tick(dt);
 
-        if (stats.Starvation) 
-            EnsureFood();
 
         if (currentAction != null && currentAction.IsFinished)
         {
@@ -107,15 +140,9 @@ public class CharacterActions
         }
     }
     //EAT
-    void EnsureFood()
+    void HandleStarvation()
     {
-        if (currentAction != null && !(currentAction is BuildAction)) 
-            return;
-        if (TryEat())
-            return;
-
-        ItemDefinition foodRaw = world.itemsDatabase.Get("foodRaw");
-        FindNearestRes(foodRaw);
+        SetGoal(new EnsureFood());
     }
     public bool TryEat()
     {
@@ -164,6 +191,23 @@ public class CharacterActions
                 EventBus.Log("I can't reach this destination.");
         }
     }
+    public void TryPickUp(ItemSlot order, Stockpile from)
+    {
+        IAction transfer = new PickUp(from, order, stats);
+        if (protagonistData.mapCoords == from.area.center)
+        {
+            SetAction(transfer);
+        }
+        else
+        {
+            bool canMove = TryMoveToTile(from.area.center);
+
+            if (canMove)
+                actionQueue.Enqueue(transfer);
+            else
+                EventBus.Log("I can't reach this destination.");
+        }
+    }
     //MOVE
     public void MoveToTile(Vector2Int tileCoords)
         => TryMoveToTile(tileCoords);
@@ -179,12 +223,21 @@ public class CharacterActions
         SetAction(new Movement(protagonistData, render, stats.Speed, newPath));
         return true;
     }
-    void FindNearestRes(ItemDefinition item)
+    public void FindNearest(ItemSlot order)
     {
-        TileEntity ent = world.FindNearestItem(item, protagonistData.mapCoords);
+        Stockpile from = null;
+        from = world.taskManager.FindClosestStockpileWith(order, protagonistData.mapCoords);
+
+        if (from != null)
+        {
+            TryPickUp(order, from);
+            return;
+        }
+
+        TileEntity ent = world.FindNearest(order, protagonistData.mapCoords);
         if (ent != null)
         {
-            TryHarvest(ent, item);
+            TryHarvest(ent, order.Item);
         }
     }
 }

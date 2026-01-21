@@ -127,9 +127,9 @@ public class World
         tile.AddEntity(pile);
         return pile;
     }
-    public TileEntity FindNearestItem(ItemDefinition item, Vector2Int to)
+    public TileEntity FindNearest(ItemSlot order, Vector2Int to)
     {
-        return pathfinder.FindEntity(to, item);
+        return pathfinder.FindEntity(to, order.Item);
     }
     
     //EVENT Functions

@@ -7,6 +7,12 @@ public class Stockpile : IItemContainer
     World world;
     public Area area;
     public List<TileData> tiles = new();
+
+    //construction
+    public float WorkTime => 0.5f * world.gameTime.HourDuration * area.Count; //work units: 6hours/tile
+    public float constructionProgress = 0;
+    public bool IsConstructed => constructionProgress >= 1f;
+
     class StockpileSlot
     {
         public TileData tile;
@@ -26,26 +32,8 @@ public class Stockpile : IItemContainer
     List<StockpileSlot> slots = new();
     public IEnumerable<ItemSlot> Slots => slots.Select(s => s.itemSlot);
     public VirtualResources Snapshot() => new VirtualResources(Slots);
-    public int Capacity => slots.Count;
-    public int CalculateFreeSpaceFor(ItemSlot income)
-    {
-        if (income == null || income.IsEmpty) 
-            return 0;
 
-        int freeSpace = 0;
-        foreach (var slot in Slots)
-        {
-            freeSpace += slot.FreeSpaceFor(income.Item);
-            if (freeSpace > income.Amount)
-                return income.Amount;
-        }
-        return freeSpace;
-    }
-    
-    //construction
-    public float WorkTime => 0.5f * world.gameTime.HourDuration * area.Count; //work units: 6hours/tile
-    public float constructionProgress = 0;
-    public bool IsConstructed => constructionProgress >= 1f;
+    public int Capacity => slots.Count;
 
     public Stockpile(Area area, World world)
     {
@@ -72,6 +60,12 @@ public class Stockpile : IItemContainer
                 slots.Add(new StockpileSlot(tile, i));
             }
         }
+    }
+
+    //transfers
+    public bool Has(ItemSlot order)
+    {
+        return Snapshot().Has(order.Item, order.Amount);
     }
     public int Add(ItemDefinition item, int amount)
     {
@@ -112,4 +106,19 @@ public class Stockpile : IItemContainer
         }
         return remaining;
     }
+    public int CalculateFreeSpaceFor(ItemSlot income)
+    {
+        if (income == null || income.IsEmpty)
+            return 0;
+
+        int freeSpace = 0;
+        foreach (var slot in Slots)
+        {
+            freeSpace += slot.FreeSpaceFor(income.Item);
+            if (freeSpace > income.Amount)
+                return income.Amount;
+        }
+        return freeSpace;
+    }
+
 }

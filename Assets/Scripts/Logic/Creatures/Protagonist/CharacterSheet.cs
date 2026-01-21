@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 public class CharacterSheet
 {
     float hunger = 1f;
@@ -6,7 +7,8 @@ public class CharacterSheet
     float hungerRate;
     float starvationThreshold = 0.5f;
     public bool Starvation => hunger < starvationThreshold;
-    
+    public event Action OnStarvationStart;
+
     float hourDuration;
 
     CharacterActions actions;
@@ -47,9 +49,10 @@ public class CharacterSheet
 
         harvestSpeed = 100 / hourDuration;
     }
-
     public void Tick(float deltaTime)
     {
+        bool starvingBefore = Starvation;
+
         if (!(actions.currentAction is EatAction e))  
         {
             hunger -= deltaTime / hungerRate; // full bar / day
@@ -60,6 +63,10 @@ public class CharacterSheet
             hunger += e.nutrition;
             hunger = Mathf.Clamp01(hunger);
         }
-    }
 
+        bool starvingNow = Starvation;
+
+        if (!starvingBefore && starvingNow)
+            OnStarvationStart?.Invoke();
+    }
 }

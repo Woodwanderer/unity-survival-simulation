@@ -10,11 +10,15 @@ public class GameTime
     public float HourDuration => hourDuration;
     string timeString;
     float timeOfDay = 0; //0...1
+
+    float timeScale = 4f; //debug
   
     public void Tick(float deltaTime)
     {
-        timeOfDay += deltaTime / (hourDuration * 24);
-        secondsInHour += deltaTime;
+        float dt = deltaTime * timeScale;
+
+        timeOfDay += dt / (hourDuration * 24);
+        secondsInHour += dt;
 
         while (secondsInHour >= hourDuration) //while -> prevents lag issue
         {
