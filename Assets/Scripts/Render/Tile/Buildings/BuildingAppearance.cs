@@ -21,10 +21,7 @@ public class BuildingAppearance : ScriptableObject
         public BuildingType type;
         public Sprite construction;
         public Sprite building;
+        public Sprite[] constructionStages;
     }
 }
 
-public enum BuildingType
-{
-    stockpile,
-}

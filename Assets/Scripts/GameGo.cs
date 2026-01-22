@@ -12,11 +12,10 @@ public class GameGo: MonoBehaviour
     public GameTime gameTime = new();
 
     //Data Assets
-    public WorldObjData objDatabase;
-    public ItemsDatabase itemsDatabase;
+    public GameConfig gameConfig;
+    public WorldData worldData;
     public IActionVisualData IActionVisualData;
-    public BiomeData biomeData;
-
+    
     //UI
     public ActionBarUI actionBarUI;          
     public TimePanelUI timePanelUI;
@@ -26,9 +25,13 @@ public class GameGo: MonoBehaviour
     public ModeBarUI modeBarUI;
     public BuildingBarUI buildingBarUI;
 
+    private void Awake()
+    {
+        Game.Config = gameConfig;
+    }
     private void Start()
     {
-        world = new World(objDatabase, itemsDatabase, renderWorld, gameTime, biomeData); 
+        world = new World(worldData, renderWorld, gameTime); 
         world.Initialise(renderWorld);
         renderWorld.Initialise(world);
 

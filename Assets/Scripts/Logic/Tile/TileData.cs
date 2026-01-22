@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class TileData
 {
@@ -7,9 +8,10 @@ public class TileData
     public Biome biome {  get; private set; }
     public ElevationType Elevation { get; private set; }
     public List<TileEntity> entities { get; private set; } = new();
-    public Stockpile stockpile = null;
+    public Building building = null;
+    public bool HasBuilding => building != null;
     public bool isWalkable => biome != Biome.Water; // hard restriction on WATER tiles only for now
-    public bool HasBuilding => stockpile != null;
+    
     public bool isInit = false;
     public TileData(Vector2Int mapCoords)
     {
@@ -28,10 +30,14 @@ public class TileData
         this.Elevation = Elevation;
         isInit = true;
     }
-    public void SetBuilding(Stockpile stockpile)
+    public void SetBuilding(Building building)
     {
-        this.stockpile = stockpile;
+        if (HasBuilding)
+            throw new InvalidOperationException($"Tile {mapCoords} already has a building.");
+
+        this.building = building;
     }
+    
     public void AddEntity(TileEntity entity)
     {
         entities.Add(entity);

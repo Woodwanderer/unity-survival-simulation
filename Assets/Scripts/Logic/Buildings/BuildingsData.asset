@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac89a095cd69da845963bd1a6549ae74, type: 3}
+  m_Name: BuildingsData
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingsData
+  buildings:
+  - type: 0
+    workTime: 6
+    materials: []
+  - type: 1
+    workTime: 24
+    materials:
+    - item: {fileID: 11400000, guid: bdc1438ad54452d4c8aa6181bccfae1a, type: 2}
+      amount: 200
+    - item: {fileID: 11400000, guid: 127c2813f8b032544b0e129920ccf124, type: 2}
+      amount: 20

@@ -16,3 +16,6 @@ MonoBehaviour:
   - type: 0
     construction: {fileID: 21300000, guid: 962df884651afee43b724491f74df0a9, type: 3}
     building: {fileID: 21300000, guid: 865f0fd181a159744a340289cc50cfbf, type: 3}
+  - type: 1
+    construction: {fileID: 21300000, guid: 962df884651afee43b724491f74df0a9, type: 3}
+    building: {fileID: 21300000, guid: 865f0fd181a159744a340289cc50cfbf, type: 3}

@@ -15,7 +15,7 @@ public class GameState
     ModeBarUI taskBarUI;
 
     TileObjectView currentObj;
-    Stockpile currentBuilding;
+    Building currentBuilding;
 
     public IGameMode currentMode;
     public IGameTool currentTool;
@@ -84,6 +84,16 @@ public class GameState
         }
         
     }
+    public void SelectTile()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (!TryGetMouseTile(out Vector2Int coords))
+                return;
+
+            world.SelectTile(coords);
+        }
+    }
     public void SelectZoneDrag()
     {
         if (Input.GetMouseButtonDown(0) && !isDragging) 
@@ -138,15 +148,18 @@ public class GameState
             if (!tile.HasBuilding)
                 return;
 
-            currentBuilding = tile.stockpile;
+            currentBuilding = tile.building;
             renderWorld.SelectAreaBuilding(currentBuilding, true);
-            buildingBarUI.Show(tile.stockpile, world.protagonistData.actions);
+
+            if (currentBuilding is Stockpile s) 
+                buildingBarUI.Show(s, world.protagonistData.actions);
         }
     }
     void DeselectCurrentBuilding()
     {
         if (currentBuilding == null)
             return;
+
         renderWorld.SelectAreaBuilding(currentBuilding, false);
         buildingBarUI.Hide();
         currentBuilding = null;
@@ -178,6 +191,7 @@ public class GameState
             cam.StopFollow();
             return;
         }
+        world.ClearTileSelected();
         world.ClearZoneSelection();
         DeselectCurrentObj();
         DeselectCurrentBuilding();

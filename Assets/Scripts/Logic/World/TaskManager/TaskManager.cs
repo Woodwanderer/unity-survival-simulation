@@ -12,8 +12,12 @@ public class TaskManager
         this.pathfinder = pathfinder;
     }
 
-    public List<Stockpile> stockpiles = new();
     public List<ResourcePile> piles = new();
+
+    public List<Stockpile> stockpiles = new();
+
+    public List<Building> constructions = new();
+    public List<Building> buildings = new();
 
     public void Tick(float dt)
     {
@@ -94,6 +98,10 @@ public class TaskManager
                 if (!HasTaskFor(stockpile))
                     Add(new BuildTask(stockpile));
             }
+        }
+        foreach(var designs in constructions )
+        {
+
         }
     }
     bool HasTaskFor(Stockpile stockpile)

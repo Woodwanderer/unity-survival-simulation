@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using System.Collections;
 public class World
 {
     //Variables
     //General World
     int worldSizeX = 60;
-    int worldSizeY = 40;
+    int worldSizeY = 60;
     Vector2Int worldSize;
     public Vector2Int WorldSize => worldSize;
     public Vector2Int halfWorldSize { get; private set; }
@@ -19,11 +17,15 @@ public class World
     BiomeData biomeData;
     private TileData[,] tileData;
     public List<Vector2Int> tilesSelected = new();
+    public Vector2Int? tileSelected = null;
     public Area area;    
 
     //Tile Entities
     public WorldObjData objDatabase;
     public ItemsDatabase itemsDatabase;
+
+    //Buildings
+    BuildingsData buildingsData;
 
     public Pathfinder pathfinder;
 
@@ -33,11 +35,12 @@ public class World
     //Tasks 
     public TaskManager taskManager;
 
-    public World(WorldObjData data_in, ItemsDatabase itemsData, RenderWorld render, GameTime time, BiomeData biomeData)
+    public World(WorldData data, RenderWorld render, GameTime time)
     {
-        this.biomeData = biomeData;
-        this.objDatabase = data_in;
-        this.itemsDatabase = itemsData;
+        this.biomeData = data.biomeData;
+        this.objDatabase = data.objDatabase;
+        this.itemsDatabase = data.itemsDatabase;
+        this.buildingsData = data.buildingsData;
         this.render = render;
         gameTime = time;
 
@@ -128,6 +131,22 @@ public class World
     }
 
     //Tile SELECTION
+    public void SelectTile(Vector2Int coords)
+    {
+        if (tileSelected != null) 
+            render.SelectTile(tileSelected.Value, false);
+
+        tileSelected = coords;
+        render.SelectTile(tileSelected.Value, true);
+    }
+    public void ClearTileSelected()
+    {
+        if (tileSelected == null)
+            return;
+
+        render.SelectTile(tileSelected.Value, false);
+        tileSelected = null;
+    }
     public List<Vector2Int> GetTileCoordsInRect(Vector2Int a,  Vector2Int b)
     {
         TileRect rect = new(a, b);
@@ -177,11 +196,22 @@ public class World
         if (area == null) 
             return;
 
-        Stockpile stockpile = new(area, this);
+        BuildingsData.BuildingDef def = buildingsData.GetDef(BuildingType.stockpile);
+        Stockpile stockpile = new(area, def, this);
         taskManager.stockpiles.Add(stockpile);
         render.ShowStockpile(stockpile);
         EventBus.Log("Stockpile construction site established.");
         area = null;
+    }
+    public void BuildShelter(Vector2Int coords)
+    {
+        BuildingsData.BuildingDef def = buildingsData.GetDef(BuildingType.shelter);
+        Shelter shelter = new(coords, def);
+        TileData tile = GetTileData(coords);
+        tile.SetBuilding(shelter);
+        taskManager.constructions.Add(shelter);
+        render.ShowBuilding(shelter);
+        EventBus.Log("Shelter construction site established.");
     }
 }
 

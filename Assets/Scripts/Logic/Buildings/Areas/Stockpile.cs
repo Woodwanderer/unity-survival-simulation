@@ -1,18 +1,24 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
-public class Stockpile : IItemContainer
+public class Stockpile : Building, IItemContainer
 {
     World world;
     public Area area;
     public List<TileData> tiles = new();
+    public override IEnumerable<Vector2Int> OccupiedTiles => area.tiles;
+    public override float WorkTime => def.workTime * Game.Config.hourDuration * area.Count;
 
-    //construction
-    public float WorkTime => 6f * world.gameTime.HourDuration * area.Count; //work units: 6hours/tile
-    public float constructionProgress = 0;
-    public bool IsConstructed => constructionProgress >= 1f;
+    public Stockpile(Area area, BuildingsData.BuildingDef def, World world) : base(area.center, def)
+    {
+        this.area = area;
+        this.world = world;
 
+        SetBuildingOnTiles();
+        SetSlots();
+    }
     class StockpileSlot
     {
         public TileData tile;
@@ -35,13 +41,7 @@ public class Stockpile : IItemContainer
 
     public int Capacity => slots.Count;
 
-    public Stockpile(Area area, World world)
-    {
-        this.area = area;
-        this.world = world;
-        SetBuildingOnTiles();
-        SetSlots();
-    }
+    
     void SetBuildingOnTiles()
     {
         foreach (var tile in area.tiles)

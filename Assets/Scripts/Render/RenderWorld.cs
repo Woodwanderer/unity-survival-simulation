@@ -144,6 +144,11 @@ public class RenderWorld : MonoBehaviour
     {
         return TilePrefabs[coords.x, coords.y];
     }
+    public void SelectTile(Vector2Int coords, bool active)
+    {
+        TilePrefab current = GetTileP(coords);
+        current.SetSelected(active);
+    }
     public void SelectTiles(IEnumerable<Vector2Int> tiles, bool active)
     {
         foreach (Vector2Int tileCoord in tiles)
@@ -152,9 +157,9 @@ public class RenderWorld : MonoBehaviour
             current.SetSelected(active);
         }
     }
-    public void SelectAreaBuilding(Stockpile stockpile, bool active)
+    public void SelectAreaBuilding(Building buildling, bool active)
     {
-        SelectTiles(stockpile.area.tiles, active);
+        SelectTiles(buildling.OccupiedTiles, active);
     }
     public void AnimateZoneSelection(List<Vector2Int> tiles, float delay = 0.015f)
     {
@@ -186,6 +191,14 @@ public class RenderWorld : MonoBehaviour
             SetBuildingAppearance(stockpile);
         }
     }
+    public void ShowBuilding(Building building)
+    {
+        TilePrefab tileP = GetTileP(building.TileCoords);
+
+        Sprite buildView = buildingAppearance.Get(building.Type).construction;
+        bool setColour = true;
+        tileP.ShowBuilding(true, buildView, setColour);
+    }
     void SetBuildingAppearance(Stockpile stockpile)
     {
         foreach (var tile in stockpile.area.tiles)
@@ -203,7 +216,6 @@ public class RenderWorld : MonoBehaviour
                 build = buildingAppearance.Get(BuildingType.stockpile).construction;
                 tileP.ShowBuilding(true, build);
             }
-            
         }
     }
 

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7663a9153aaaacd4c9cba7ec5eb9d092, type: 3}
+  m_Name: WorldData
+  m_EditorClassIdentifier: Assembly-CSharp::WorldData
+  objDatabase: {fileID: 11400000, guid: d7baeb751646c73478233c0d9381adc0, type: 2}
+  itemsDatabase: {fileID: 11400000, guid: 15deb01c033a20447ba78efa800af1d2, type: 2}
+  biomeData: {fileID: 11400000, guid: 21861cd0d0dc9724191f3ad5ec78d2c0, type: 2}
+  buildingsData: {fileID: 11400000, guid: 6918eb36778d38247892bd20b38f7934, type: 2}

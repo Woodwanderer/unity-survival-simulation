@@ -33,15 +33,6 @@ public class WorldObjDef : ScriptableObject
         }
         return result;
     }
-    #if UNITY_EDITOR
-    private void OnValidate()
-    {
-        if(!Application.isPlaying)
-            return;
-
-        Debug.LogError($"[WorldObjDef] {name} was modified during Play Mode!", this);
-    }
-#endif
 }
 public enum WorldObjType
 {

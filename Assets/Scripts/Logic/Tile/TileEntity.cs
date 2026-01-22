@@ -9,5 +9,4 @@ public abstract class TileEntity
     {
         this.TileCoords = tileCoords;
     }
-
 }
