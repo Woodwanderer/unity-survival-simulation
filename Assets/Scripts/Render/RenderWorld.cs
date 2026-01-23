@@ -157,9 +157,9 @@ public class RenderWorld : MonoBehaviour
             current.SetSelected(active);
         }
     }
-    public void SelectAreaBuilding(Building buildling, bool active)
+    public void SelectAreaBuilding(Building building, bool active)
     {
-        SelectTiles(buildling.OccupiedTiles, active);
+        SelectTiles(building.Area.tiles, active);
     }
     public void AnimateZoneSelection(List<Vector2Int> tiles, float delay = 0.015f)
     {
@@ -181,7 +181,7 @@ public class RenderWorld : MonoBehaviour
     //Building
     public void UpdateBuildingAppearance(Building building)
     {
-        foreach (var tile in building.OccupiedTiles) 
+        foreach (var tile in building.Area.tiles) 
         {
             TilePrefab tileP = GetTileP(tile);
 

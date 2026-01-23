@@ -8,13 +8,6 @@ public class Pathfinder //BFS -> Deijkstra later ;)
     {
         this.world = world;
     }
-    public static readonly Vector2Int[] Directions =
-    {
-        new Vector2Int( 1, 0 ),
-        new Vector2Int( 0,-1 ),
-        new Vector2Int(-1, 0 ),
-        new Vector2Int( 0, 1 ),
-    };
     public bool IsWithinWorld(Vector2Int pos)
     {
         return ( pos.x >= 0                &&
@@ -23,15 +16,17 @@ public class Pathfinder //BFS -> Deijkstra later ;)
                  pos.y < world.WorldSize.y
                );
     }
-    IEnumerable<Vector2Int> GetNeighbours(Vector2Int pos)
+    public IEnumerable<Vector2Int> GetWalkableNeighbours(Vector2Int pos)
     {
-        foreach (Vector2Int dir in Directions)
+        foreach (Vector2Int dir in GridDirections.Cardinal)
         {
             Vector2Int next = pos + dir;
 
             if (!IsWithinWorld(next))
                 continue;
-            if (!world.GetTileData(next).isWalkable)
+
+            TileData tile = world.GetTileData(next);
+            if (!tile.isWalkable)
                 continue;
 
             yield return next;
@@ -59,7 +54,7 @@ public class Pathfinder //BFS -> Deijkstra later ;)
             Vector2Int current = frontier.Dequeue();
             result.Add(current);
 
-            foreach(Vector2Int next in GetNeighbours(current))
+            foreach(Vector2Int next in GetWalkableNeighbours(current))
             {
                 if (visited.Contains(next))
                     continue;
@@ -93,7 +88,7 @@ public class Pathfinder //BFS -> Deijkstra later ;)
         {
             Vector2Int current = frontier.Dequeue();
 
-            foreach (Vector2Int next in GetNeighbours(current))
+            foreach (Vector2Int next in GetWalkableNeighbours(current))
             {
                 if (visited.Contains(next))
                     continue;
@@ -110,7 +105,21 @@ public class Pathfinder //BFS -> Deijkstra later ;)
         }
         return null;
     }
-    public List<Vector2Int> FindPath(Vector2Int start, Vector2Int target)
+    public List<Vector2Int> FindPathToArea(Vector2Int start, Area area)
+    {
+        List<Vector2Int> pathToCenter = FindPath(start, area.center);
+        if (pathToCenter == null)
+            return null;
+
+        for (int i = 0; i < pathToCenter.Count; i++) 
+        {
+            if (area.IsInRange(pathToCenter[i]))
+                return pathToCenter.GetRange(0, i + 1);
+        }
+
+        return pathToCenter;
+    }
+    public List<Vector2Int> FindPath(Vector2Int start, Vector2Int target) //gives natural coords positions
     {
         List<Vector2Int> path = new();
 
@@ -127,7 +136,7 @@ public class Pathfinder //BFS -> Deijkstra later ;)
             if (current == target)
                 break;
 
-            foreach (Vector2Int next in GetNeighbours(current))
+            foreach (Vector2Int next in GetWalkableNeighbours(current))
             {
                 if (cameFrom.ContainsKey(next)) 
                     continue;

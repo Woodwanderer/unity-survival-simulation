@@ -8,10 +8,9 @@ public class Stockpile : Building, IItemContainer
     World world;
     public Area area;
     public List<TileData> tiles = new();
-    public override IEnumerable<Vector2Int> OccupiedTiles => area.tiles;
     public override float WorkTime => def.workTime * Game.Config.hourDuration * area.Count;
 
-    public Stockpile(Area area, BuildingsData.BuildingDef def, World world) : base(area.center, def)
+    public Stockpile(Area area, BuildingsData.BuildingDef def, World world) : base(area, def)
     {
         this.area = area;
         this.world = world;

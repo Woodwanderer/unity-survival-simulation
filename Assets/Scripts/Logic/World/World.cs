@@ -63,22 +63,7 @@ public class World
     {
         return tileData.mapCoords;
     }
-    public Area GetNeighberhooodFor(Vector2Int coords)
-    {
-        Area neighbourhood = new();
-        foreach (Vector2Int dir in Pathfinder.Directions)
-        {
-            neighbourhood.tiles.Add(coords + dir);
-        }
-        return neighbourhood;
-    }
-    public Area GetNeighberhoodFor(Area area)
-    {
-        Area vicinity = new();
 
-
-        return vicinity;
-    }
     //Protagonist
     public ProtagonistData GetProtagonistData() => protagonistData;
     public TileData GetProtagonistTileData()

@@ -136,18 +136,11 @@ public class CharacterActions
     {
         IAction build = new BuildAction(building, stats, world);
 
-        bool isInArea = false;
-        foreach(var coords in building.OccupiedTiles)
-        {
-            if(coords == protagonistData.mapCoords)
-                isInArea = true;
-
-        }
-        if (isInArea)
+        if (building.Area.IsInRange(protagonistData.mapCoords)) 
             SetAction(build);
         else
         {
-            bool canMove = TryMoveToTile(building.TileCoords);
+            bool canMove = TryMoveToArea(building.Area);
 
             if (canMove)
                 actionQueue.Enqueue(build);
@@ -235,6 +228,16 @@ public class CharacterActions
             return false;
 
         List<Vector2Int> newPath = world.pathfinder.FindPath(protagonistData.mapCoords, tileCoords);
+        if (newPath == null || newPath.Count == 0)
+            return false;
+
+        SetAction(new Movement(protagonistData, render, stats.Speed, newPath));
+        return true;
+    }
+    public bool TryMoveToArea(Area area)
+    {
+        List<Vector2Int> newPath = world.pathfinder.FindPathToArea(protagonistData.mapCoords, area);
+
         if (newPath == null || newPath.Count == 0)
             return false;
 
