@@ -179,43 +179,16 @@ public class RenderWorld : MonoBehaviour
     }
 
     //Building
-    public void ShowStockpile(Stockpile stockpile)
+    public void UpdateBuildingAppearance(Building building)
     {
-        if (stockpile == null)
-        {
-            EventBus.Log("No proper design.");
-            return;
-        }
-        foreach (var tile in stockpile.area.tiles)
-        {
-            SetBuildingAppearance(stockpile);
-        }
-    }
-    public void ShowBuilding(Building building)
-    {
-        TilePrefab tileP = GetTileP(building.TileCoords);
-
-        Sprite buildView = buildingAppearance.Get(building.Type).construction;
-        bool setColour = true;
-        tileP.ShowBuilding(true, buildView, setColour);
-    }
-    void SetBuildingAppearance(Stockpile stockpile)
-    {
-        foreach (var tile in stockpile.area.tiles)
+        foreach (var tile in building.OccupiedTiles) 
         {
             TilePrefab tileP = GetTileP(tile);
+
             Sprite build;
-            if (stockpile.IsConstructed)
-            {
-                build = buildingAppearance.Get(BuildingType.stockpile).building;
-                bool setColour = true;
-                tileP.ShowBuilding(true, build, setColour);
-            }
-            else
-            {
-                build = buildingAppearance.Get(BuildingType.stockpile).construction;
-                tileP.ShowBuilding(true, build);
-            }
+            build = buildingAppearance.GetAppearance(building.Type, building.constructionProgress);
+
+            tileP.ShowBuilding(true, build);
         }
     }
 

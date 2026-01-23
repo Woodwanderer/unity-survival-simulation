@@ -8,6 +8,7 @@ public class GameConfig : ScriptableObject
     public int worldSizeY = 60;
 
     [Header("Time")]
+    public float timeScale = 1f;
     public float hourDuration = 60f; //seconds
 
 }

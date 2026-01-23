@@ -8,7 +8,7 @@ public class Pathfinder //BFS -> Deijkstra later ;)
     {
         this.world = world;
     }
-    static readonly Vector2Int[] Directions =
+    public static readonly Vector2Int[] Directions =
     {
         new Vector2Int( 1, 0 ),
         new Vector2Int( 0,-1 ),

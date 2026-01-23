@@ -10,12 +10,10 @@ public class GameTime
     public float HourDuration => hourDuration;
     string timeString;
     float timeOfDay = 0; //0...1
-
-    float timeScale = 4f; //debug
   
     public void Tick(float deltaTime)
     {
-        float dt = deltaTime * timeScale;
+        float dt = deltaTime * Game.Config.timeScale;
 
         timeOfDay += dt / (hourDuration * 24);
         secondsInHour += dt;
@@ -35,7 +33,7 @@ public class GameTime
     }
     public float GameDeltaTime(float realDt)
     {
-        return realDt * timeScale;
+        return realDt * Game.Config.timeScale;
     }
     public string GetTimeString()
     {

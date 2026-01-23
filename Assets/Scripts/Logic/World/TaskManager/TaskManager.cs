@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 public class TaskManager
 {
@@ -52,8 +51,6 @@ public class TaskManager
         int bestDist = int.MaxValue;
         foreach (var stockpile in stockpiles)
         {
-            if (!stockpile.IsConstructed)
-                continue;
             int capacity = stockpile.CalculateFreeSpaceFor(pile.Slot);
             if (capacity == 0) 
                 continue;
@@ -73,9 +70,6 @@ public class TaskManager
         int bestDist = int.MaxValue;
         foreach (var stockpile in stockpiles)
         {
-            if (!stockpile.IsConstructed)
-                continue;
-
             if (!stockpile.Has(order))
                 continue;
           
@@ -88,27 +82,19 @@ public class TaskManager
         }
         return target;
     }
-
     void GenerateBuildTasks()
     {
-        foreach (Stockpile stockpile in stockpiles)
+        foreach(var building in constructions )
         {
-            if (!stockpile.IsConstructed)
-            {
-                if (!HasTaskFor(stockpile))
-                    Add(new BuildTask(stockpile));
-            }
-        }
-        foreach(var designs in constructions )
-        {
-
+            if (!HasBuildTaskFor(building))
+                Add(new BuildTask(building));
         }
     }
-    bool HasTaskFor(Stockpile stockpile)
+    bool HasBuildTaskFor(Building building)
     {
         foreach(BuildTask bT in buildTasks)
         {
-            if (bT.stockpile == stockpile) 
+            if (bT.building == building ) 
                 return true;
         }
         return false;

@@ -2,11 +2,11 @@
 
 public class BuildTask : ITask
 {
-    public Stockpile stockpile;
-    public bool IsValid => !stockpile.IsConstructed;
+    public Building building;
+    public bool IsValid => !building.IsConstructed;
 
-    public BuildTask(Stockpile stockpile)
+    public BuildTask(Building building)
     {
-        this.stockpile = stockpile;
+        this.building = building;
     }
 }

@@ -36,11 +36,9 @@ public class TilePrefab: MonoBehaviour
     {
         path.enabled = visible;
     }
-    public void ShowBuilding(bool visible, Sprite build, bool setColour = false)
+    public void ShowBuilding(bool visible, Sprite build)
     {
         building.sprite = build;
-        if (setColour)
-            building.color = Color.white;
         building.enabled = visible;
     }
     public void SetSelected(bool active)

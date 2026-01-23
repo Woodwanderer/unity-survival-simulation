@@ -101,7 +101,7 @@ public class CharacterActions
             ITask task = world.taskManager.TakeTask();
             if (task is BuildTask bt)
             {
-                TryBuild(bt.stockpile);
+                TryBuild(bt.building);
             }
             if (task is HaulTask ht)
             {
@@ -132,14 +132,22 @@ public class CharacterActions
     }
 
     //Build
-    public void TryBuild(Stockpile stockpile)
+    public void TryBuild(Building building)
     {
-        IAction build = new BuildAction(stockpile, stats, render);
-        if (stockpile.area.Contains(world.GetProtagonistCoords()))
+        IAction build = new BuildAction(building, stats, world);
+
+        bool isInArea = false;
+        foreach(var coords in building.OccupiedTiles)
+        {
+            if(coords == protagonistData.mapCoords)
+                isInArea = true;
+
+        }
+        if (isInArea)
             SetAction(build);
         else
         {
-            bool canMove = TryMoveToTile(stockpile.area.center);
+            bool canMove = TryMoveToTile(building.TileCoords);
 
             if (canMove)
                 actionQueue.Enqueue(build);

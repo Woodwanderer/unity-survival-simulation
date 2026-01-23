@@ -10,7 +10,7 @@ public class World
     public Vector2Int WorldSize => worldSize;
     public Vector2Int halfWorldSize { get; private set; }
     public GameTime gameTime;
-    RenderWorld render;
+    public RenderWorld render;
 
     LandGenerator landGenerator;
     //Tiles
@@ -62,6 +62,22 @@ public class World
     public Vector2Int GetTileCoords(TileData tileData)
     {
         return tileData.mapCoords;
+    }
+    public Area GetNeighberhooodFor(Vector2Int coords)
+    {
+        Area neighbourhood = new();
+        foreach (Vector2Int dir in Pathfinder.Directions)
+        {
+            neighbourhood.tiles.Add(coords + dir);
+        }
+        return neighbourhood;
+    }
+    public Area GetNeighberhoodFor(Area area)
+    {
+        Area vicinity = new();
+
+
+        return vicinity;
     }
     //Protagonist
     public ProtagonistData GetProtagonistData() => protagonistData;
@@ -198,20 +214,39 @@ public class World
 
         BuildingsData.BuildingDef def = buildingsData.GetDef(BuildingType.stockpile);
         Stockpile stockpile = new(area, def, this);
-        taskManager.stockpiles.Add(stockpile);
-        render.ShowStockpile(stockpile);
+
+        taskManager.constructions.Add(stockpile);
+
+        //render.ShowBuilding(stockpile);
+        render.UpdateBuildingAppearance(stockpile);
+
         EventBus.Log("Stockpile construction site established.");
+
         area = null;
     }
     public void BuildShelter(Vector2Int coords)
     {
         BuildingsData.BuildingDef def = buildingsData.GetDef(BuildingType.shelter);
         Shelter shelter = new(coords, def);
+
         TileData tile = GetTileData(coords);
         tile.SetBuilding(shelter);
         taskManager.constructions.Add(shelter);
-        render.ShowBuilding(shelter);
+
+        //render.ShowBuilding(shelter);
+        render.UpdateBuildingAppearance(shelter);
+
         EventBus.Log("Shelter construction site established.");
+    }
+    public void OnBuildingConstructed(Building building)
+    {
+        if (building is Stockpile s)
+            taskManager.stockpiles.Add(s);
+        else
+            taskManager.buildings.Add(building);
+
+        taskManager.constructions.Remove(building);
+        EventBus.Log($"{building.Type} succesfully constructed on {building.TileCoords}");
     }
 }
 

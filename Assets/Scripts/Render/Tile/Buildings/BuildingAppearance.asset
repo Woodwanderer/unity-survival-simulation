@@ -14,8 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingAppearance
   buildings:
   - type: 0
-    construction: {fileID: 21300000, guid: 962df884651afee43b724491f74df0a9, type: 3}
+    construction: {fileID: 21300000, guid: 18f56e634bdff4b4381ea93baa29f6af, type: 3}
     building: {fileID: 21300000, guid: 865f0fd181a159744a340289cc50cfbf, type: 3}
+    constructionStages: []
   - type: 1
-    construction: {fileID: 21300000, guid: 962df884651afee43b724491f74df0a9, type: 3}
-    building: {fileID: 21300000, guid: 865f0fd181a159744a340289cc50cfbf, type: 3}
+    construction: {fileID: 21300000, guid: 18f56e634bdff4b4381ea93baa29f6af, type: 3}
+    building: {fileID: 21300000, guid: 895142be834a61b4097389622bf82906, type: 3}
+    constructionStages:
+    - {fileID: 21300000, guid: dcc57754c89a34a4cbcaeba1e0635e8a, type: 3}
+    - {fileID: 21300000, guid: 39330a5c12f0f244ca54ea01938c9ed2, type: 3}
+    - {fileID: 21300000, guid: 2a02abae804d40f45b02de9850e6880f, type: 3}

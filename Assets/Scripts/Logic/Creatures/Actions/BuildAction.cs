@@ -2,39 +2,40 @@
 
 public class BuildAction : IAction
 {
-    RenderWorld render;
-    Stockpile stockpile;
+    World world;
+    Building building;
     float workTime;
     public float progress = 0f;
     float speed;
     public bool IsFinished => progress >= 1f;
-    public BuildAction(Stockpile stockpile, CharacterSheet stats, RenderWorld render)
+
+    public BuildAction(Building building, CharacterSheet stats, World world)
     {
-        this.render = render;
-        this.stockpile = stockpile;
-        workTime = stockpile.WorkTime;
+        this.world = world;
+        this.building = building;
+        workTime = building.WorkTime;
         speed = stats.buildSpeed;
     }
     public void Start()
     {
-        progress = stockpile.constructionProgress;
+        progress = building.constructionProgress;
     }
     public void Tick(float dt)
     {
-        progress += dt * speed / workTime;        
-        stockpile.constructionProgress = progress;
+        if (IsFinished)
+            return;
+
+        progress += dt * speed / workTime;     
+        progress = Mathf.Clamp01(progress);
+        building.constructionProgress = progress;
+        world.render.UpdateBuildingAppearance(building);
 
         if (progress >= 1f)
-            OnFinished();
-    }
-    void OnFinished()
-    {
-        stockpile.constructionProgress = 1f;
-        render.ShowStockpile(stockpile);
-    }
+            world.OnBuildingConstructed(building);
+    }    
     public void Cancel()
     {
-        stockpile.constructionProgress = progress;
+
     }
  }
    
