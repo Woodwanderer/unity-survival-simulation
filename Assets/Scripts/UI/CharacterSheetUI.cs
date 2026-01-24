@@ -3,7 +3,8 @@ using UnityEngine.UI;
 
 public class CharacterSheetUI : MonoBehaviour
 {
-    public Image conditionBar;
+    [SerializeField] Image hungerBar;
+    [SerializeField] Image energyBar;
     public CharacterSheet dataState;
 
     public void Init(CharacterSheet stats)
@@ -12,7 +13,7 @@ public class CharacterSheetUI : MonoBehaviour
     }
     private void Update()
     {
-        conditionBar.fillAmount = dataState.Hunger;
+        hungerBar.fillAmount = dataState.Hunger;
     }
 
 

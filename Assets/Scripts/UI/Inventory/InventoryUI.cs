@@ -16,7 +16,6 @@ public class InventoryUI : MonoBehaviour
         slotsUI = GetComponentsInChildren<InventoryUISlot>();
         weight = transform.Find("CarryWeightValue").GetComponent<TMP_Text>();
         weightMax = transform.Find("MaxCarryWeightValue").GetComponent<TMP_Text>();
-
     }
     public void Init(Inventory inventory, CharacterSheet stats)
     {

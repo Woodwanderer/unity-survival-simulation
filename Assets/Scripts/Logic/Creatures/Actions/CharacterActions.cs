@@ -40,12 +40,12 @@ public class CharacterActions
         currentAction = newAction;
         currentAction?.Start();
     }
-    public CharacterActions(float hourDuration, World world, ProtagonistData protagonistData, RenderWorld render)
+    public CharacterActions(World world, ProtagonistData protagonistData, RenderWorld render)
     {
         this.world = world;
         this.protagonistData = protagonistData;
         this.render = render;
-        stats = new CharacterSheet(hourDuration, this);
+        stats = new CharacterSheet(this);
 
         Init();
     }

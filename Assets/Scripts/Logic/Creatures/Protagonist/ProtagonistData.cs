@@ -1,7 +1,4 @@
-﻿using NUnit.Framework;
-using UnityEngine;
-using System.Collections.Generic;
-
+﻿using UnityEngine;
 public class ProtagonistData
 {
     public Vector2Int mapCoords { get; private set; }
@@ -9,10 +6,10 @@ public class ProtagonistData
     public Pathfinder pathfinder { get; private set; }
 
     public CharacterActions actions;
-    public ProtagonistData(Vector2Int mapCoords, float hourDuration, World world, RenderWorld render)
+    public ProtagonistData(Vector2Int mapCoords, World world, RenderWorld render)
     {
         this.mapCoords = mapCoords;
-        actions = new CharacterActions(hourDuration, world, this, render);
+        actions = new CharacterActions(world, this, render);
     }    
     public void Tick(float deltaTime)
     {

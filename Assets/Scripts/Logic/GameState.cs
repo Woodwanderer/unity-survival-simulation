@@ -86,6 +86,9 @@ public class GameState
     }
     public void SelectTile()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
         if (Input.GetMouseButtonDown(0))
         {
             if (!TryGetMouseTile(out Vector2Int coords))

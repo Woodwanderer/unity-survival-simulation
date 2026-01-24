@@ -9,7 +9,7 @@ public class CharacterSheet
     public bool Starvation => hunger < starvationThreshold;
     public event Action OnStarvationStart;
 
-    float hourDuration;
+    float hourDuration = Game.Config.hourDuration;
 
     CharacterActions actions;
     public Inventory inventory;
@@ -34,9 +34,8 @@ public class CharacterSheet
     }
     public float Speed => speedDefault * SpeedMod;
 
-    public CharacterSheet(float hourDuration, CharacterActions actions)
+    public CharacterSheet( CharacterActions actions)
     {
-        this.hourDuration = hourDuration;
         this.actions = actions;
         this.inventory = actions.inventory;
 

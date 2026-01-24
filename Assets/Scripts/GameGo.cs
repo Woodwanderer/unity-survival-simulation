@@ -24,6 +24,7 @@ public class GameGo: MonoBehaviour
     public BuildBarUI buildBarUI;
     public ModeBarUI modeBarUI;
     public BuildingBarUI buildingBarUI;
+    public NighttimeOverlay nighttimeOverlay;
 
     private void Awake()
     {
@@ -31,7 +32,7 @@ public class GameGo: MonoBehaviour
     }
     private void Start()
     {
-        world = new World(worldData, renderWorld, gameTime); 
+        world = new World(worldData, renderWorld); 
         world.Initialise(renderWorld);
         renderWorld.Initialise(world);
 
@@ -47,6 +48,7 @@ public class GameGo: MonoBehaviour
         contextActionbar.Init(world.protagonistData.actions);
         buildBarUI.Init(gameState);
         modeBarUI.Init(gameState);
+        nighttimeOverlay.Init(gameTime);
     }
     private void Update()
     {
@@ -57,6 +59,7 @@ public class GameGo: MonoBehaviour
 
         float gameDt = gameTime.GameDeltaTime(realDt);
 
+        nighttimeOverlay.Tick(gameDt);
         gameState.Tick(gameDt);
         world.Tick(gameDt);
     }

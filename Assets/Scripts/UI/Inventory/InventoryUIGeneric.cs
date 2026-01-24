@@ -4,7 +4,8 @@ using System.Collections.Generic;
 public class InventoryUIGeneric : MonoBehaviour 
 {
     List<InventoryUISlot> slotsUI = new();
-    public GameObject inventorySlot;
+    [SerializeField] Transform slotsparent;
+    [SerializeField] GameObject inventorySlot;
 
     IItemContainer invData;
     int currentCapacity = -1;
@@ -45,7 +46,7 @@ public class InventoryUIGeneric : MonoBehaviour
 
         for (int i = 0; i < newCapacity; i++)
         {
-            GameObject slotObj = Instantiate(inventorySlot, transform);
+            GameObject slotObj = Instantiate(inventorySlot, slotsparent);
             InventoryUISlot slotUI = slotObj.GetComponent<InventoryUISlot>();
             slotsUI.Add(slotUI);
         }

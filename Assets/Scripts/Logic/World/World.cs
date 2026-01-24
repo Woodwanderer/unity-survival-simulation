@@ -9,7 +9,6 @@ public class World
     Vector2Int worldSize;
     public Vector2Int WorldSize => worldSize;
     public Vector2Int halfWorldSize { get; private set; }
-    public GameTime gameTime;
     public RenderWorld render;
 
     LandGenerator landGenerator;
@@ -35,14 +34,13 @@ public class World
     //Tasks 
     public TaskManager taskManager;
 
-    public World(WorldData data, RenderWorld render, GameTime time)
+    public World(WorldData data, RenderWorld render)
     {
         this.biomeData = data.biomeData;
         this.objDatabase = data.objDatabase;
         this.itemsDatabase = data.itemsDatabase;
         this.buildingsData = data.buildingsData;
         this.render = render;
-        gameTime = time;
 
         pathfinder = new Pathfinder(this);
     }
@@ -108,7 +106,7 @@ public class World
     }*/
     private void SetProtagonist(RenderWorld render)
     {
-        protagonistData = new ProtagonistData(halfWorldSize, gameTime.HourDuration, this, render);
+        protagonistData = new ProtagonistData(halfWorldSize, this, render);
     }
 
     //TileObjects

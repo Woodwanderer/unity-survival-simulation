@@ -15,6 +15,6 @@ public class TimePanelUI : MonoBehaviour
     private void Update()
     {
         time.text = gameTime.GetTimeString();
-        timeBar.fillAmount = gameTime.GetTime();
+        timeBar.fillAmount = gameTime.TimeOfDay;
     }
 }
