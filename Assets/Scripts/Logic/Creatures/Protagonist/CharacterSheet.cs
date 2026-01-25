@@ -2,6 +2,16 @@
 using System;
 public class CharacterSheet
 {
+    public String name = "Psylocyb Bong";
+    public CharacterActions actions;
+    public Inventory inventory;
+
+    //housing
+    public Shelter shelter = null;
+    public bool IsHomeless => shelter == null;
+    float hourDuration = Game.Config.hourDuration;
+
+    //hunger
     float hunger = 1f;
     public float Hunger => hunger;
     float hungerRate;
@@ -9,10 +19,16 @@ public class CharacterSheet
     public bool Starvation => hunger < starvationThreshold;
     public event Action OnStarvationStart;
 
-    float hourDuration = Game.Config.hourDuration;
+    //energy
+    public float energy = 1f;
+    public bool MaxEnergy => energy >= 0.95f;
+    public float energyDrainRate;
+    public float energyGainRate;
+    public float energyCapacityWh;
+    float lowEnergyThreshold = 0.3f;
+    public bool EnergyLow => energy < lowEnergyThreshold;
+    public bool restGoalAssigned = false;
 
-    CharacterActions actions;
-    public Inventory inventory;
     //stats
     public float carryWeight = 200;
     //speed
@@ -20,6 +36,7 @@ public class CharacterSheet
     public float harvestSpeed;
     public float buildSpeed = 1f;
     float speedDefault = 2.0f; //walking
+    bool hasSpeedDebuff = false;
     float SpeedMod 
     { 
         get
@@ -44,12 +61,24 @@ public class CharacterSheet
     public void InitStats()
     {
         hungerRate = hourDuration * 24;
-        eatSpeed = 30 / hourDuration;
 
-        harvestSpeed = 100 / hourDuration;
+        energyCapacityWh = hourDuration * 10;
+        energyDrainRate = 1/energyCapacityWh;
+
+        SetSpeed();
+
+    }
+    public void SetSpeed(float speedMod = 1f)
+    {
+        eatSpeed     = (30  / hourDuration) * speedMod;
+        harvestSpeed = (100 / hourDuration) * speedMod;
+        buildSpeed   = (1f                ) * speedMod;
+        speedDefault = (2.0f              ) * speedMod;
+
     }
     public void Tick(float deltaTime)
     {
+        //hunger
         bool starvingBefore = Starvation;
 
         if (!(actions.currentAction is EatAction e))  
@@ -67,5 +96,29 @@ public class CharacterSheet
 
         if (!starvingBefore && starvingNow)
             OnStarvationStart?.Invoke();
+
+
+        HandleEnergyConsumption(deltaTime);
+        if (EnergyLow)
+        {
+            SetSpeed(0.6f);
+            hasSpeedDebuff = true;
+        }
+        else if (hasSpeedDebuff) 
+        {
+            SetSpeed();
+            hasSpeedDebuff = false;
+        }
+        
+
     }
+    void HandleEnergyConsumption(float deltaTime)
+    {
+        if (!actions.IsWorking)
+            return;
+
+        energy -= energyDrainRate * deltaTime;
+        energy = Mathf.Clamp01(energy);
+    }
+    
 }

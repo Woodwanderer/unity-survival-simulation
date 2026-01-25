@@ -12,7 +12,7 @@ public interface IGoal
 }
 enum GoalPriority
 {
-    Survival = 100,
-    Urgent   =  50,
+    Survival = 100, //EnsureFood
+    Urgent   =  50, //SeekSheleter
     Normal   =  10
 }

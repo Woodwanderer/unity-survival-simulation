@@ -1,6 +1,4 @@
-﻿using Unity.VisualScripting;
-
-public class EnsureFood : IGoal
+﻿public class EnsureFood : IGoal
 {
     CharacterActions hero;
     ItemSlot order;

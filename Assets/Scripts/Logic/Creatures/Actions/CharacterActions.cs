@@ -8,6 +8,7 @@ public class CharacterActions
     public CharacterSheet stats;
     public Inventory inventory = new(16);
 
+    //goals
     public IGoal currentGoal;
     public List<IGoal> goals = new();
     void SetGoal(IGoal newGoal)
@@ -32,6 +33,8 @@ public class CharacterActions
             EventBus.Log($"Replaced current Goal with :{newGoal}");
         }
     }
+
+    //actions
     public IAction currentAction;
     public Queue<IAction> actionQueue = new Queue<IAction>();
     void SetAction(IAction newAction)
@@ -40,6 +43,9 @@ public class CharacterActions
         currentAction = newAction;
         currentAction?.Start();
     }
+
+    public bool IsWorking => currentAction is CollectItem || currentAction is HarvestAction || currentAction is BuildAction || currentAction is PickUp;
+    public bool IsResting => currentAction is Rest;
     public CharacterActions(World world, ProtagonistData protagonistData, RenderWorld render)
     {
         this.world = world;
@@ -148,6 +154,23 @@ public class CharacterActions
                 EventBus.Log("I can't reach this destination.");
         }
     }
+    //Rest
+    public bool TryRest()
+    {
+        if (stats.IsHomeless)
+        {
+            SetAction(new Rest(stats));
+            return true;
+        }
+
+        if (protagonistData.mapCoords == stats.shelter.TileCoords)
+        {
+            SetAction(new Rest(stats, stats.shelter.comfort));
+            return true;
+        }
+        return false;
+    }
+    
     //EAT
     void HandleStarvation()
     {

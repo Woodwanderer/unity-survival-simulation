@@ -14,6 +14,7 @@ public class CharacterSheetUI : MonoBehaviour
     private void Update()
     {
         hungerBar.fillAmount = dataState.Hunger;
+        energyBar.fillAmount = dataState.energy;
     }
 
 

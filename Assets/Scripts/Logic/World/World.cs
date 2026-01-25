@@ -31,8 +31,9 @@ public class World
     //Protagonist
     public ProtagonistData protagonistData { get; private set; }
 
-    //Tasks 
+    //Management
     public TaskManager taskManager;
+    public GoalManager goalManager;
 
     public World(WorldData data, RenderWorld render)
     {
@@ -47,6 +48,7 @@ public class World
     public void Tick(float deltaTime)
     {
         taskManager.Tick(deltaTime);
+        goalManager.Tick(deltaTime);
         protagonistData.Tick(deltaTime);
     }
 
@@ -89,7 +91,10 @@ public class World
         landGenerator = new(worldSizeX, worldSizeY, objDatabase, pathfinder, biomeData);
 
         SetProtagonist(render);
+
         taskManager = new(pathfinder);
+        goalManager = new(protagonistData.actions.stats);
+
         //GenerateTiles(); // Basic generator
         tileData = landGenerator.GenerateByArea();
     }
@@ -225,8 +230,12 @@ public class World
     {
         if (building is Stockpile s)
             taskManager.stockpiles.Add(s);
-        else
-            taskManager.buildings.Add(building);
+
+        else if (building is Shelter sh) 
+        {
+            taskManager.buildings.Add(sh);
+            goalManager.freeShelters.Enqueue(sh);
+        }
 
         taskManager.constructions.Remove(building);
         EventBus.Log($"{building.Type} succesfully constructed on {building.TileCoords}");

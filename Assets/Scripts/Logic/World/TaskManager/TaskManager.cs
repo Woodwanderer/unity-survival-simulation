@@ -16,6 +16,7 @@ public class TaskManager
     public List<Stockpile> stockpiles = new();
 
     public List<Building> constructions = new();
+
     public List<Building> buildings = new();
 
     public void Tick(float dt)

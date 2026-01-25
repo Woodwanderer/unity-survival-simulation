@@ -67,6 +67,9 @@ public class GameState
     Vector2Int dragStart;
     void PrintMouseTileInfo()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
         if (!Input.GetMouseButtonDown(0)) 
             return;
 
