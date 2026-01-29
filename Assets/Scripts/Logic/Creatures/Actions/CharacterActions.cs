@@ -28,6 +28,7 @@ public class CharacterActions
         else
         {
             goals.Add(currentGoal);
+            currentGoal.Cancel();
             currentGoal = newGoal;
             currentGoal.Start(this);
             EventBus.Log($"Replaced current Goal with :{newGoal}");
@@ -36,8 +37,9 @@ public class CharacterActions
 
     //actions
     public IAction currentAction;
+    public IAction lastFinishedAction;
     public Queue<IAction> actionQueue = new Queue<IAction>();
-    void SetAction(IAction newAction)
+    public void SetAction(IAction newAction)
     {
         currentAction?.Cancel();
         currentAction = newAction;
@@ -78,12 +80,12 @@ public class CharacterActions
         }
 
         currentGoal?.Tick(dt);
-
         currentAction?.Tick(dt);
-
 
         if (currentAction != null && currentAction.IsFinished)
         {
+            lastFinishedAction = currentAction;
+         
             if (currentAction is HarvestAction h && h.targetObj.harvestSource.Depleted)
             {
                 world.ClearTileEntity(h.targetObj);
@@ -153,22 +155,6 @@ public class CharacterActions
             else
                 EventBus.Log("I can't reach this destination.");
         }
-    }
-    //Rest
-    public bool TryRest()
-    {
-        if (stats.IsHomeless)
-        {
-            SetAction(new Rest(stats));
-            return true;
-        }
-
-        if (protagonistData.mapCoords == stats.shelter.TileCoords)
-        {
-            SetAction(new Rest(stats, stats.shelter.comfort));
-            return true;
-        }
-        return false;
     }
     
     //EAT

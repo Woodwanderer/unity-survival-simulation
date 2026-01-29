@@ -52,6 +52,7 @@ public class GoalManager
             {
                 IGoal rest = new RestGoal();
                 SetGoal(hero.actions, rest);
+                hero.restGoalAssigned = true;
             }
         }
     }

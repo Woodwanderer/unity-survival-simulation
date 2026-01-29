@@ -25,12 +25,14 @@ public class HarvestAction : IAction
         //Set stats
         this.speed = speed;
     }
+    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
     public void Start()
     {
         unitProgress = 0f;
         progress = 0f;
         targetAmount = order.Amount;
     }
+
     public void Tick(float dt)
     {
         unitProgress += dt * speed;

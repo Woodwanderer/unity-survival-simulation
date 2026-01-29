@@ -22,6 +22,7 @@ public class EatAction : IAction
         this.foodType = foodType;
         this.stats = stats;
     }
+    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
     public void Start()
     {
         nutritionValue = 0.25f; //percent of full HUNGER bar -> how much of a bar it will fill

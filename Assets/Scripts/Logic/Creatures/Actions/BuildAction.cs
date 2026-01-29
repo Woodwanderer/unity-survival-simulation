@@ -16,6 +16,7 @@ public class BuildAction : IAction
         workTime = building.WorkTime;
         speed = stats.buildSpeed;
     }
+    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
     public void Start()
     {
         progress = building.constructionProgress;

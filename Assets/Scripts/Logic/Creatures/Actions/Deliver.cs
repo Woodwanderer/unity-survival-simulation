@@ -16,7 +16,7 @@ public class Deliver : IAction
         this.speed = stats.harvestSpeed;
         this.destination = destination;
     }
-    
+    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
     public void Start()
     {
         targetAmount = 0;

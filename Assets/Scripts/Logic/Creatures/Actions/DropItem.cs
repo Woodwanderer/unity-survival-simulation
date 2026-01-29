@@ -19,6 +19,7 @@ public class DropItem : IAction
         this.world = world;
         this.render = render;
     }
+    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
     public void Start()
     {
         targetAmount = source.Amount;

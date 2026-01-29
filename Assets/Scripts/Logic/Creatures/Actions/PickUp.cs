@@ -23,6 +23,7 @@ public class PickUp :IAction
         //Set stats
         this.speed = stats.harvestSpeed;
     }
+    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
     public void Start()
     {
         unitProgress = 0f;

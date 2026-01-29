@@ -85,7 +85,6 @@ public class GameState
                 EventBus.Log($"There're a {w.Definition.objType} here.");
             }
         }
-        
     }
     public void SelectTile()
     {

@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameConfig
   worldSizeX: 60
   worldSizeY: 60
-  timeScale: 12
+  timeScale: 24
   hourDuration: 60

@@ -10,7 +10,7 @@ public class Movement : IAction
     float speed;
     float moveT;
     int pathIndex = 0;
-    public bool IsFinished => pathIndex >= path.Count;
+    public bool IsFinished => Status == ActionStatus.Succeeded;
 
     Vector3 fromPos;
     Vector3 toPos;
@@ -22,18 +22,20 @@ public class Movement : IAction
         this.path = newPath;
         this.speed = speed;
     }
+    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
     public void Start()
     {
+        Status = ActionStatus.Running;
         render.DrawPath(path, true);
         pathIndex = 0;
         moveT = 1;
     }
     public void Tick(float dt)
     {
-        if (IsFinished) 
-            return;
-
         MoveInTime(dt);
+
+        if (pathIndex >= path.Count) 
+            Status = ActionStatus.Succeeded;
     }
     void MoveInTime(float dt)
     {
@@ -59,6 +61,7 @@ public class Movement : IAction
     }
     public void Cancel()
     {
+        Status = ActionStatus.Cancelled;
         render.DrawPath(path, false);
     }
 }
