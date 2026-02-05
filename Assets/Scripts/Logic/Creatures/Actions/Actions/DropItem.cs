@@ -2,27 +2,40 @@
 
 public class DropItem : IAction
 {
-    ItemSlot source;
+    //External Data
     World world;
+    ItemSlot source;
+    //Deriveratives
     RenderWorld render;
-    ResourcePile resPile;
+    float speed;
+
+    //Generic IAction
+    public ActionToken Token { get; set; }
+    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
 
     public float progress;
     float unitProgress;
-    float speed;
+
+    ResourcePile resPile;
     int targetAmount;
-    public bool IsFinished => progress >= 1f;
-    public DropItem(ItemSlot source, CharacterSheet stats, World world, RenderWorld render)
+    public bool IsFinished => Status == ActionStatus.Succeeded;
+    public DropItem(ItemSlot source, CharacterSheet stats, World world)
     {
+        this.world = world;
         this.source = source;
         this.speed = stats.harvestSpeed;
-        this.world = world;
-        this.render = render;
+        
+        this.render = world.render;
     }
-    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
+    
     public void Start()
     {
         targetAmount = source.Amount;
+
+        EstablishPile(1);
+
+        Status = ActionStatus.Running;
+
     }
     public void Tick(float dt)
     {
@@ -34,11 +47,13 @@ public class DropItem : IAction
             unitProgress -= 1;
             source.Remove(1);
 
-            if (resPile == null)
-                EstablishPile(1);
-            else
-                resPile.Add(source.Item, 1);
+            //TODO: check for overflow
+            resPile.Add(source.Item, 1);        
         }
+
+        if (source.IsEmpty)
+            Status = ActionStatus.Succeeded;
+
     }
     ResourcePile EstablishPile(int amount)
     {
@@ -58,6 +73,6 @@ public class DropItem : IAction
     }
     public void Cancel()
     {
-
+        Status = ActionStatus.Cancelled;
     }
 }

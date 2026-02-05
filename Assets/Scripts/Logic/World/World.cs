@@ -132,6 +132,10 @@ public class World
         ent.isValid = false;
         TileData tile = GetTileData(ent.TileCoords);
         tile.entities.Remove(ent);
+        if (ent is ResourcePile rp)
+        {
+            taskManager.piles.Remove(rp);
+        }
     }
 
     //Tile SELECTION

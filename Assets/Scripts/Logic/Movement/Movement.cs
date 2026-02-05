@@ -3,28 +3,99 @@ using UnityEngine;
 
 public class Movement : IAction
 {
-    ProtagonistData data;
-    RenderWorld render;
-    
+    //Exterior data
+    World world;
+    Vector2Int destination;
+    Area targetArea;
     List<Vector2Int> path = new();
+
+    //Deriveratives
+    ProtagonistData data;
+    CharacterActions brain;
+    RenderWorld render;
+
+    //Action Generic
+    public ActionToken Token {  get; set; }
+    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
+    public bool IsFinished => Status == ActionStatus.Succeeded;
+
+    MoveMode mode;
     float speed;
     float moveT;
     int pathIndex = 0;
-    public bool IsFinished => Status == ActionStatus.Succeeded;
 
     Vector3 fromPos;
     Vector3 toPos;
 
-    public Movement(ProtagonistData data, RenderWorld render, float speed, List<Vector2Int> newPath)
+    enum MoveMode
     {
-        this.data = data;
-        this.render = render;
-        this.path = newPath;
-        this.speed = speed;
+        ToTile,
+        ToArea,
+        ByPath
     }
-    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
+    void Init()
+    {
+        data = world.protagonistData;
+        brain = data.actions;
+        speed = brain.stats.Speed;
+        render = world.render;
+    }
+    public Movement(World world, Vector2Int tileCoords)
+    {
+        this.world = world;
+        destination = tileCoords;
+        mode = MoveMode.ToTile;
+
+        Init();
+    }
+    public Movement(World world, Area destination)
+    {
+        this.world = world;
+        targetArea = destination;
+        mode = MoveMode.ToArea;
+
+        Init();
+    }
+    public Movement(World world, List<Vector2Int> path)
+    {
+        this.world = world;
+        this.path = path;
+        mode= MoveMode.ByPath;
+
+        Init();
+    }
     public void Start()
     {
+        switch(mode)
+        {
+            case MoveMode.ToTile:
+                if (data.mapCoords == destination) 
+                {
+                    Status = ActionStatus.Succeeded;
+                    return;
+                }
+                path = world.pathfinder.FindPath(data.mapCoords, destination);
+                break;
+
+            case MoveMode.ToArea:
+                path = world.pathfinder.FindPathToArea(data.mapCoords, targetArea);
+                if (path.Count == 0)
+                {
+                    Status = ActionStatus.Succeeded;
+                    return;
+                }
+                break;
+
+            case MoveMode.ByPath:
+                break;
+        }
+
+        if (path == null)
+        {
+            Status = ActionStatus.Failed;
+            return;
+        }
+
         Status = ActionStatus.Running;
         render.DrawPath(path, true);
         pathIndex = 0;
@@ -61,7 +132,7 @@ public class Movement : IAction
     }
     public void Cancel()
     {
-        Status = ActionStatus.Cancelled;
         render.DrawPath(path, false);
+        Status = ActionStatus.Cancelled;
     }
 }

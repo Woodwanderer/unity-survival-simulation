@@ -2,33 +2,39 @@
 
 public class PickUp :IAction
 {
+    //External Data
+    IItemContainer target;
+    ItemSlot order;
+    CharacterSheet stats;
+    //Deriveratives
+    Inventory inventory = null;
+    float speed;
+
+    //Generic IAction
+    public ActionToken Token { get; set; }
+    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
+    public bool IsFinished => progress >= 1f || Status == ActionStatus.Cancelled;
+
     public float progress = 0f;
     public float unitProgress = 0f;
     int targetAmount;
-    float speed;
-    public bool IsFinished => progress >= 1f || WasCanceled;
-    public bool WasCanceled { get; private set; }
-
-    IItemContainer target;
-    Inventory inventory = null;
-    ItemSlot order;
-    CharacterSheet stats;
+    
     public PickUp(IItemContainer target, ItemSlot order, CharacterSheet stats)
     {
         this.stats = stats;
-        inventory = stats.inventory;
         this.target = target;
         this.order = order;
 
-        //Set stats
+        inventory = stats.inventory;
         this.speed = stats.harvestSpeed;
     }
-    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
     public void Start()
     {
         unitProgress = 0f;
         progress = 0f;
         targetAmount = order.Amount;
+
+        Status = ActionStatus.Running;
     }
 
     public void Tick(float dt)
@@ -48,10 +54,13 @@ public class PickUp :IAction
             target.Remove(order.Item, 1);
             inventory.Add(order.Item, 1);
         }
+
+        if (progress >= 1f)
+            Status = ActionStatus.Succeeded;
     }
 
     public void Cancel()
     {
-        WasCanceled = true;
+        Status = ActionStatus.Cancelled;
     }
 }

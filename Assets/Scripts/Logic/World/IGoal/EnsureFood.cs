@@ -26,7 +26,7 @@
             return;
         }
             
-        if (!executingGoal && hero.currentAction != null)
+        if (!executingGoal && hero.actionRunner.currentAction != null)
         {
             float givenTime = 30f;
             waitingFor += dt;
@@ -37,8 +37,8 @@
                 return;
            
 
-            hero.currentAction.Cancel();
-            hero.currentAction = null;
+            hero.actionRunner.currentAction.Cancel();
+            hero.actionRunner.currentAction = null;
             return;
         }
 
@@ -49,7 +49,7 @@
         }
 
         //Wait if we're already doing smth form execution here
-        if (hero.currentAction != null)
+        if (hero.actionRunner.currentAction != null)
             return;
 
 
@@ -58,7 +58,12 @@
             return;
         }
 
-        hero.FindNearest(order);
+        bool found = hero.FindNearest(order);
+        /*if (!found)
+        {
+            hero.stats.foodAvailable = false;
+            finished = true;
+        }*/
     }
     public void Cancel()
     {

@@ -1,10 +1,12 @@
 ﻿public interface IAction
 {
+    ActionStatus Status { get; }
+    ActionToken Token { get; set; }
     void Start();
     void Tick(float dt);
     void Cancel();
     bool IsFinished {  get; }
-    ActionStatus Status { get; }
+    
 }
 public enum ActionStatus
 {
@@ -13,4 +15,15 @@ public enum ActionStatus
     Succeeded,
     Failed,
     Cancelled
+}
+
+public readonly struct ActionToken
+{
+    public readonly int Id;
+    public ActionToken(int id) => Id = id;
+    public override bool Equals(object  obj)
+        => obj is ActionToken other && other.Id == Id;
+    public override int GetHashCode()
+        => Id.GetHashCode();
+
 }

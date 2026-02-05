@@ -30,6 +30,9 @@ public class TaskManager
 
         foreach(var pile  in piles)
         {
+            if (pile.Item == null) 
+                continue; 
+
             if (HasHaulTaskFor(pile))
             {
                 continue;

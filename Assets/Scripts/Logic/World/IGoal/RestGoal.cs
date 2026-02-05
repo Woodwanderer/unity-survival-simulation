@@ -5,7 +5,8 @@
     bool finished = false;
     public bool IsFinished => finished;
     CharacterActions hero;
-    bool goingHome = false;
+
+    ActionToken? goHomeToken;
     public void Start(CharacterActions hero)
     {
         this.hero = hero;
@@ -18,30 +19,24 @@
         if (hero.IsResting)
             return;
 
-        if (hero.stats.IsHomeless) 
+        if (hero.stats.IsHomeless)
         {
-            hero.SetAction(new Rest(hero.stats));
+            hero.actionRunner.SetAction(new Rest(hero.stats));
             return;
         }
 
-        if (hero.protagonistData.mapCoords == hero.stats.shelter.TileCoords) 
+        if (goHomeToken.HasValue)
         {
-            hero.SetAction(new Rest(hero.stats));
-            return;
+            if (hero.actionRunner.HasFinished(goHomeToken.Value, out var status))
+            {
+                if (status == ActionStatus.Succeeded)
+                    hero.actionRunner.SetAction(new Rest(hero.stats));
+                if (status == ActionStatus.Failed)
+                    hero.stats.shelter = null;
+            }
         }
-
-        if (goingHome)
-            return;
-
-        goingHome = hero.TryMoveToTile(hero.stats.shelter.TileCoords);
-
-        if (!goingHome) 
-        {
-            EventBus.Log($"{hero.stats.name} couldn't find way home!");
-            hero.stats.shelter = null;
-            return;
-        }
-
+        else
+            goHomeToken = hero.actionRunner.SetAction(new Movement(hero.world, hero.stats.shelter.TileCoords));
     }
     public void Cancel()
     {

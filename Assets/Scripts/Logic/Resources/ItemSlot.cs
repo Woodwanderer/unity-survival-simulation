@@ -4,7 +4,7 @@ public class ItemSlot
 {
     public ItemDefinition Item { get; private set; }
     public int Amount { get; private set; }
-    public bool IsEmpty => Item == null || Amount <= 0;
+    public bool IsEmpty => Amount <= 0;
     public bool IsFull => Amount >= Item.maxStockpileSize;
     public ItemSlot(ItemDefinition item = null, int amount = 0)
     {
@@ -44,8 +44,6 @@ public class ItemSlot
 
         int removed = Mathf.Min(Amount, amount);
         Amount -= removed;
-        if (Amount == 0) 
-            Item = null;
 
         return amount - removed; //unmet demand   
     }

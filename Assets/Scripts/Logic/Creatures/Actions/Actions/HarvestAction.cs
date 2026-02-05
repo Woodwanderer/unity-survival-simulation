@@ -2,39 +2,56 @@
 
 public class HarvestAction : IAction
 {
+    //External Data
+    public WorldObject targetObj;
+    ItemSlot order;
+    float speed;
+    World world;
+    //Deriveratives
+    RenderWorld render;
+
+    //Generic IAction
+    public ActionToken Token { get; set; }
+    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
+    public bool IsFinished => Status == ActionStatus.Succeeded || Status == ActionStatus.Cancelled;
+
     public float progress = 0f;
     public float unitProgress = 0f;
     int targetAmount;
-    float speed;
-    bool wasCanceled;
-    public bool IsFinished => progress >= 1f || wasCanceled;
     
-    public WorldObject targetObj;
     ResourcePile resPile = null;
-    ItemSlot order;
-    World world;
-    RenderWorld render;
-
-    public HarvestAction(WorldObject wo, ItemSlot order, float speed, World world, RenderWorld render)
+    
+    public HarvestAction(WorldObject wo, ItemSlot order, float speed, World world)
     {
         this.targetObj = wo;
         this.order = order;
         this.world = world;
-        this.render = render;
+
+        this.render = world.render;
 
         //Set stats
         this.speed = speed;
     }
-    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
+    
     public void Start()
     {
         unitProgress = 0f;
         progress = 0f;
         targetAmount = order.Amount;
+
+        resPile = EstablishPile(1);
+
+        Status = ActionStatus.Running;
     }
 
     public void Tick(float dt)
     {
+        if (!targetObj.isValid || progress >= 1f) 
+        {
+            Status = ActionStatus.Succeeded;
+            return;
+        }
+
         unitProgress += dt * speed;
         progress += dt * speed / targetAmount;
 
@@ -43,15 +60,10 @@ public class HarvestAction : IAction
             unitProgress -= 1;
             targetObj.harvestSource.Harvest(order.Item, 1);
 
-            if (resPile == null)
-                resPile = EstablishPile(1);
-            else
+            int overflow = resPile.Add(order.Item, 1);
+            if (overflow > 0)
             {
-                int overflow = resPile.Add(order.Item, 1);
-                if (overflow > 0)
-                {
-                    resPile = EstablishPile(overflow);
-                }
+                resPile = EstablishPile(overflow);
             }
         }
     }
@@ -73,6 +85,6 @@ public class HarvestAction : IAction
     }
     public void Cancel()
     {
-        wasCanceled = true;
+        Status = ActionStatus.Cancelled;
     }
 }

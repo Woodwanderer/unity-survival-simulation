@@ -18,6 +18,7 @@ public class CharacterSheet
     float starvationThreshold = 0.5f;
     public bool Starvation => hunger < starvationThreshold;
     public event Action OnStarvationStart;
+    public bool foodAvailable = true;
 
     //energy
     public float energy = 1f;
@@ -81,7 +82,7 @@ public class CharacterSheet
         //hunger
         bool starvingBefore = Starvation;
 
-        if (!(actions.currentAction is EatAction e))  
+        if (!(actions.actionRunner.currentAction is EatAction e))  
         {
             hunger -= deltaTime / hungerRate; // full bar / day
             hunger = Mathf.Clamp01(hunger); // prevents from going below 0
@@ -94,7 +95,7 @@ public class CharacterSheet
 
         bool starvingNow = Starvation;
 
-        if (!starvingBefore && starvingNow)
+        if (!starvingBefore && starvingNow && foodAvailable )
             OnStarvationStart?.Invoke();
 
 

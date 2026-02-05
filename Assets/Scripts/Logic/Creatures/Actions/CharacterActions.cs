@@ -6,6 +6,7 @@ public class CharacterActions
     public ProtagonistData protagonistData;
     RenderWorld render;
     public CharacterSheet stats;
+    public ActionRunner actionRunner;
     public Inventory inventory = new(16);
 
     //goals
@@ -35,19 +36,8 @@ public class CharacterActions
         }
     }
 
-    //actions
-    public IAction currentAction;
-    public IAction lastFinishedAction;
-    public Queue<IAction> actionQueue = new Queue<IAction>();
-    public void SetAction(IAction newAction)
-    {
-        currentAction?.Cancel();
-        currentAction = newAction;
-        currentAction?.Start();
-    }
-
-    public bool IsWorking => currentAction is CollectItem || currentAction is HarvestAction || currentAction is BuildAction || currentAction is PickUp;
-    public bool IsResting => currentAction is Rest;
+    public bool IsWorking => actionRunner.currentAction is CollectItem || actionRunner.currentAction is HarvestAction || actionRunner.currentAction is BuildAction || actionRunner.currentAction is PickUp;
+    public bool IsResting => actionRunner.currentAction is Rest;
     public CharacterActions(World world, ProtagonistData protagonistData, RenderWorld render)
     {
         this.world = world;
@@ -59,8 +49,9 @@ public class CharacterActions
     }
     public void Init()
     {
+        actionRunner = new(world, render);
         EventBus.OnTileCommanded += MoveToTile;
-        stats.OnStarvationStart += HandleStarvation;
+        //stats.OnStarvationStart += HandleStarvation;
     }
     public void Tick(float dt)
     {
@@ -80,31 +71,9 @@ public class CharacterActions
         }
 
         currentGoal?.Tick(dt);
-        currentAction?.Tick(dt);
+        actionRunner.Tick(dt);
 
-        if (currentAction != null && currentAction.IsFinished)
-        {
-            lastFinishedAction = currentAction;
-         
-            if (currentAction is HarvestAction h && h.targetObj.harvestSource.Depleted)
-            {
-                world.ClearTileEntity(h.targetObj);
-                render.RemoveObjectSprite(h.targetObj);
-            }
-            if (currentAction is CollectItem c && c.pile.Amount <= 0)
-            {
-                world.ClearTileEntity(c.pile);
-                render.RemoveObjectSprite(c.pile);
-            }
-
-            if (actionQueue.Count > 0)
-                SetAction(actionQueue.Dequeue());
-            else
-                SetAction(null);
-        }
-
-
-        if (currentAction == null && currentGoal == null)
+        if (actionRunner.currentAction == null && currentGoal == null)
         {
             ITask task = world.taskManager.TakeTask();
             if (task is BuildTask bt)
@@ -119,24 +88,14 @@ public class CharacterActions
     }
     public void TryHaul(HaulTask ht)
     {
-
         IAction collect = new CollectItem(ht.source, ht.source.Slot, stats);
-        if (ht.source.TileCoords == protagonistData.mapCoords) 
-            SetAction(collect);
-        else
-        {
-            bool canMove = TryMoveToTile(ht.source.TileCoords);
-            if (canMove)
-            {
-                actionQueue.Enqueue(collect);
-                IAction moveToStockpile = new Movement(protagonistData, render, stats.Speed, ht.deliveryPath);
-                actionQueue.Enqueue(moveToStockpile);
-                IAction deliver = new Deliver(inventory, stats, ht.destination);
-                actionQueue.Enqueue(deliver);
-            }
-            else
-                EventBus.Log("I can't reach this destination.");
-        }
+        actionRunner.SetAction(new Movement(world, ht.source.TileCoords));
+        actionRunner.actionQueue.Enqueue(collect);
+
+        IAction moveToStockpile = new Movement(world, ht.deliveryPath);
+        actionRunner.actionQueue.Enqueue(moveToStockpile);
+        IAction deliver = new Deliver(inventory, stats, ht.destination);
+        actionRunner.actionQueue.Enqueue(deliver);
     }
 
     //Build
@@ -145,15 +104,11 @@ public class CharacterActions
         IAction build = new BuildAction(building, stats, world);
 
         if (building.Area.IsInRange(protagonistData.mapCoords)) 
-            SetAction(build);
+            actionRunner.SetAction(build);
         else
         {
-            bool canMove = TryMoveToArea(building.Area);
-
-            if (canMove)
-                actionQueue.Enqueue(build);
-            else
-                EventBus.Log("I can't reach this destination.");
+            actionRunner.SetAction(new Movement(world, building.Area));
+            actionRunner.actionQueue.Enqueue(build);
         }
     }
     
@@ -177,7 +132,7 @@ public class CharacterActions
         }
 
         IAction eat = new EatAction(inventory, meal.Item, stats);
-        SetAction(eat);
+        actionRunner.SetAction(eat);
         return true;
     }
     //HARVEST
@@ -191,69 +146,30 @@ public class CharacterActions
         }
         else if(target is WorldObject wo)
         {
-            transfer = new HarvestAction(wo, order, stats.harvestSpeed, world, render);
+            transfer = new HarvestAction(wo, order, stats.harvestSpeed, world);
         }
         else
         {
             return;
         }
-        if (protagonistData.mapCoords == target.TileCoords)
-        {
-            SetAction(transfer);
-        }
-        else
-        {
-            bool canMove = TryMoveToTile(target.TileCoords);
-
-            if (canMove)
-                actionQueue.Enqueue(transfer);
-            else
-                EventBus.Log("I can't reach this destination.");
-        }
+        actionRunner.SetAction(new Movement(world,target.TileCoords));
+        actionRunner.actionQueue.Enqueue(transfer);
     }
     public void TryPickUp(ItemSlot order, Stockpile from)
     {
-        IAction transfer = new PickUp(from, order, stats);
-        if (protagonistData.mapCoords == from.area.center)
-        {
-            SetAction(transfer);
-        }
-        else
-        {
-            bool canMove = TryMoveToTile(from.area.center);
-
-            if (canMove)
-                actionQueue.Enqueue(transfer);
-            else
-                EventBus.Log("I can't reach this destination.");
-        }
+        actionRunner.SetAction(new Movement(world, from.area.center));
+        actionRunner.actionQueue.Enqueue(new PickUp(from, order, stats));
     }
     //MOVE
     public void MoveToTile(Vector2Int tileCoords)
-        => TryMoveToTile(tileCoords);
-    public bool TryMoveToTile(Vector2Int tileCoords)
     {
-        if (protagonistData.mapCoords == tileCoords || world.GetTileData(tileCoords).isWalkable == false)
-            return false;
-
-        List<Vector2Int> newPath = world.pathfinder.FindPath(protagonistData.mapCoords, tileCoords);
-        if (newPath == null || newPath.Count == 0)
-            return false;
-
-        SetAction(new Movement(protagonistData, render, stats.Speed, newPath));
-        return true;
+        actionRunner.SetAction(new Movement(world, tileCoords));
     }
-    public bool TryMoveToArea(Area area)
+    public void MoveToArea(Area area)
     {
-        List<Vector2Int> newPath = world.pathfinder.FindPathToArea(protagonistData.mapCoords, area);
-
-        if (newPath == null || newPath.Count == 0)
-            return false;
-
-        SetAction(new Movement(protagonistData, render, stats.Speed, newPath));
-        return true;
+        actionRunner.SetAction(new Movement(world, area));
     }
-    public void FindNearest(ItemSlot order)
+    public bool FindNearest(ItemSlot order)
     {
         Stockpile from = null;
         from = world.taskManager.FindClosestStockpileWith(order, protagonistData.mapCoords);
@@ -261,12 +177,14 @@ public class CharacterActions
         if (from != null)
         {
             TryPickUp(order, from);
-            return;
+            return true;
         }
         TileEntity ent = world.FindNearest(order, protagonistData.mapCoords);
         if (ent != null)
         {
             TryHarvest(ent, order);
+            return true;
         }
+        return false;
     }
 }

@@ -39,6 +39,12 @@ public class ContextActionBarUI : MonoBehaviour
     {
         if (actionSource is ResourcePile rp)
         {
+            if (rp.Item == null || rp.IsEmpty)
+            {
+                Hide();
+                return;
+            }
+
             buttons[0].gameObject.SetActive(true);
 
             buttons[0].SetIcon(rp.Item.icon);
