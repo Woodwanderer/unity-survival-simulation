@@ -8,6 +8,7 @@
     public bool IsFinished => finished;
     bool executingGoal;
     float waitingFor = 0;
+    float logTimer = 0;
     public string Name => "EnsureFood";
 
     public void Start(CharacterActions hero)
@@ -19,27 +20,30 @@
     }
     public void Tick(float dt)
     {
-        if (!IsValid)
+        if (!IsValid && !(hero.actionRunner.currentAction is EatAction)) 
         {
             finished = true;
             executingGoal = false;
             return;
         }
-            
+
         if (!executingGoal && hero.actionRunner.currentAction != null)
         {
             float givenTime = 30f;
             waitingFor += dt;
+            logTimer += dt;
 
-            EventBus.Log($"[Goal] {Name} waiting {waitingFor:0.0}s / {givenTime:0.0}s");
+            if (logTimer >= 5)
+            {
+                logTimer = 0;
+                EventBus.Log($"[Goal] {Name} waiting {waitingFor:0.0}s / {givenTime:0.0}s");
+            }
 
             if (waitingFor < givenTime)
                 return;
-           
 
             hero.actionRunner.currentAction.Cancel();
             hero.actionRunner.currentAction = null;
-            return;
         }
 
         if (!executingGoal)

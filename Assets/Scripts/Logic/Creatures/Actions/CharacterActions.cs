@@ -30,9 +30,9 @@ public class CharacterActions
         {
             goals.Add(currentGoal);
             currentGoal.Cancel();
+            EventBus.Log($"Replacing {currentGoal} with :{newGoal}");
             currentGoal = newGoal;
             currentGoal.Start(this);
-            EventBus.Log($"Replaced current Goal with :{newGoal}");
         }
     }
 
@@ -51,7 +51,7 @@ public class CharacterActions
     {
         actionRunner = new(world, render);
         EventBus.OnTileCommanded += MoveToTile;
-        //stats.OnStarvationStart += HandleStarvation;
+        stats.OnStarvationStart += HandleStarvation;
     }
     public void Tick(float dt)
     {
@@ -122,7 +122,7 @@ public class CharacterActions
         if (meal == null)
         {
             ItemDefinition food = world.itemsDatabase.Get("foodRaw");
-            ItemSlot order = new(food, 5);
+            meal = new ItemSlot(food, 5);
         }
 
         if (!inventory.Snapshot().Has(meal.Item, meal.Amount))

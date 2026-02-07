@@ -45,7 +45,7 @@ public class EatAction : IAction
             unitProgress -= 1f;
             inventory.Remove(foodType, 1);
         }
-        nutrition += dt * speed * nutritionValue;
+        nutrition = dt * speed / mealAmount * nutritionValue;
 
         if (progress >= 1f)
             Status = ActionStatus.Succeeded;

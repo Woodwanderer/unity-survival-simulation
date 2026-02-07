@@ -2,6 +2,7 @@
 using UnityEngine;
 public class ResourcePile : TileEntity
 {
+    // ResourcePile has to have Item. While amount is == 0 -> object is to be cleared. Only that determines it's validity.
     public ItemSlot Slot { get; }
     public ResourcePile(Vector2Int tileCoords, ItemDefinition item, int amount) : base(tileCoords)
     {

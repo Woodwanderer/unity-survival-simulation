@@ -39,8 +39,6 @@ public class HarvestAction : IAction
         progress = 0f;
         targetAmount = order.Amount;
 
-        resPile = EstablishPile(1);
-
         Status = ActionStatus.Running;
     }
 
@@ -60,11 +58,16 @@ public class HarvestAction : IAction
             unitProgress -= 1;
             targetObj.harvestSource.Harvest(order.Item, 1);
 
-            int overflow = resPile.Add(order.Item, 1);
-            if (overflow > 0)
+            if (resPile != null)
             {
-                resPile = EstablishPile(overflow);
+                int overflow = resPile.Add(order.Item, 1);
+                if (overflow > 0)
+                {
+                    resPile = EstablishPile(overflow);
+                }
             }
+            if (resPile == null)
+                EstablishPile(1);
         }
     }
     ResourcePile EstablishPile(int amount)

@@ -33,13 +33,7 @@ public class CollectItem : IAction
     }
     public void Start()
     {
-        if (order == null || order.Item == null)
-        {
-            Status = ActionStatus.Failed;
-            return;
-        }
-
-        targetAmount = pile.Amount;
+        targetAmount = order.Amount; //UI call gives order.Amount = pile amount, order call gives order amount
 
         unitProgress = 0f;
         progress = 0f;
@@ -48,7 +42,7 @@ public class CollectItem : IAction
 
     public void Tick(float dt)
     {
-        if (!pile.isValid || progress >= 1f)
+        if (progress >= 1f)
         {
             Status = ActionStatus.Succeeded;
             return;
@@ -58,7 +52,6 @@ public class CollectItem : IAction
             Status = ActionStatus.Succeeded;
             return;
         }
-
         if (inventory.CalculateWeight(order.Item) >= stats.carryWeight)
         {
             Status = ActionStatus.Succeeded;
@@ -71,17 +64,9 @@ public class CollectItem : IAction
         while (unitProgress >= 1f)
         {
             unitProgress -= 1;
-            int unmetDemand = pile.Remove(order.Item, 1);
-
-            if (unmetDemand > 0)
-            {
-                Status = ActionStatus.Succeeded;
-                return;
-            }
-
+            pile.Remove(order.Item, 1);
             inventory.Add(order.Item, 1);
         }
-      
     }
 
     public void Cancel()

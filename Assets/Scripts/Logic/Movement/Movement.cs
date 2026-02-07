@@ -17,7 +17,7 @@ public class Movement : IAction
     //Action Generic
     public ActionToken Token {  get; set; }
     public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
-    public bool IsFinished => Status == ActionStatus.Succeeded;
+    public bool IsFinished => Status == ActionStatus.Succeeded || Status == ActionStatus.Cancelled;
 
     MoveMode mode;
     float speed;
@@ -103,6 +103,9 @@ public class Movement : IAction
     }
     public void Tick(float dt)
     {
+        if (Status == ActionStatus.Succeeded)
+            return;
+
         MoveInTime(dt);
 
         if (pathIndex >= path.Count) 

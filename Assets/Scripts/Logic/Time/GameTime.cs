@@ -7,13 +7,18 @@ public class GameTime
     float secondsInHour = 0;
     float hourDuration = 60; //seconds 60 - default game
     public float HourDuration => hourDuration;
+
     string timeString;
+
+    public float inGametimeScale = 1.0f;
+
     float timeOfDay = 0; //0...1
     public float TimeOfDay => timeOfDay;
     public bool BeforeNoon => timeOfDay <= 0.5f;
+
     public void Tick(float deltaTime)
     {
-        float dt = deltaTime * Game.Config.timeScale;
+        float dt = deltaTime * Game.Config.timeScale * inGametimeScale;
 
         timeOfDay += dt / (hourDuration * 24);
         secondsInHour += dt;
@@ -33,7 +38,7 @@ public class GameTime
     }
     public float GameDeltaTime(float realDt)
     {
-        return realDt * Game.Config.timeScale;
+        return realDt * Game.Config.timeScale * inGametimeScale;
     }
     public string GetTimeString()
     {

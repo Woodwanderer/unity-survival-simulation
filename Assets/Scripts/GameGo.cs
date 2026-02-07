@@ -25,6 +25,7 @@ public class GameGo: MonoBehaviour
     public ModeBarUI modeBarUI;
     public BuildingBarUI buildingBarUI;
     public NighttimeOverlay nighttimeOverlay;
+    public GameSpeedUI gameSpeedUI;
 
     private void Awake()
     {
@@ -49,6 +50,8 @@ public class GameGo: MonoBehaviour
         buildBarUI.Init(gameState);
         modeBarUI.Init(gameState);
         nighttimeOverlay.Init(gameTime);
+        gameSpeedUI.Init(gameTime);
+
     }
     private void Update()
     {
