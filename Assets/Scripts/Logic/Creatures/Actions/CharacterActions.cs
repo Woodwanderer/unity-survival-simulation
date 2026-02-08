@@ -12,30 +12,18 @@ public class CharacterActions
     //goals
     public IGoal currentGoal;
     public List<IGoal> goals = new();
-    void SetGoal(IGoal newGoal)
+    public bool HasGoal<T>() where T : IGoal
     {
-        if (currentGoal == null)
+        if (currentGoal is T) 
+            return true;
+        foreach (var goal in goals) 
         {
-            currentGoal = newGoal;
-            currentGoal.Start(this);
-            EventBus.Log($"Added new Goal: {newGoal}");
-            return;
+            if (goal is T) 
+                return true;
         }
-        if (currentGoal.Priority >= newGoal.Priority)
-        {
-            goals.Add(newGoal);
-            EventBus.Log($"Added new Goal to queue: {newGoal}");
-        }
-        else
-        {
-            goals.Add(currentGoal);
-            currentGoal.Cancel();
-            EventBus.Log($"Replacing {currentGoal} with :{newGoal}");
-            currentGoal = newGoal;
-            currentGoal.Start(this);
-        }
-    }
 
+        return false;
+    }
     public bool IsWorking => actionRunner.currentAction is CollectItem || actionRunner.currentAction is HarvestAction || actionRunner.currentAction is BuildAction || actionRunner.currentAction is PickUp;
     public bool IsResting => actionRunner.currentAction is Rest;
     public CharacterActions(World world, ProtagonistData protagonistData, RenderWorld render)
@@ -51,7 +39,6 @@ public class CharacterActions
     {
         actionRunner = new(world, render);
         EventBus.OnTileCommanded += MoveToTile;
-        stats.OnStarvationStart += HandleStarvation;
     }
     public void Tick(float dt)
     {
@@ -111,12 +98,8 @@ public class CharacterActions
             actionRunner.actionQueue.Enqueue(build);
         }
     }
-    
+
     //EAT
-    void HandleStarvation()
-    {
-        SetGoal(new EnsureFood());
-    }
     public bool TryEat(ItemSlot meal = null)
     {
         if (meal == null)

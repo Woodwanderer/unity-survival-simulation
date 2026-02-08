@@ -17,7 +17,7 @@ public class CharacterSheet
     float hungerRate;
     float starvationThreshold = 0.5f;
     public bool Starvation => hunger < starvationThreshold;
-    public event Action OnStarvationStart;
+    public event Action<CharacterActions> OnStarvationStart;
     public bool foodAvailable = true;
 
     //energy
@@ -27,8 +27,7 @@ public class CharacterSheet
     public float energyGainRate;
     public float energyCapacityWh;
     float lowEnergyThreshold = 0.3f;
-    public bool EnergyLow => energy < lowEnergyThreshold;
-    public bool restGoalAssigned = false;
+    public bool Tired => energy < lowEnergyThreshold;
 
     //stats
     public float carryWeight = 200;
@@ -96,11 +95,11 @@ public class CharacterSheet
         bool starvingNow = Starvation;
 
         if (!starvingBefore && starvingNow && foodAvailable )
-            OnStarvationStart?.Invoke();
+            OnStarvationStart?.Invoke(actions);
 
 
         HandleEnergyConsumption(deltaTime);
-        if (EnergyLow)
+        if (Tired) 
         {
             SetSpeed(0.6f);
             hasSpeedDebuff = true;

@@ -40,11 +40,10 @@
     }
     public void Cancel()
     {
-        hero.stats.restGoalAssigned = false;
+
     }
     public void OnFinish()
     {
-        hero.stats.restGoalAssigned = false;
         finished = true;
     }
 }

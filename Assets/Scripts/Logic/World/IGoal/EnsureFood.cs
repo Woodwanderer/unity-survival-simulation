@@ -26,7 +26,7 @@
             executingGoal = false;
             return;
         }
-
+  
         if (!executingGoal && hero.actionRunner.currentAction != null)
         {
             float givenTime = 30f;
@@ -45,7 +45,7 @@
             hero.actionRunner.currentAction.Cancel();
             hero.actionRunner.currentAction = null;
         }
-
+         
         if (!executingGoal)
         {
             executingGoal = true;
@@ -63,18 +63,15 @@
         }
 
         bool found = hero.FindNearest(order);
-        /*if (!found)
+
+        if (!found)
         {
             hero.stats.foodAvailable = false;
             finished = true;
-        }*/
+        }
     }
     public void Cancel()
     {
         EventBus.Log($"Current Goal was canceled: {this.Name}.");
     }
-
-  
-
-
 }

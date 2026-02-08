@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-
 public class GoalManager
 {
     //external refs
@@ -8,16 +7,22 @@ public class GoalManager
     public Queue<Shelter> freeShelters = new();
     public HashSet<Shelter> occupiedSheletrs = new();
 
-
     public GoalManager(CharacterSheet hero)
     {
-        heroes.Add(hero);
+        RegisterHero(hero);
     }
     public GoalManager(List<CharacterSheet> heroes)
     {
-        this.heroes = heroes;
+        foreach(CharacterSheet hero in heroes)
+        {
+            RegisterHero(hero);
+        }
     }
-
+    void RegisterHero(CharacterSheet hero)
+    {
+        heroes.Add(hero);
+        hero.OnStarvationStart += HandleStarvation;
+    }
     public void Tick(float dt) // perhaps make it per hour
     {
         ResolveHousing();
@@ -48,15 +53,19 @@ public class GoalManager
     {
         foreach (var hero in heroes)
         {
-            if (hero.EnergyLow && !hero.restGoalAssigned) 
+            if (hero.Tired && !hero.actions.HasGoal<RestGoal>()) 
             {
                 IGoal rest = new RestGoal();
                 SetGoal(hero.actions, rest);
-                hero.restGoalAssigned = true;
             }
         }
     }
-    
+    void HandleStarvation(CharacterActions actions)
+    {
+        if (!actions.HasGoal<EnsureFood>())
+            SetGoal(actions, new EnsureFood());
+    }
+
     void SetGoal(CharacterActions hero, IGoal newGoal)
     {
         if (hero.currentGoal == null)
