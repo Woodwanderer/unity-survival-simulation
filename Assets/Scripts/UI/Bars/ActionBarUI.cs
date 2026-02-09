@@ -2,16 +2,14 @@
 
 public class ActionBarUI : MonoBehaviour
 {
-    CharacterActions characterActions;
+    CharacterActions brain;
 
-    public void Init( CharacterActions actions)
+    public void Init( CharacterActions brain)
     {
-        this.characterActions = actions;
+        this.brain = brain;
     }
     public void Eat()
     {
-        characterActions.TryEat();
+        brain.actionRunner.SetAction(new EatAction(brain));
     }
-
-
 }

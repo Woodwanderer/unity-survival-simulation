@@ -2,14 +2,19 @@
 {
     CharacterActions hero;
     ItemSlot order;
-    bool finished = false;
+
     public int Priority => (int)GoalPriority.Survival;
-    public bool IsValid => hero != null && hero.stats.Starvation;
+    public bool IsValid => hero.stats.Starvation;
+    bool finished = false;
     public bool IsFinished => finished;
+
+    ActionToken? eatToken;
     bool executingGoal;
+
     float waitingFor = 0;
     float logTimer = 0;
-    public string Name => "EnsureFood";
+
+    string Name = "EnsureFood";
 
     public void Start(CharacterActions hero)
     {
@@ -20,13 +25,6 @@
     }
     public void Tick(float dt)
     {
-        if (!IsValid && !(hero.actionRunner.currentAction is EatAction)) 
-        {
-            finished = true;
-            executingGoal = false;
-            return;
-        }
-  
         if (!executingGoal && hero.actionRunner.currentAction != null)
         {
             float givenTime = 30f;
@@ -56,22 +54,37 @@
         if (hero.actionRunner.currentAction != null)
             return;
 
-
-        if (hero.TryEat(order)) 
+        if (eatToken.HasValue) 
         {
-            return;
+            if (hero.actionRunner.HasFinished(eatToken.Value, out var status))
+            {
+                eatToken = null;
+
+                if (status == ActionStatus.Failed)
+                {
+                    bool found = hero.FindNearest(order);
+
+                    if (!found)
+                    {
+                        hero.stats.foodAvailable = false;
+                        finished = true;
+                    }
+                }
+                else if (status == ActionStatus.Succeeded || status == ActionStatus.Cancelled) 
+                {
+                    executingGoal = false;
+                    finished = true;
+                }
+            }
         }
-
-        bool found = hero.FindNearest(order);
-
-        if (!found)
+        else
         {
-            hero.stats.foodAvailable = false;
-            finished = true;
+            eatToken = hero.actionRunner.SetAction(new EatAction(hero, order));
         }
     }
     public void Cancel()
     {
+        finished = true;
         EventBus.Log($"Current Goal was canceled: {this.Name}.");
     }
 }

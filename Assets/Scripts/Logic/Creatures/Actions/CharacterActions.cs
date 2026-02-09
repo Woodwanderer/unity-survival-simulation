@@ -98,26 +98,6 @@ public class CharacterActions
             actionRunner.actionQueue.Enqueue(build);
         }
     }
-
-    //EAT
-    public bool TryEat(ItemSlot meal = null)
-    {
-        if (meal == null)
-        {
-            ItemDefinition food = world.itemsDatabase.Get("foodRaw");
-            meal = new ItemSlot(food, 5);
-        }
-
-        if (!inventory.Snapshot().Has(meal.Item, meal.Amount))
-        {
-            EventBus.Log("You don't have enough food.");
-            return false;
-        }
-
-        IAction eat = new EatAction(inventory, meal.Item, stats);
-        actionRunner.SetAction(eat);
-        return true;
-    }
     //HARVEST
     public void TryHarvest(TileEntity target, ItemSlot order)
     {

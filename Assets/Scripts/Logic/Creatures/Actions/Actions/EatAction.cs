@@ -1,51 +1,61 @@
-﻿using UnityEngine;
-
-public class EatAction : IAction
+﻿public class EatAction : IAction
 {
     //External Data
+    CharacterActions brain;
+    ItemSlot meal;              //Eating that
+    //Deriveratives
     Inventory inventory;        //Eating from
-    ItemDefinition foodType;    //Eating that
-    CharacterSheet stats;
+    float speed;
+
+    //Generic IAction
+    public ActionToken Token { get; set; }
+    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
+    public bool IsFinished => Status == ActionStatus.Succeeded || Status == ActionStatus.Cancelled || Status == ActionStatus.Failed;
 
     float nutritionValue;
     public float nutrition;     //-hunger: used by CharacterSheet
 
-    //Deneric IAction
-    public ActionToken Token {  get; set; }
-    public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
-
-    public bool IsFinished => Status == ActionStatus.Succeeded || Status == ActionStatus.Cancelled;
-
     public float progress = 0f;
     float unitProgress = 0f;
-    float speed;
-    int mealAmount;
 
-    public EatAction(Inventory inventory, ItemDefinition foodType, CharacterSheet stats)
+    public EatAction(CharacterActions brain, ItemSlot meal = null)
     {
-        this.inventory = inventory;
-        this.foodType = foodType;
-        this.stats = stats;
+        this.brain = brain;
+        this.meal = meal;
+
+        this.inventory = brain.inventory;
+        this.speed = brain.stats.eatSpeed;
     }
     public void Start()
     {
-        nutritionValue = 0.25f; //percent of full HUNGER bar -> how much of a bar it will fill
-        mealAmount = 5;         //minimum amount per meal -> gives: nutrition value
-        speed = stats.eatSpeed;
+        if (meal == null)
+        {
+            ItemDefinition food = brain.world.itemsDatabase.Get("foodRaw");
+            meal = new ItemSlot(food, 5);
+        }
 
+        if (!inventory.Snapshot().Has(meal.Item, meal.Amount))
+        {
+            Status = ActionStatus.Failed;
+            return;
+        }   
+
+        nutritionValue = 0.25f; //percent of full HUNGER bar -> how much of a bar it will fill
+        
         Status = ActionStatus.Running;
     }
     public void Tick(float dt)
     {
         unitProgress += dt * speed;
-        progress += dt * speed / mealAmount;
+        progress += dt * speed / meal.Amount;
 
         while (unitProgress >= 1f)
         {
             unitProgress -= 1f;
-            inventory.Remove(foodType, 1);
+            inventory.Remove(meal.Item, 1);
         }
-        nutrition = dt * speed / mealAmount * nutritionValue;
+
+        nutrition = dt * speed / meal.Amount * nutritionValue;
 
         if (progress >= 1f)
             Status = ActionStatus.Succeeded;
