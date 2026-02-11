@@ -37,7 +37,7 @@ public class CharacterActions
     }
     public void Init()
     {
-        actionRunner = new(world, render);
+        actionRunner = new(world);
         EventBus.OnTileCommanded += MoveToTile;
     }
     public void Tick(float dt)
@@ -69,22 +69,10 @@ public class CharacterActions
             }
             if (task is HaulTask ht)
             {
-                TryHaul(ht);
+                actionRunner.ExecutePlan(new HaulPlan(this, ht));
             }
         }
     }
-    public void TryHaul(HaulTask ht)
-    {
-        IAction collect = new CollectItem(ht.source, ht.source.Slot, stats);
-        actionRunner.SetAction(new Movement(world, ht.source.TileCoords));
-        actionRunner.actionQueue.Enqueue(collect);
-
-        IAction moveToStockpile = new Movement(world, ht.deliveryPath);
-        actionRunner.actionQueue.Enqueue(moveToStockpile);
-        IAction deliver = new Deliver(inventory, stats, ht.destination);
-        actionRunner.actionQueue.Enqueue(deliver);
-    }
-
     //Build
     public void TryBuild(Building building)
     {
@@ -107,7 +95,7 @@ public class CharacterActions
         {
             transfer = new CollectItem(pile, order, stats);
         }
-        else if(target is WorldObject wo)
+        else if (target is WorldObject wo) 
         {
             transfer = new HarvestAction(wo, order, stats.harvestSpeed, world);
         }
@@ -132,7 +120,7 @@ public class CharacterActions
     {
         actionRunner.SetAction(new Movement(world, area));
     }
-    public bool FindNearest(ItemSlot order)
+    public bool FindAndGetNearest(ItemSlot order)
     {
         Stockpile from = null;
         from = world.taskManager.FindClosestStockpileWith(order, protagonistData.mapCoords);

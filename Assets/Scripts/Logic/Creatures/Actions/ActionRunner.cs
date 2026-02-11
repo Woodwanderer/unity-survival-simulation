@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 
 
 public class ActionRunner
 {
+    //External Data
     World world;
+    //Deriveratives
     RenderWorld render;
 
     //actions
@@ -17,10 +20,10 @@ public class ActionRunner
 
     public Queue<IAction> actionQueue = new Queue<IAction>();
 
-    public ActionRunner(World world, RenderWorld render)
+    public ActionRunner(World world)
     {
         this.world = world;
-        this.render = render;
+        this.render = world.render;
     }
     public ActionToken SetAction(IAction newAction)
     {
@@ -49,6 +52,23 @@ public class ActionRunner
 
         status = default;
         return false;
+    }
+    public void ExecutePlan(IPlan plan)
+    {
+        bool first = true;
+
+        foreach (var action in plan.Build())
+        {
+            if (first)
+            {
+                SetAction(action);
+                first = false;
+            }
+            else
+            {
+                actionQueue.Enqueue(action);
+            }
+        }
     }
 
     public void Tick(float dt)

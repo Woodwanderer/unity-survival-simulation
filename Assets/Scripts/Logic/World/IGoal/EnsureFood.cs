@@ -62,7 +62,7 @@
 
                 if (status == ActionStatus.Failed)
                 {
-                    bool found = hero.FindNearest(order);
+                    bool found = hero.FindAndGetNearest(order);
 
                     if (!found)
                     {
@@ -70,7 +70,7 @@
                         finished = true;
                     }
                 }
-                else if (status == ActionStatus.Succeeded || status == ActionStatus.Cancelled) 
+                else
                 {
                     executingGoal = false;
                     finished = true;

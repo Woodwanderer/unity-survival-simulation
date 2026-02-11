@@ -1,43 +1,28 @@
 ﻿using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 public class HaulPlan : IPlan
 {
-    CharacterActions actions;
+    //External Data
+    CharacterActions brain;
     HaulTask ht;
+    //Deriveratives
     World world;
-    HaulPlan(CharacterActions actions, HaulTask haulTask)
+    public HaulPlan(CharacterActions brain, HaulTask haulTask)
     {
-        this.actions = actions;
+        this.brain = brain;
         this.ht = haulTask;
 
-        world = actions.world;
+        world = brain.world;
     }
     public IEnumerable<IAction> Build()
     {
         //Move to Task Sequenece Location
         yield return new Movement(world, ht.source.TileCoords);
+
+        yield return new CollectItem(ht.source, ht.source.Slot, brain.stats);
+
+        //Move to Stockpile
+        yield return new Movement(world, ht.deliveryPath);
+
+        yield return new Deliver(brain.inventory, brain.stats, ht.destination);
     }
-
-    /*public void TryHaul(HaulTask ht)
-    {
-
-        IAction collect = new CollectItem(ht.source, ht.source.Slot, stats);
-        if (ht.source.TileCoords == protagonistData.mapCoords)
-            actionRunner.SetAction(collect);
-        else
-        {
-            bool canMove = TryMoveToTile(ht.source.TileCoords);
-            if (canMove)
-            {
-                actionRunner.actionQueue.Enqueue(collect);
-                IAction moveToStockpile = new Movement(protagonistData, render, stats.Speed, ht.deliveryPath);
-                actionRunner.actionQueue.Enqueue(moveToStockpile);
-                IAction deliver = new Deliver(inventory, stats, ht.destination);
-                actionRunner.actionQueue.Enqueue(deliver);
-            }
-            else
-                EventBus.Log("I can't reach this destination.");
-        }
-    }*/
-
 }
