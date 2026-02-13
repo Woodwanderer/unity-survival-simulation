@@ -34,7 +34,7 @@ public class GameGo: MonoBehaviour
     private void Start()
     {
         world = new World(worldData, renderWorld); 
-        world.Initialise(renderWorld);
+        world.Initialise();
         renderWorld.Initialise(world);
 
         //renderWorld.StartDebugWorldGen(world); // LAND GENERATOR DEBUG ANIMATION

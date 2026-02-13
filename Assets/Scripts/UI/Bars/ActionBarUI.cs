@@ -2,9 +2,9 @@
 
 public class ActionBarUI : MonoBehaviour
 {
-    CharacterActions brain;
+    CharacterBrain brain;
 
-    public void Init( CharacterActions brain)
+    public void Init( CharacterBrain brain)
     {
         this.brain = brain;
     }

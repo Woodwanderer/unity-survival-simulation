@@ -5,11 +5,11 @@ public class ProtagonistData
 
     public Pathfinder pathfinder { get; private set; }
 
-    public CharacterActions actions;
-    public ProtagonistData(Vector2Int mapCoords, World world, RenderWorld render)
+    public CharacterBrain actions;
+    public ProtagonistData(Vector2Int mapCoords, World world)
     {
         this.mapCoords = mapCoords;
-        actions = new CharacterActions(world, this, render);
+        actions = new CharacterBrain(world, this);
     }    
     public void Tick(float deltaTime)
     {

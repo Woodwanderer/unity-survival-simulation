@@ -53,40 +53,16 @@ public class GoalManager
     {
         foreach (var hero in heroes)
         {
-            if (hero.Tired && !hero.actions.HasGoal<RestGoal>()) 
+            if (hero.Tired && !hero.brain.HasGoal<RestGoal>()) 
             {
-                IGoal rest = new RestGoal();
-                SetGoal(hero.actions, rest);
+                hero.brain.AddGoal(new RestGoal());
             }
         }
     }
-    void HandleStarvation(CharacterActions actions)
+    void HandleStarvation(CharacterBrain brain) //Event
     {
-        if (!actions.HasGoal<EnsureFood>())
-            SetGoal(actions, new EnsureFood());
-    }
-
-    void SetGoal(CharacterActions hero, IGoal newGoal)
-    {
-        if (hero.currentGoal == null)
-        {
-            hero.currentGoal = newGoal;
-            hero.currentGoal.Start(hero);
-            EventBus.Log($"Added new Goal: {newGoal}");
-            return;
-        }
-        if (hero.currentGoal.Priority >= newGoal.Priority)
-        {
-            hero.goals.Add(newGoal);
-            EventBus.Log($"Added new Goal to queue: {newGoal}");
-        }
-        else
-        {
-            hero.goals.Add(hero.currentGoal);
-            hero.currentGoal = newGoal;
-            hero.currentGoal.Start(hero);
-            EventBus.Log($"Replaced current Goal with :{newGoal}");
-        }
+        if (!brain.HasGoal<EnsureFood>())
+            brain.AddGoal(new EnsureFood());
     }
 
 }

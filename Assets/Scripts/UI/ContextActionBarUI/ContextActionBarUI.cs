@@ -2,7 +2,7 @@
 
 public class ContextActionBarUI : MonoBehaviour
 {
-    CharacterActions characterActions;
+    CharacterBrain brain;
     TileEntity actionSource = null;
     ContextABButton[] buttons;
 
@@ -11,9 +11,9 @@ public class ContextActionBarUI : MonoBehaviour
         buttons = GetComponentsInChildren<ContextABButton>();
         Hide();
     }
-    public void Init(CharacterActions actions)
+    public void Init(CharacterBrain brain)
     {
-        this.characterActions = actions;
+        this.brain = brain;
     }
     private void Update()
     {
@@ -99,6 +99,6 @@ public class ContextActionBarUI : MonoBehaviour
     }
     public void HarvestObject(ItemSlot item)
     {
-        characterActions.TryHarvest(actionSource, item);
+        brain.ExecutePlayerCommand(null, new HarvestPlan(brain, actionSource, item));
     }
 }

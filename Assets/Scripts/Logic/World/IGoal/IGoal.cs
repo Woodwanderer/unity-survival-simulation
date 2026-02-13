@@ -6,7 +6,7 @@ public interface IGoal
     bool IsValid    { get; }
     bool IsFinished { get; }
 
-    void Start(CharacterActions hero);
+    void Start(CharacterBrain hero);
     void Tick(float dt);
     void Cancel();
 }

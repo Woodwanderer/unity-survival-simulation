@@ -1,6 +1,6 @@
 ﻿public class EnsureFood : IGoal
 {
-    CharacterActions hero;
+    CharacterBrain hero;
     ItemSlot order;
 
     public int Priority => (int)GoalPriority.Survival;
@@ -16,7 +16,7 @@
 
     string Name = "EnsureFood";
 
-    public void Start(CharacterActions hero)
+    public void Start(CharacterBrain hero)
     {
         this.hero = hero;
         executingGoal = false;
@@ -62,10 +62,14 @@
 
                 if (status == ActionStatus.Failed)
                 {
-                    bool found = hero.FindAndGetNearest(order);
+                    var plan = hero.CreatAcqusitionPlan(order);
 
-                    if (!found)
+                    if (plan != null)
                     {
+                        hero.actionRunner.ExecutePlan(plan);
+                    }
+                    else
+                    { 
                         hero.stats.foodAvailable = false;
                         finished = true;
                     }

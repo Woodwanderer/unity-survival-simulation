@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
-
-
 public class ActionRunner
 {
     //External Data
@@ -9,7 +6,7 @@ public class ActionRunner
     //Deriveratives
     RenderWorld render;
 
-    //actions
+    //brain
     public IAction currentAction;
 
     int nextId = 0;
@@ -69,6 +66,10 @@ public class ActionRunner
                 actionQueue.Enqueue(action);
             }
         }
+    }
+    public void ClearQueue()
+    {
+        actionQueue.Clear();
     }
 
     public void Tick(float dt)

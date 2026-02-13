@@ -4,10 +4,10 @@
     public bool IsValid => !hero.stats.MaxEnergy;
     bool finished = false;
     public bool IsFinished => finished;
-    CharacterActions hero;
+    CharacterBrain hero;
 
     ActionToken? goHomeToken;
-    public void Start(CharacterActions hero)
+    public void Start(CharacterBrain hero)
     {
         this.hero = hero;
     }

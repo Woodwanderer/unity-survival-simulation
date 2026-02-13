@@ -2,11 +2,11 @@
 public class HaulPlan : IPlan
 {
     //External Data
-    CharacterActions brain;
+    CharacterBrain brain;
     HaulTask ht;
     //Deriveratives
     World world;
-    public HaulPlan(CharacterActions brain, HaulTask haulTask)
+    public HaulPlan(CharacterBrain brain, HaulTask haulTask)
     {
         this.brain = brain;
         this.ht = haulTask;

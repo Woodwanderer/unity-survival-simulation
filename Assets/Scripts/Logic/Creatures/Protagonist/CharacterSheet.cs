@@ -3,7 +3,7 @@ using System;
 public class CharacterSheet
 {
     public String name = "Psylocyb Bong";
-    public CharacterActions actions;
+    public CharacterBrain brain;
     public Inventory inventory;
 
     //housing
@@ -17,7 +17,7 @@ public class CharacterSheet
     float hungerRate;
     float starvationThreshold = 0.5f;
     public bool Starvation => hunger < starvationThreshold;
-    public event Action<CharacterActions> OnStarvationStart;
+    public event Action<CharacterBrain> OnStarvationStart;
     public bool foodAvailable = true;
 
     //energy
@@ -51,9 +51,9 @@ public class CharacterSheet
     }
     public float Speed => speedDefault * SpeedMod;
 
-    public CharacterSheet( CharacterActions actions)
+    public CharacterSheet( CharacterBrain actions)
     {
-        this.actions = actions;
+        this.brain = actions;
         this.inventory = actions.inventory;
 
         InitStats();
@@ -81,7 +81,7 @@ public class CharacterSheet
         //hunger
         bool starvingBefore = Starvation;
 
-        if (!(actions.actionRunner.currentAction is EatAction e))  
+        if (!(brain.actionRunner.currentAction is EatAction e))  
         {
             hunger -= deltaTime / hungerRate; // full bar / day
             hunger = Mathf.Clamp01(hunger); // prevents from going below 0
@@ -95,7 +95,7 @@ public class CharacterSheet
         bool starvingNow = Starvation;
 
         if (!starvingBefore && starvingNow && foodAvailable )
-            OnStarvationStart?.Invoke(actions);
+            OnStarvationStart?.Invoke(brain);
 
 
         HandleEnergyConsumption(deltaTime);
@@ -114,7 +114,7 @@ public class CharacterSheet
     }
     void HandleEnergyConsumption(float deltaTime)
     {
-        if (!actions.IsWorking)
+        if (!brain.IsWorking)
             return;
 
         energy -= energyDrainRate * deltaTime;

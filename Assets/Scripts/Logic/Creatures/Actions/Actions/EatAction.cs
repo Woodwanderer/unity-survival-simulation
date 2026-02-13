@@ -1,7 +1,7 @@
 ﻿public class EatAction : IAction
 {
     //External Data
-    CharacterActions brain;
+    CharacterBrain brain;
     ItemSlot meal;              //Eating that
     //Deriveratives
     Inventory inventory;        //Eating from
@@ -18,7 +18,7 @@
     public float progress = 0f;
     float unitProgress = 0f;
 
-    public EatAction(CharacterActions brain, ItemSlot meal = null)
+    public EatAction(CharacterBrain brain, ItemSlot meal = null)
     {
         this.brain = brain;
         this.meal = meal;

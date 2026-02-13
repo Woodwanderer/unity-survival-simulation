@@ -83,14 +83,14 @@ public class World
     }
 
     //INITIALISE
-    public void Initialise(RenderWorld render)
+    public void Initialise()
     {
         worldSize = new Vector2Int(worldSizeX, worldSizeY);
         halfWorldSize = worldSize / 2;
 
         landGenerator = new(worldSizeX, worldSizeY, objDatabase, pathfinder, biomeData);
 
-        SetProtagonist(render);
+        SetProtagonist();
 
         taskManager = new(pathfinder);
         goalManager = new(protagonistData.actions.stats);
@@ -109,9 +109,9 @@ public class World
             yield return tile;
         }   
     }*/
-    private void SetProtagonist(RenderWorld render)
+    private void SetProtagonist()
     {
-        protagonistData = new ProtagonistData(halfWorldSize, this, render);
+        protagonistData = new ProtagonistData(halfWorldSize, this);
     }
 
     //TileObjects

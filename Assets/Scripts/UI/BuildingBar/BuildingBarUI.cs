@@ -3,7 +3,7 @@ public class BuildingBarUI : MonoBehaviour
 {
     Stockpile stockpile;
     bool lastIsConstructed;
-    CharacterActions actions;
+    CharacterBrain brain;
     public IActionVisualData actionVisualData;
 
     //BuildBar
@@ -19,12 +19,12 @@ public class BuildingBarUI : MonoBehaviour
     {
         Hide();
     }
-    public void Show(Stockpile stockpile, CharacterActions actions)
+    public void Show(Stockpile stockpile, CharacterBrain brain)
     {
         bool changed = this.stockpile != stockpile;
 
         this.stockpile = stockpile;
-        this.actions = actions;
+        this.brain = brain;
 
         gameObject.SetActive(true);
 
@@ -95,7 +95,7 @@ public class BuildingBarUI : MonoBehaviour
         buildButt.SetTopText("Build");
         Sprite icon = actionVisualData.GetIcon(IActionName.Build);
         buildButt.SetIcon(icon);
-        buildButt.SetAction(() => actions.TryBuild(stockpile));
+        buildButt.SetAction(() => brain.ExecutePlayerCommand(new BuildAction(stockpile, brain.stats, brain.world)));
     }
     void CreateInventoryButton() 
     {

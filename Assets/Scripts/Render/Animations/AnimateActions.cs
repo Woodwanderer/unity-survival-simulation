@@ -2,7 +2,7 @@
 
 public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by renderWorld
 {
-    public CharacterActions actions;
+    public CharacterBrain actions;
 
     public SpriteRenderer foodRaw;
     public SpriteRenderer axe;
@@ -16,7 +16,7 @@ public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by r
 
     IAction previous = null;
 
-    public void Init(CharacterActions actions)
+    public void Init(CharacterBrain actions)
     {
         this.actions = actions;
         isInitialised = true;

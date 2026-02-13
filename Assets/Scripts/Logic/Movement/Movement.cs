@@ -11,7 +11,7 @@ public class Movement : IAction
 
     //Deriveratives
     ProtagonistData data;
-    CharacterActions brain;
+    CharacterBrain brain;
     RenderWorld render;
 
     //Action Generic

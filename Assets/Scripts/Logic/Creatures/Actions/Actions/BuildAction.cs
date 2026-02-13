@@ -2,7 +2,7 @@
 
 public class BuildAction : IAction
 {
-    //Exterior Data
+    //External Data    
     World world;
     Building building;
 

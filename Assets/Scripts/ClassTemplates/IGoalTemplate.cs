@@ -6,7 +6,7 @@ public class IGoalTemplate : IGoal
     public bool IsValid => true;
     public bool IsFinished => false;
 
-    public void Start(CharacterActions hero)
+    public void Start(CharacterBrain hero)
     {
 
     }
