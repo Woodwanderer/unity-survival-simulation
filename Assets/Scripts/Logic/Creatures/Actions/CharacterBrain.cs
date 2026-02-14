@@ -10,7 +10,7 @@ public class CharacterBrain
     public ActionRunner actionRunner;
 
     //goals
-    public IGoal currentGoal;
+    IGoal currentGoal;
     readonly List<IGoal> goals = new();
     public bool HasGoal<T>() where T : IGoal
     {

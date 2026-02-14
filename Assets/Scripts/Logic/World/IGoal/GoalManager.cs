@@ -21,12 +21,13 @@ public class GoalManager
     void RegisterHero(CharacterSheet hero)
     {
         heroes.Add(hero);
-        hero.OnStarvationStart += HandleStarvation;
     }
     public void Tick(float dt) // perhaps make it per hour
     {
         ResolveHousing();
         ResolveEnergy();
+        ResolveStarvation();
+
     }
     void ResolveHousing()
     {
@@ -59,10 +60,14 @@ public class GoalManager
             }
         }
     }
-    void HandleStarvation(CharacterBrain brain) //Event
+    void ResolveStarvation()
     {
-        if (!brain.HasGoal<EnsureFood>())
-            brain.AddGoal(new EnsureFood());
+        foreach(var hero in heroes)
+        {
+            if(hero.Starvation && !hero.brain.HasGoal<EnsureFood>())
+            {
+                hero.brain.AddGoal(new EnsureFood());
+            }
+        }
     }
-
 }

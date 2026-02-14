@@ -17,7 +17,6 @@ public class CharacterSheet
     float hungerRate;
     float starvationThreshold = 0.5f;
     public bool Starvation => hunger < starvationThreshold;
-    public event Action<CharacterBrain> OnStarvationStart;
     public bool foodAvailable = true;
 
     //energy
@@ -79,8 +78,6 @@ public class CharacterSheet
     public void Tick(float deltaTime)
     {
         //hunger
-        bool starvingBefore = Starvation;
-
         if (!(brain.actionRunner.currentAction is EatAction e))  
         {
             hunger -= deltaTime / hungerRate; // full bar / day
@@ -91,12 +88,6 @@ public class CharacterSheet
             hunger += e.nutrition;
             hunger = Mathf.Clamp01(hunger);
         }
-
-        bool starvingNow = Starvation;
-
-        if (!starvingBefore && starvingNow && foodAvailable )
-            OnStarvationStart?.Invoke(brain);
-
 
         HandleEnergyConsumption(deltaTime);
         if (Tired) 
@@ -109,8 +100,6 @@ public class CharacterSheet
             SetSpeed();
             hasSpeedDebuff = false;
         }
-        
-
     }
     void HandleEnergyConsumption(float deltaTime)
     {
@@ -120,5 +109,4 @@ public class CharacterSheet
         energy -= energyDrainRate * deltaTime;
         energy = Mathf.Clamp01(energy);
     }
-    
 }
