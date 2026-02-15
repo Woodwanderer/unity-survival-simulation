@@ -13,7 +13,6 @@ public class ActionRunner
 
     ActionToken? lastFinishedToken;
     ActionStatus lastFinishedStatus;
-    
 
     public Queue<IAction> actionQueue = new Queue<IAction>();
 

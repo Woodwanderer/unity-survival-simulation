@@ -2,8 +2,8 @@
 using UnityEngine;
 public class TaskManager
 {
-    Queue<BuildTask> buildTasks = new();
-    Queue<HaulTask> haulTasks = new();
+    List<BuildTask> buildTasks = new();
+    List<HaulTask> haulTasks = new();
     Pathfinder pathfinder;
 
     public TaskManager(Pathfinder pathfinder)
@@ -21,8 +21,14 @@ public class TaskManager
 
     public void Tick(float dt)
     {
+        UpdateTasks();
         GenerateBuildTasks();
         GenerateHaulTasks();
+    }
+    void UpdateTasks()
+    {
+        buildTasks.RemoveAll(task => !task.IsValid);
+        haulTasks.RemoveAll(task => !task.IsValid);
     }
     void GenerateHaulTasks()
     {
@@ -46,7 +52,7 @@ public class TaskManager
             List<Vector2Int> deliveryPath = new(pathfinder.FindPath(pile.TileCoords, closest.area.center));
 
             if (deliveryPath != null)
-                haulTasks.Enqueue(new HaulTask(pile, closest, deliveryPath));
+                haulTasks.Add(new HaulTask(pile, closest, deliveryPath));
         }
     }
     Stockpile GetClosestStockpileFor(ResourcePile pile)
@@ -119,25 +125,61 @@ public class TaskManager
     {         
         if (task is BuildTask b)
         {
-            buildTasks.Enqueue(b);
+            buildTasks.Add(b);
         }
     }
-    public ITask TakeTask()
+    public ITask TakeBestTask(Vector2Int position)
     {
-        ITask task = null;
-        while (buildTasks.Count > 0) 
-        {
-            task = buildTasks.Dequeue();
-            if (task.IsValid) 
-                return task;
-        }
-        while (haulTasks.Count > 0)
-        {
-            task = haulTasks.Dequeue();
-            if (task.IsValid)
-                return task;
-        }
+        
+        List<Vector2Int> bestPath = new();
+        int distance = int.MaxValue;
 
+        if (buildTasks.Count > 0)
+        {
+            BuildTask bestTask = null;
+
+            foreach (var bt in buildTasks)
+            {
+                List<Vector2Int> current = pathfinder.FindPathToArea(position, bt.building.Area);
+                if (current != null)
+                {
+                    if (current.Count > distance)
+                        continue;
+
+                    distance = current.Count;
+                    bestPath = current;
+                    bestTask = bt;
+                }
+            }
+            if (bestTask != null)
+            {
+                bestTask.PathToTask = bestPath;
+                return bestTask;
+            }
+        }
+        if (haulTasks.Count > 0)
+        {
+            HaulTask bestTask = null;
+
+            foreach (var ht in haulTasks)
+            {
+                List<Vector2Int> current = pathfinder.FindPath(position, ht.Location);
+                if (current != null)
+                {
+                    if (current.Count > distance)
+                        continue;
+
+                    distance = current.Count;
+                    bestPath = current;
+                    bestTask = ht;
+                }
+            }
+            if (bestTask != null)
+            {
+                bestTask.PathToTask = bestPath;
+                return bestTask;
+            }
+        }
         return null;
     }
 }

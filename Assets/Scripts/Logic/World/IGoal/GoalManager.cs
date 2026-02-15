@@ -27,7 +27,6 @@ public class GoalManager
         ResolveHousing();
         ResolveEnergy();
         ResolveStarvation();
-
     }
     void ResolveHousing()
     {

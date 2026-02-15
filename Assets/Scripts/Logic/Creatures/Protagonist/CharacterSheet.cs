@@ -65,7 +65,6 @@ public class CharacterSheet
         energyDrainRate = 1/energyCapacityWh;
 
         SetSpeed();
-
     }
     public void SetSpeed(float speedMod = 1f)
     {
@@ -73,7 +72,6 @@ public class CharacterSheet
         harvestSpeed = (100 / hourDuration) * speedMod;
         buildSpeed   = (1f                ) * speedMod;
         speedDefault = (2.0f              ) * speedMod;
-
     }
     public void Tick(float deltaTime)
     {

@@ -15,8 +15,7 @@ public class HaulPlan : IPlan
     }
     public IEnumerable<IAction> Build()
     {
-        //Move to Task Sequenece Location
-        yield return new Movement(world, ht.source.TileCoords);
+        yield return new Movement(world, ht.PathToTask);
 
         yield return new CollectItem(ht.source, ht.source.Slot, brain.stats);
 

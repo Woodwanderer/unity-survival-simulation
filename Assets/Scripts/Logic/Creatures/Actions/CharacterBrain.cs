@@ -57,10 +57,10 @@ public class CharacterBrain
 
         if (actionRunner.currentAction == null && currentGoal == null)
         {
-            ITask task = world.taskManager.TakeTask();
+            ITask task = world.taskManager.TakeBestTask(protagonistData.mapCoords);
             if (task is BuildTask bt)
             {
-                actionRunner.ExecutePlan(new BuildPlan(this, bt.building));
+                actionRunner.ExecutePlan(new BuildPlan(this, bt.building, bt.PathToTask));
             }
             if (task is HaulTask ht)
             {
