@@ -16,19 +16,16 @@ public class WorldObjDef : ScriptableObject
         public ItemDefinition item;
         public int maxAmount = 0;
     }
-    public Dictionary<ItemDefinition, int> GenerateResources() //give age from TileObject later on
+    public Dictionary<ItemDefinition, int> GenerateResources(int age) //give age from TileObject later on
     {
         Dictionary<ItemDefinition, int> result = new Dictionary<ItemDefinition, int>();
 
         if (!spawnOnWorldGen) //gives empty tab
             return result;
 
-        int amount = 0;
-        int age = UnityEngine.Random.Range(1, maxAge);
-
         foreach(ResourceRules resource in resources)
         {
-            amount = resource.maxAmount * age / maxAge;
+            int amount = resource.maxAmount * age / maxAge;
             result[resource.item] = amount;
         }
         return result;

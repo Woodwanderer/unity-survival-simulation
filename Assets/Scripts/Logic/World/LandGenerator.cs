@@ -306,9 +306,10 @@ public class LandGenerator
             }
         }
 
-        WorldObject obj = new(worldObjDef, tile.mapCoords);
+        int age = Random.Range(1, worldObjDef.maxAge + 1);
+        WorldObject obj = new(worldObjDef, tile.mapCoords, age);
 
-        obj.harvestSource = new HarvestSource(worldObjDef.GenerateResources());
+        obj.harvestSource = new HarvestSource(worldObjDef.GenerateResources(age));
 
         tile.AddEntity(obj);
     }

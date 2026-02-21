@@ -115,11 +115,12 @@ public class World
     }
 
     //TileObjects
-    public ResourcePile CreateResourcePile(TileData tile, ItemDefinition item, int amount)
+    public ResourcePile CreateResourcePile(TileData tile, ItemSlot slot)
     {
-        ResourcePile pile = new(tile.mapCoords, item, amount);
+        ResourcePile pile = new(tile.mapCoords, slot);
         taskManager.piles.Add(pile);
         tile.AddEntity(pile);
+        render.SpawnResourcePile(pile);
         return pile;
     }
     public TileEntity FindNearest(ItemSlot order, Vector2Int to)
@@ -136,6 +137,7 @@ public class World
         {
             taskManager.piles.Remove(rp);
         }
+        render.RemoveEntitySprite(ent);
     }
 
     //Tile SELECTION
@@ -209,7 +211,6 @@ public class World
 
         taskManager.constructions.Add(stockpile);
 
-        //render.ShowBuilding(stockpile);
         render.UpdateBuildingAppearance(stockpile);
 
         EventBus.Log("Stockpile construction site established.");
@@ -225,7 +226,6 @@ public class World
         tile.SetBuilding(shelter);
         taskManager.constructions.Add(shelter);
 
-        //render.ShowBuilding(shelter);
         render.UpdateBuildingAppearance(shelter);
 
         EventBus.Log("Shelter construction site established.");
@@ -233,9 +233,12 @@ public class World
     public void OnBuildingConstructed(Building building)
     {
         if (building is Stockpile s)
+        {
             taskManager.stockpiles.Add(s);
+            render.InstantiateStockpile(s);
+        }
 
-        else if (building is Shelter sh) 
+        else if (building is Shelter sh)
         {
             taskManager.buildings.Add(sh);
             goalManager.freeShelters.Enqueue(sh);

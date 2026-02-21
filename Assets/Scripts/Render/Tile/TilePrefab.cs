@@ -9,20 +9,16 @@ public class TilePrefab: MonoBehaviour
     public SpriteRenderer path;
     public SpriteRenderer selection;
 
+    //Building on Tile
+    [SerializeField] public Transform buildingRoot;
+
     public SpriteRenderer building;
+    [SerializeField] SpriteRenderer[] buildingVisuals;
 
     public GameObject tileObjectPrefab;
-    List<TileObjectView> objects = new();
-
-    //Referencja do danych świata
-    private TileData tileData;
+    List<TileEntityView> entities = new();
 
     //FUNCTIONS
-    public void SetTileDataRef(TileData tileData)
-    {
-        this.tileData = tileData;
-    }
-
     public void SetTerrain(Sprite _terrain)
     {
         terrain.sprite = _terrain;
@@ -36,6 +32,8 @@ public class TilePrefab: MonoBehaviour
     {
         path.enabled = visible;
     }
+
+    //Building
     public void ShowBuilding(bool visible, Sprite build)
     {
         building.sprite = build;
@@ -49,13 +47,13 @@ public class TilePrefab: MonoBehaviour
     public void SetEntity(TileEntity ent, Sprite _object, float tileSize)
     {
         GameObject obj = Instantiate(tileObjectPrefab, this.transform);
-        TileObjectView current = obj.GetComponent<TileObjectView>();
-        objects.Add(current);
+        TileEntityView current = obj.GetComponent<TileEntityView>();
+        entities.Add(current);
         current.Init(_object, tileSize, ent);
     }
     public void HideEntitySprite(TileEntity ent)
     {
-        foreach (TileObjectView e in objects) 
+        foreach (TileEntityView e in entities) 
         {
             if (e.Data == ent)
                 e.SetDepleted();

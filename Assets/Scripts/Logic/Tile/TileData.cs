@@ -7,7 +7,10 @@ public class TileData
     public Vector2Int mapCoords { get; private set; }
     public Biome biome {  get; private set; }
     public ElevationType Elevation { get; private set; }
+
+    //Tile Entities
     public List<TileEntity> entities { get; private set; } = new();
+
     public Building building = null;
     public bool HasBuilding => building != null;
     public bool isWalkable => biome != Biome.Water; // hard restriction on WATER tiles only for now

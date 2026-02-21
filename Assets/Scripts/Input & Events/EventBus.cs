@@ -11,8 +11,8 @@ public class EventBus
     public static void TileCommanded(Vector2Int mapPos) => OnTileCommanded?.Invoke(mapPos);
 
     //OBJECTS
-    public static event Action<TileObjectView> OnObjectClick;
-    public static void ObjectClick(TileObjectView objView) => OnObjectClick?.Invoke(objView);
+    public static event Action<TileEntityView> OnObjectClick;
+    public static void ObjectClick(TileEntityView objView) => OnObjectClick?.Invoke(objView);
 
 }    
 

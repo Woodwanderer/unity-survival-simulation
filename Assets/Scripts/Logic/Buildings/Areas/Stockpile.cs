@@ -1,14 +1,17 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 public class Stockpile : Building, IItemContainer
 {
+    //External Data
     World world;
     public Area area;
+
     public List<TileData> tiles = new();
     public override float WorkTime => def.workTime * Game.Config.hourDuration * area.Count;
+
+    public event System.Action<StockpileSlot> OnSlotChanged;
 
     public Stockpile(Area area, BuildingsData.BuildingDef def, World world) : base(area, def)
     {
@@ -18,7 +21,7 @@ public class Stockpile : Building, IItemContainer
         SetBuildingOnTiles();
         SetSlots();
     }
-    class StockpileSlot
+    public class StockpileSlot
     {
         public TileData tile;
         public int index;
@@ -34,13 +37,11 @@ public class Stockpile : Building, IItemContainer
             this.index = index;
         }
     }
-    List<StockpileSlot> slots = new();
-    public IEnumerable<ItemSlot> Slots => slots.Select(s => s.itemSlot);
+    List<StockpileSlot> stockSlots = new();
+    public IEnumerable<ItemSlot> Slots => stockSlots.Select(s => s.itemSlot);
     public VirtualResources Snapshot() => new VirtualResources(Slots);
 
-    public int Capacity => slots.Count;
-
-    
+    public int Capacity => stockSlots.Count;
     void SetBuildingOnTiles()
     {
         foreach (var tile in area.tiles)
@@ -56,7 +57,7 @@ public class Stockpile : Building, IItemContainer
         {
             for (int i = 0; i < StockpileSlot.slotsInTile; i++)
             {
-                slots.Add(new StockpileSlot(tile, i));
+                stockSlots.Add(new StockpileSlot(tile, i));
             }
         }
     }
@@ -79,11 +80,15 @@ public class Stockpile : Building, IItemContainer
                     return 0;
             }
         }
-        foreach (ItemSlot slot in Slots)
+        foreach (StockpileSlot slot in stockSlots)
         {
-            if (slot.IsEmpty)
+            if (slot.itemSlot.IsEmpty)
             {
-                remaining = slot.Add(item, remaining);
+                remaining = slot.itemSlot.Add(item, remaining);
+
+                //Event -> new Slot View
+                OnSlotChanged?.Invoke(slot);
+
                 if (remaining <= 0)
                     return 0;
             }

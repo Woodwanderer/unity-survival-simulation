@@ -5,8 +5,7 @@ public class DropItem : IAction
     //External Data
     World world;
     ItemSlot source;
-    //Deriveratives
-    RenderWorld render;
+
     float speed;
 
     //Generic IAction
@@ -24,15 +23,13 @@ public class DropItem : IAction
         this.world = world;
         this.source = source;
         this.speed = stats.harvestSpeed;
-        
-        this.render = world.render;
     }
     
     public void Start()
     {
         targetAmount = source.Amount;
 
-        EstablishPile(1);
+        EstablishPile();
 
         Status = ActionStatus.Running;
 
@@ -45,29 +42,29 @@ public class DropItem : IAction
         while (unitProgress >= 1f)
         {
             unitProgress -= 1;
-            source.Remove(1);
+            source.Remove();
 
             //TODO: check for overflow
-            resPile.Add(source.Item, 1);        
+            resPile.Add();        
         }
 
         if (source.IsEmpty)
             Status = ActionStatus.Succeeded;
 
     }
-    ResourcePile EstablishPile(int amount)
+    ResourcePile EstablishPile(int amount = 1)
     {
         TileData tile = world.GetProtagonistTileData();
         ResourcePile pile = tile.FindInPiles(source.Item);
         if (pile != null)
         {
-            pile.Add(source.Item, amount);
+            pile.Add(amount);
             resPile = pile;
         }
         else
         {
-            resPile = world.CreateResourcePile(tile, source.Item, amount);
-            render.SpawnResourcePile(resPile);
+            ItemSlot slot = new(source.Item, amount);
+            resPile = world.CreateResourcePile(tile, slot);
         }
         return resPile;
     }

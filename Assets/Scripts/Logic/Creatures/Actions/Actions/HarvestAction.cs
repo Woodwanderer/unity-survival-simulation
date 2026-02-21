@@ -7,8 +7,6 @@ public class HarvestAction : IAction
     ItemSlot order;
     float speed;
     World world;
-    //Deriveratives
-    RenderWorld render;
 
     //Generic IAction
     public ActionToken Token { get; set; }
@@ -26,8 +24,6 @@ public class HarvestAction : IAction
         this.targetObj = wo;
         this.order = order;
         this.world = world;
-
-        this.render = world.render;
 
         //Set stats
         this.speed = speed;
@@ -60,7 +56,7 @@ public class HarvestAction : IAction
 
             if (resPile != null)
             {
-                int overflow = resPile.Add(order.Item, 1);
+                int overflow = resPile.Add();
                 if (overflow > 0)
                 {
                     resPile = EstablishPile(overflow);
@@ -76,13 +72,13 @@ public class HarvestAction : IAction
         ResourcePile pileObj = tile.FindInPiles(order.Item);
         if (pileObj != null)
         {
-            pileObj.Add(order.Item, amount);
+            pileObj.Add(amount);
             resPile = pileObj;
         }
         else
         {
-            resPile = world.CreateResourcePile(tile, order.Item, amount);
-            render.SpawnResourcePile(resPile);
+            ItemSlot slot = new(order.Item, amount);
+            resPile = world.CreateResourcePile(tile, slot);
         }
         return resPile;
     }

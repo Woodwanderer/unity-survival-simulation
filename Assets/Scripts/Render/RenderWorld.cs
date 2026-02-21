@@ -13,7 +13,10 @@ public class RenderWorld : MonoBehaviour
     public TileAppearance config;
     public WorldObjectAppearance objectAppearance;
 
+    //Building
     public BuildingAppearance buildingAppearance;
+    public GameObject stockpileP;
+    
 
     public readonly float tileSize = 1.0f; //basicaly it's the scale 
     Coroutine zoneAnim;
@@ -25,7 +28,7 @@ public class RenderWorld : MonoBehaviour
     //Protagonist
     public GameObject protagonistPrefab; //Link do prefaba Protagonisty - podpiąć w Unity
     public GameObject protagonist; //Instance
-    public AnimateActions animator;
+    AnimateActions animator;
 
     private Vector2 mapToCenter;
 
@@ -84,7 +87,6 @@ public class RenderWorld : MonoBehaviour
     }*/
     public void Render()
     {
-
         // Spawn Tile Grid
         //SpawnBaseGrid(); // Land Generator DEBUG
         for (int x = 0; x < world.WorldSize.x; x++)
@@ -126,7 +128,6 @@ public class RenderWorld : MonoBehaviour
         GameObject tileObjCopy = Instantiate(tilePrefab, MapToWorld(tileData.mapCoords), Quaternion.identity);
         TilePrefab tileP = tileObjCopy.GetComponent<TilePrefab>();
 
-        tileP.SetTileDataRef(tileData);
         tileP.SetTerrain(GetTerrainSprite(tileData.biome));
         tileP.SetElevation(GetElevationSprite(tileData.Elevation));
 
@@ -143,6 +144,10 @@ public class RenderWorld : MonoBehaviour
     TilePrefab GetTileP(Vector2Int coords)
     {
         return TilePrefabs[coords.x, coords.y];
+    }
+    TilePrefab GetTileP(TileData tile)
+    {
+        return GetTileP(new Vector2Int(tile.mapCoords.x, tile.mapCoords.y));
     }
     public void SelectTile(Vector2Int coords, bool active)
     {
@@ -179,6 +184,19 @@ public class RenderWorld : MonoBehaviour
     }
 
     //Building
+    public void InstantiateStockpile(Stockpile stockpile)
+    {
+        foreach (var tile in stockpile.tiles)
+        {
+            TilePrefab tileP = GetTileP(tile);
+
+            GameObject buildingP = Instantiate(stockpileP, tileP.buildingRoot, false);
+            TileBuildingView view = buildingP.GetComponent<TileBuildingView>();
+            view.tile = tile;
+
+            stockpile.OnSlotChanged += view.UpdateSlot;
+        }
+    }
     public void UpdateBuildingAppearance(Building building)
     {
         foreach (var tile in building.Area.tiles) 
@@ -191,7 +209,6 @@ public class RenderWorld : MonoBehaviour
             tileP.ShowBuilding(true, build);
         }
     }
-
     //Objects
     public void SpawnResourcePile(ResourcePile pile)
     {
@@ -209,7 +226,7 @@ public class RenderWorld : MonoBehaviour
 
         return entry.GetRandomSprite();
     }
-    public void RemoveObjectSprite(TileEntity ent)
+    public void RemoveEntitySprite(TileEntity ent)
     {
         TilePrefab tileP = TilePrefabs[ent.TileCoords.x, ent.TileCoords.y];
         tileP.HideEntitySprite(ent);

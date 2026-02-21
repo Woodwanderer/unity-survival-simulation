@@ -64,7 +64,7 @@ public class CollectItem : IAction
         while (unitProgress >= 1f)
         {
             unitProgress -= 1;
-            pile.Remove(order.Item, 1);
+            pile.Remove();
             inventory.Add(order.Item, 1);
         }
     }

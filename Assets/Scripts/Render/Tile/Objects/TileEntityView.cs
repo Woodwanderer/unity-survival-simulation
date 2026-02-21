@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TileObjectView : MonoBehaviour
+public class TileEntityView : MonoBehaviour
 {
     TileEntity data;
     public TileEntity Data => data;
@@ -13,22 +13,31 @@ public class TileObjectView : MonoBehaviour
     {
         sR = GetComponent<SpriteRenderer>();
     }
-    public void Init(Sprite spr, float tileSize, TileEntity objData)
+    public void Init(Sprite spr, float tileSize, TileEntity ent)
     {
-        data = objData;
+        data = ent;
         sR.sprite = spr;
 
         //Random Mirror
         if (Random.Range(0, 2) == 1)
             sR.flipX = true;
 
+        
         //Rotation Spread
         float rotRange = Random.Range(-10, 10);
         sR.transform.localRotation = Quaternion.Euler(0, 0, rotRange);
 
-        //Scale - to expand - trees gonna grow etc. Create dependancy from TileData - TileObject: resource: capacity like wood, stone quantity i.e.:10 -> scale of 10> quasntity 3 i.e.
-        float scale = Random.Range(0.6f, 1.4f);
-        sR.transform.localScale = (Vector3.one) * scale;
+        if (ent is WorldObject wo)
+        {
+            float agePercent = (float)wo.Age / wo.Definition.maxAge;
+
+            float scale = Mathf.Lerp(0.5f, 2.5f, agePercent);
+
+            float variation = Random.Range(0.95f, 1.05f);
+            scale *= variation;
+
+            sR.transform.localScale = (Vector3.one) * scale;
+        }
 
         //Local offset
         size = tileSize;

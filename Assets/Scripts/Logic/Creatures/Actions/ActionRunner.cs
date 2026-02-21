@@ -3,8 +3,6 @@ public class ActionRunner
 {
     //External Data
     World world;
-    //Deriveratives
-    RenderWorld render;
 
     //brain
     public IAction currentAction;
@@ -19,7 +17,6 @@ public class ActionRunner
     public ActionRunner(World world)
     {
         this.world = world;
-        this.render = world.render;
     }
     public ActionToken SetAction(IAction newAction)
     {
@@ -73,7 +70,6 @@ public class ActionRunner
 
     public void Tick(float dt)
     {
-        currentAction?.Tick(dt);
 
         if (currentAction != null && currentAction.IsFinished)
         {
@@ -81,12 +77,10 @@ public class ActionRunner
             if (currentAction is HarvestAction h && h.targetObj.harvestSource.Depleted)
             {
                 world.ClearTileEntity(h.targetObj);
-                render.RemoveObjectSprite(h.targetObj);
             }
             if (currentAction is CollectItem c && c.pile.IsEmpty) 
             {
                 world.ClearTileEntity(c.pile);
-                render.RemoveObjectSprite(c.pile);
             }
 
             FinishCurrentAction();
@@ -94,5 +88,7 @@ public class ActionRunner
             if (actionQueue.Count > 0)
                 SetAction(actionQueue.Dequeue());
         }
+
+        currentAction?.Tick(dt);
     }
 }

@@ -14,7 +14,7 @@ public class GameState
     ActionBarUI actionBarUI;
     ModeBarUI taskBarUI;
 
-    TileObjectView currentObj;
+    TileEntityView currentObj;
     Building currentBuilding;
 
     public IGameMode currentMode;
@@ -171,7 +171,7 @@ public class GameState
     }
 
     //Objects
-    void SelectObj(TileObjectView obj)
+    void SelectObj(TileEntityView obj)
     {
         DeselectCurrentObj();
         obj.SetSelected(true);

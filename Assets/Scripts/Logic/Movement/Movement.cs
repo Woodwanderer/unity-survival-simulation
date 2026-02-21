@@ -17,7 +17,7 @@ public class Movement : IAction
     //Action Generic
     public ActionToken Token {  get; set; }
     public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
-    public bool IsFinished => Status == ActionStatus.Succeeded || Status == ActionStatus.Cancelled;
+    public bool IsFinished => Status == ActionStatus.Succeeded || Status == ActionStatus.Cancelled || Status == ActionStatus.Failed;
 
     MoveMode mode;
     float speed;
@@ -103,16 +103,16 @@ public class Movement : IAction
     }
     public void Tick(float dt)
     {
-        if (Status == ActionStatus.Succeeded)
-            return;
-
         MoveInTime(dt);
-
-        if (pathIndex >= path.Count) 
-            Status = ActionStatus.Succeeded;
     }
     void MoveInTime(float dt)
     {
+        if (pathIndex >= path.Count)
+        {
+            Status = ActionStatus.Succeeded;
+            return;
+        }
+
         while (moveT >= 1) //Set new step
         {
             render.ShowTilePath(data.mapCoords, false);

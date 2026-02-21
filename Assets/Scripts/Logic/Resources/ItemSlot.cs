@@ -37,7 +37,7 @@ public class ItemSlot
         Amount += added;
         return amount - added; //overflow
     }
-    public int Remove(int amount)
+    public int Remove(int amount = 1)
     {
         if (amount <= 0 || IsEmpty)
             return amount;
