@@ -2,10 +2,12 @@
 using UnityEngine;
 public class HarvestSource
 {
+    WorldObject owner;
     Dictionary<ItemDefinition, int> resources;
 
-    public HarvestSource(Dictionary<ItemDefinition, int> resources)
+    public HarvestSource(Dictionary<ItemDefinition, int> resources, WorldObject owner)
     {
+        this.owner = owner;
         this.resources = resources;
     }
 
@@ -25,7 +27,10 @@ public class HarvestSource
         available -= taken;
 
         if (available <= 0)
+        {
             resources.Remove(item);
+            owner?.NotifyStateChanged();
+        }
         else
             resources[item] = available;
 

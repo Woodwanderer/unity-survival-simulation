@@ -22,6 +22,6 @@ public class HaulPlan : IPlan
         //Move to Stockpile
         yield return new Movement(world, ht.deliveryPath);
 
-        yield return new Deliver(brain.inventory, brain.stats, ht.destination);
+        yield return new Deliver(brain.inventory, brain.stats, ht.destination, ht.source.Slot);
     }
 }

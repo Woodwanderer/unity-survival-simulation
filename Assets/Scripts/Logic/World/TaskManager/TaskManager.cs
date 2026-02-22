@@ -30,6 +30,11 @@ public class TaskManager
         buildTasks.RemoveAll(task => !task.IsValid);
         haulTasks.RemoveAll(task => !task.IsValid);
     }
+    public void OnStockpileAdded(Stockpile stockpile)
+    {
+        stockpiles.Add(stockpile);
+        haulTasks.Clear();
+    }
     void GenerateHaulTasks()
     {
         piles.RemoveAll(pile => pile.IsEmpty);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 public class TilePrefab: MonoBehaviour
 {
@@ -43,13 +44,20 @@ public class TilePrefab: MonoBehaviour
     {
         selection.enabled = active;
     }
-    //Objects
+    //Entities
     public void SetEntity(TileEntity ent, Sprite _object, float tileSize)
     {
         GameObject obj = Instantiate(tileObjectPrefab, this.transform);
         TileEntityView current = obj.GetComponent<TileEntityView>();
         entities.Add(current);
         current.Init(_object, tileSize, ent);
+    }
+    public void UpdateEntitySprite(WorldObject wo, Sprite sprite)
+    {
+        TileEntityView view = entities.FirstOrDefault(v =>  v.Data == wo);
+        if (view == null)
+            return;
+        view.SetSprite(sprite);
     }
     public void HideEntitySprite(TileEntity ent)
     {

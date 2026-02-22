@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class HarvestAction : IAction
+﻿public class HarvestAction : IAction
 {
     //External Data
     public WorldObject targetObj;

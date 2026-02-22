@@ -4,6 +4,7 @@ public class Deliver : IAction
     //External Data
     Inventory inventory;
     Stockpile destination;
+    ItemSlot order;
     //Driveratives
     float speed;
 
@@ -12,48 +13,39 @@ public class Deliver : IAction
     public ActionStatus Status { get; private set; } = ActionStatus.NotStarted;
     public bool IsFinished => Status == ActionStatus.Succeeded || Status == ActionStatus.Cancelled;
 
+    int carriedAmount;
     public float progress;
     float unitProgress;
-
-    int targetAmount;
     
-    public Deliver(Inventory inventory, CharacterSheet stats, Stockpile destination)
+    public Deliver(Inventory inventory, CharacterSheet stats, Stockpile destination, ItemSlot order)
     {
         this.inventory = inventory;
         this.speed = stats.harvestSpeed;
         this.destination = destination;
+        this.order = order;
     }
     
     public void Start()
     {
-        targetAmount = 0;
-        foreach (var slot in inventory.Slots)
-        {
-            if (!slot.IsEmpty) 
-                targetAmount += slot.Amount;
-        }
-        if (targetAmount <= 0) 
-        {
-            Status = ActionStatus.Succeeded;
-            return;
-        }
+        carriedAmount = inventory.Slots.Where(s => s.Item == order.Item).Sum(s => s.Amount);
+        
         Status = ActionStatus.Running;
     }
     public void Tick(float dt)
     {
-        if (inventory.IsEmpty)
+        if (carriedAmount == 0) 
         {
             Status = ActionStatus.Succeeded;
             return;
         }
 
         unitProgress += dt * speed;
-        progress += dt * speed / targetAmount;
+        progress += dt * speed / carriedAmount;
 
         while (unitProgress >= 1f)
         {
             unitProgress -= 1;
-            ItemSlot slot = inventory.Slots.FirstOrDefault(s => !s.IsEmpty && s.Item != null);
+            ItemSlot slot = inventory.Slots.FirstOrDefault(s => !s.IsEmpty && s.Item == order.Item);
 
             if (slot == null) 
             {

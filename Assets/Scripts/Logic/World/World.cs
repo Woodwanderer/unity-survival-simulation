@@ -234,7 +234,7 @@ public class World
     {
         if (building is Stockpile s)
         {
-            taskManager.stockpiles.Add(s);
+            taskManager.OnStockpileAdded(s);
             render.InstantiateStockpile(s);
         }
 

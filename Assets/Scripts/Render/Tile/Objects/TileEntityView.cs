@@ -22,7 +22,6 @@ public class TileEntityView : MonoBehaviour
         if (Random.Range(0, 2) == 1)
             sR.flipX = true;
 
-        
         //Rotation Spread
         float rotRange = Random.Range(-10, 10);
         sR.transform.localRotation = Quaternion.Euler(0, 0, rotRange);
@@ -55,6 +54,11 @@ public class TileEntityView : MonoBehaviour
             col = gameObject.AddComponent<PolygonCollider2D>();
             col.isTrigger = true;
         }
+    }
+    public void SetSprite(Sprite sprite)
+    {
+        sR.sprite = sprite;
+        sR.enabled = sprite != null;
     }
     public void OnMouseDown()
     {

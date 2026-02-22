@@ -136,6 +136,11 @@ public class RenderWorld : MonoBehaviour
             if (ent is WorldObject wo)
             {
                 tileP.SetEntity(wo, GetWorldObjectSprite(tileData, wo), tileSize);
+                wo.OnStateChanged += () =>
+                {
+                    var newSprite = GetWorldObjectSprite(tileData, wo);
+                    tileP.UpdateEntitySprite(wo, newSprite);
+                };
             }
         }
 
@@ -209,7 +214,7 @@ public class RenderWorld : MonoBehaviour
             tileP.ShowBuilding(true, build);
         }
     }
-    //Objects
+    //Entities
     public void SpawnResourcePile(ResourcePile pile)
     {
         TilePrefab tileP = GetTileP(pile.TileCoords);
@@ -223,6 +228,27 @@ public class RenderWorld : MonoBehaviour
 
         WorldObjectEntry entry = objectAppearance.Get(obj.Definition.objType);
         if (entry == null) return null;
+
+        if (obj.Definition.objType == WorldObjType.Berries)
+        {
+            ItemDefinition fruits = world.itemsDatabase.Get("foodRaw");
+            if (obj.harvestSource.Get(fruits) == 0)
+            {
+                return entry.variants[0]; // no fruits
+            }
+            else 
+                return entry.variants[1];
+        }
+        if (obj.Definition.objType == WorldObjType.FruitTree)
+        {
+            ItemDefinition fruits = world.itemsDatabase.Get("foodRaw");
+            if (obj.harvestSource.Get(fruits) == 0)
+            {
+                return entry.variants[0]; // no fruits
+            }
+            else
+                return entry.variants[1];
+        }
 
         return entry.GetRandomSprite();
     }
