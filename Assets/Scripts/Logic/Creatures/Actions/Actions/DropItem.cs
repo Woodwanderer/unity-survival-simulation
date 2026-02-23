@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class DropItem : IAction
+﻿public class DropItem : IAction
 {
     //External Data
     CharacterBrain brain;

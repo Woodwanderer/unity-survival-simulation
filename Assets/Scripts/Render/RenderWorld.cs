@@ -288,6 +288,10 @@ public class RenderWorld : MonoBehaviour
         animator = protagonist.GetComponent<AnimateActions>();
         animator.Init(world.protagonistData.actions);
     }
+    public Vector3 GetWorldPosForProtagonist(Vector2Int coords)
+    {
+        return MapToWorld(coords) + creatureTileOffset;
+    }
     public Vector3 GetProtagonistLocation() // to jest jednorazwoe pobranie wartości
     {
         return protagonist.transform.position;

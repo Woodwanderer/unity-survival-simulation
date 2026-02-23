@@ -117,7 +117,7 @@ public class Movement : IAction
         {
             render.ShowTilePath(data.mapCoords, false);
             fromPos = render.GetProtagonistLocation();
-            toPos = render.MapToWorld(path[pathIndex]);
+            toPos = render.GetWorldPosForProtagonist(path[pathIndex]);
             moveT = 0;
         }
 
