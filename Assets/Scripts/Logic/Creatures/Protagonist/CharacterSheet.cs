@@ -30,6 +30,8 @@ public class CharacterSheet
 
     //stats
     public float carryWeight = 200;
+
+
     //speed
     public float eatSpeed;
     public float harvestSpeed;

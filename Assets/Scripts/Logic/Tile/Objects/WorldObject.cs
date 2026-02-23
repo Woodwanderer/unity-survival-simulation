@@ -8,7 +8,8 @@ public class WorldObject : TileEntity
     public int Age { get;}
 
     public HarvestSource harvestSource;
-    public event Action OnStateChanged;
+    public event Action<WorldObject> OnStateChanged;
+    public event Action<WorldObject> OnDepleted;
     public bool HasItems => harvestSource != null && !harvestSource.Depleted;
 
     public WorldObject(WorldObjDef def, Vector2Int tileCoords, int age) : base(tileCoords)
@@ -18,7 +19,10 @@ public class WorldObject : TileEntity
     }
     public void NotifyStateChanged()
     {
-        OnStateChanged?.Invoke();
+        if (HasItems)
+            OnStateChanged?.Invoke(this);
+        else
+            OnDepleted?.Invoke(this);
     }
     public IEnumerable<ItemSlot> GetItemSlots()
     {

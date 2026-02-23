@@ -3,19 +3,22 @@ using System.Linq;
 using UnityEngine;
 public class LandGenerator
 {
+    //External Data
+    World world;
+    TileData[,] grid;
+
+    //Deriveratives
     int gridX;
     int gridY;
-    TileData[,] grid;
     BiomeData biomeData;
-    WorldObjData objData;
-    Pathfinder pathfinder;
-    public LandGenerator(int gridX, int gridY, WorldObjData objData, Pathfinder pathfinder, BiomeData biomeData)
+
+    public LandGenerator(World world)
     {
-        this.gridX = gridX;
-        this.gridY = gridY;
-        this.objData = objData;
-        this.pathfinder = pathfinder;
-        this.biomeData = biomeData;
+        this.world = world;
+
+        gridX = world.WorldSize.x;
+        gridY = world.WorldSize.y;
+        biomeData = world.biomeData;
     }
     public TileData GetTileData(int x, int y) => grid[x, y];
     public TileData GetTileData(Vector2Int mapCoords)
@@ -310,6 +313,7 @@ public class LandGenerator
         WorldObject obj = new(worldObjDef, tile.mapCoords, age);
 
         obj.harvestSource = new HarvestSource(worldObjDef.GenerateResources(age), obj);
+        world.RegisterEntity(obj);
 
         tile.AddEntity(obj);
     }

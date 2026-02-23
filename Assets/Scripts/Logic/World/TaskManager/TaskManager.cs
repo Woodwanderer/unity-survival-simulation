@@ -49,7 +49,7 @@ public class TaskManager
                 continue;
             }
 
-            Stockpile closest = GetClosestStockpileFor(pile);
+            Stockpile closest = GetClosestStockpileFor(pile.Slot, pile.TileCoords);
 
             if (closest == null)
                 continue;
@@ -60,17 +60,17 @@ public class TaskManager
                 haulTasks.Add(new HaulTask(pile, closest, deliveryPath));
         }
     }
-    Stockpile GetClosestStockpileFor(ResourcePile pile)
+    public Stockpile GetClosestStockpileFor(ItemSlot order, Vector2Int coords)
     {
         Stockpile target = null;
         int bestDist = int.MaxValue;
         foreach (var stockpile in stockpiles)
         {
-            int capacity = stockpile.CalculateFreeSpaceFor(pile.Slot);
+            int capacity = stockpile.CalculateFreeSpaceFor(order);
             if (capacity == 0) 
                 continue;
 
-            int dist = (pile.TileCoords - stockpile.area.center).sqrMagnitude;
+            int dist = (coords - stockpile.area.center).sqrMagnitude;
             if (dist < bestDist)
             {
                 bestDist = dist;

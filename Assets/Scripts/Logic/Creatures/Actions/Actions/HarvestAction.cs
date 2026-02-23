@@ -38,7 +38,7 @@
 
     public void Tick(float dt)
     {
-        if (!targetObj.isValid || progress >= 1f) 
+        if (progress >= 1f) 
         {
             Status = ActionStatus.Succeeded;
             return;

@@ -135,12 +135,8 @@ public class RenderWorld : MonoBehaviour
         {
             if (ent is WorldObject wo)
             {
-                tileP.SetEntity(wo, GetWorldObjectSprite(tileData, wo), tileSize);
-                wo.OnStateChanged += () =>
-                {
-                    var newSprite = GetWorldObjectSprite(tileData, wo);
-                    tileP.UpdateEntitySprite(wo, newSprite);
-                };
+                tileP.SetEntity(wo, GetWorldObjectSprite(wo), tileSize);
+                wo.OnStateChanged += HandleWorldObjStateChanged;
             }
         }
 
@@ -215,6 +211,12 @@ public class RenderWorld : MonoBehaviour
         }
     }
     //Entities
+    public void HandleWorldObjStateChanged(WorldObject wo)
+    {
+        TilePrefab tileP = GetTileP(wo.TileCoords);
+        var newSprite = GetWorldObjectSprite(wo);
+        tileP.UpdateEntitySprite(wo, newSprite);
+    }
     public void SpawnResourcePile(ResourcePile pile)
     {
         TilePrefab tileP = GetTileP(pile.TileCoords);
@@ -222,10 +224,8 @@ public class RenderWorld : MonoBehaviour
         
         tileP.SetEntity(pile, icon, tileSize);
     }
-    private Sprite GetWorldObjectSprite(TileData tileD, WorldObject obj)
+    private Sprite GetWorldObjectSprite(WorldObject obj)
     {
-        if (tileD.entities.Count == 0) return null;
-
         WorldObjectEntry entry = objectAppearance.Get(obj.Definition.objType);
         if (entry == null) return null;
 
@@ -254,7 +254,10 @@ public class RenderWorld : MonoBehaviour
     }
     public void RemoveEntitySprite(TileEntity ent)
     {
-        TilePrefab tileP = TilePrefabs[ent.TileCoords.x, ent.TileCoords.y];
+        if (ent is WorldObject wo) 
+            wo.OnStateChanged -= HandleWorldObjStateChanged;
+
+        TilePrefab tileP = GetTileP(ent.TileCoords);
         tileP.HideEntitySprite(ent);
     }
 

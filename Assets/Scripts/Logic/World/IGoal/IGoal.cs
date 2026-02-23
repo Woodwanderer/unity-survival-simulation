@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public interface IGoal
+﻿public interface IGoal
 {
     int Priority    { get; }
     bool IsValid    { get; }

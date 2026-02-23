@@ -17,7 +17,7 @@ public class ContextActionBarUI : MonoBehaviour
     }
     private void Update()
     {
-        if (actionSource == null || !actionSource.isValid)
+        if (actionSource == null)
         {
             Hide();
             return;
@@ -27,7 +27,7 @@ public class ContextActionBarUI : MonoBehaviour
     }
     public void Show(TileEntity ent)
     {
-        if (ent == null || !ent.isValid) 
+        if (ent == null) 
             return;
 
         gameObject.SetActive(true);

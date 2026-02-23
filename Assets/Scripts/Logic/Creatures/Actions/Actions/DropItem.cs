@@ -3,9 +3,11 @@
 public class DropItem : IAction
 {
     //External Data
-    World world;
+    CharacterBrain brain;
     ItemSlot source;
 
+    //Deriveratives
+    World world;
     float speed;
 
     //Generic IAction
@@ -17,22 +19,19 @@ public class DropItem : IAction
 
     ResourcePile resPile;
     int targetAmount;
-    public bool IsFinished => Status == ActionStatus.Succeeded;
-    public DropItem(ItemSlot source, CharacterSheet stats, World world)
+    public bool IsFinished => Status == ActionStatus.Succeeded || Status == ActionStatus.Cancelled;
+    public DropItem(ItemSlot source, CharacterBrain brain)
     {
-        this.world = world;
+        this.world = brain.world;
         this.source = source;
-        this.speed = stats.harvestSpeed;
+        this.speed = brain.stats.harvestSpeed;
     }
     
     public void Start()
     {
         targetAmount = source.Amount;
 
-        EstablishPile();
-
         Status = ActionStatus.Running;
-
     }
     public void Tick(float dt)
     {
@@ -44,15 +43,23 @@ public class DropItem : IAction
             unitProgress -= 1;
             source.Remove();
 
-            //TODO: check for overflow
-            resPile.Add();        
+            if (resPile != null)
+            {
+                int overflow = resPile.Add();
+                if (overflow > 0)
+                {
+                    resPile = EstablishPile(overflow);
+                }
+            }
+            if (resPile == null)
+                EstablishPile(1);
         }
 
         if (source.IsEmpty)
             Status = ActionStatus.Succeeded;
 
     }
-    ResourcePile EstablishPile(int amount = 1)
+    ResourcePile EstablishPile(int amount)
     {
         TileData tile = world.GetProtagonistTileData();
         ResourcePile pile = tile.FindInPiles(source.Item);

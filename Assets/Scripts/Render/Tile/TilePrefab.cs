@@ -12,7 +12,6 @@ public class TilePrefab: MonoBehaviour
 
     //Building on Tile
     [SerializeField] public Transform buildingRoot;
-
     public SpriteRenderer building;
     [SerializeField] SpriteRenderer[] buildingVisuals;
 
@@ -55,17 +54,21 @@ public class TilePrefab: MonoBehaviour
     public void UpdateEntitySprite(WorldObject wo, Sprite sprite)
     {
         TileEntityView view = entities.FirstOrDefault(v =>  v.Data == wo);
+
         if (view == null)
             return;
+
         view.SetSprite(sprite);
     }
     public void HideEntitySprite(TileEntity ent)
     {
-        foreach (TileEntityView e in entities) 
-        {
-            if (e.Data == ent)
-                e.SetDepleted();
-        }
+        TileEntityView view = entities.FirstOrDefault(v => v.Data == ent);
+
+        if (view == null) 
+            return;
+
+        entities.Remove(view);
+        Destroy(view.gameObject);
     }
     
 }

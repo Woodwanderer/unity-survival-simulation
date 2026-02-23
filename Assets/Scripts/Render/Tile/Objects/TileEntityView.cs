@@ -6,7 +6,7 @@ public class TileEntityView : MonoBehaviour
     TileEntity data;
     public TileEntity Data => data;
 
-    SpriteRenderer sR;
+    public SpriteRenderer sR;
     bool selected = false;
     float size;
     void Awake()
@@ -72,9 +72,4 @@ public class TileEntityView : MonoBehaviour
         selected = value;
         sR.color = selected ? new Color32(248, 20, 207, 200) : Color.white;
     }
-    public void SetDepleted()
-    {
-        sR.enabled = false;
-    }
-
 }

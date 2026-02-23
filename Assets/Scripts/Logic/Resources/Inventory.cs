@@ -1,8 +1,31 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 public class Inventory : IItemContainer
 {
     List<ItemSlot> slots;
     public IEnumerable<ItemSlot> Slots => slots;
+    public bool IsEmpty => slots.All(slot => slot.IsEmpty);
+    public ItemSlot Heaviest
+    {
+        get
+        {
+            ItemSlot heaviest = null;
+            int biggestWeight = 0;
+            foreach (var slot in slots)
+            {
+                if (slot.IsEmpty)
+                    continue;
+
+                if (slot.Weight > biggestWeight)
+                {
+                    biggestWeight = slot.Weight;
+                    heaviest = slot;
+                }
+            }
+            return heaviest;
+        }
+    }
+        
     public Inventory(int slotCount)
     {
         slots = new();
@@ -71,15 +94,6 @@ public class Inventory : IItemContainer
 
         return weight;
     }
-    public bool IsEmpty
-    {
-        get
-        {
-            foreach (var slot in slots)
-                if (!slot.IsEmpty) 
-                    return false;
-            return true;
-        }
-    }
+    
 
 }

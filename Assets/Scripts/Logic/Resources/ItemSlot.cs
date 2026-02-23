@@ -6,6 +6,7 @@ public class ItemSlot
     public int Amount { get; private set; }
     public bool IsEmpty => Amount <= 0;
     public bool IsFull => Amount >= Item.maxStockpileSize;
+    public int Weight => (int)Item.weight * Amount;
     public ItemSlot(ItemDefinition item = null, int amount = 0)
     {
         Item = item;
@@ -47,4 +48,5 @@ public class ItemSlot
 
         return amount - removed; //unmet demand   
     }
+    
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 public class CharacterBrain
 {
     //External Data
@@ -7,7 +8,7 @@ public class CharacterBrain
 
     public CharacterSheet stats;
     public Inventory inventory = new(16);
-    public ActionRunner actionRunner;
+    public ActionRunner actionRunner = new();
 
     //goals
     IGoal currentGoal;
@@ -38,7 +39,6 @@ public class CharacterBrain
     }
     public void Init()
     {
-        actionRunner = new(world);
         EventBus.OnTileCommanded += coords =>
         {
             ExecutePlayerCommand(new Movement(world, coords));
@@ -55,19 +55,33 @@ public class CharacterBrain
         currentGoal?.Tick(dt);
         actionRunner.Tick(dt);
 
-        if (actionRunner.currentAction == null && currentGoal == null)
+        if (actionRunner.currentAction != null || currentGoal != null)
+            return;
+
+        //EmptyInventory before world tasks
+        if (!inventory.IsEmpty)
         {
-            ITask task = world.taskManager.TakeBestTask(protagonistData.mapCoords);
-            if (task is BuildTask bt)
-            {
-                actionRunner.ExecutePlan(new BuildPlan(this, bt.building, bt.PathToTask));
-            }
-            if (task is HaulTask ht)
-            {
-                actionRunner.ExecutePlan(new HaulPlan(this, ht));
-            }
+            ItemSlot order = inventory.Heaviest;
+            Stockpile destination = world.taskManager.GetClosestStockpileFor(order, protagonistData.mapCoords);
+            if (destination != null)
+                actionRunner.ExecutePlan(new DeliverPlan(this, destination, order));
+            else
+                actionRunner.SetAction(new DropItem(order,this));
+            return;
+        }
+
+        //TASKS
+        ITask task = world.taskManager.TakeBestTask(protagonistData.mapCoords);
+        if (task is BuildTask bt)
+        {
+            actionRunner.ExecutePlan(new BuildPlan(this, bt.building, bt.PathToTask));
+        }
+        if (task is HaulTask ht)
+        {
+            actionRunner.ExecutePlan(new HaulPlan(this, ht));
         }
     }
+    //Goals
     public void AddGoal(IGoal newGoal)
     {
         if (currentGoal == null)
@@ -127,6 +141,8 @@ public class CharacterBrain
         else if (plan != null) 
             actionRunner.ExecutePlan(plan);
     } 
+    //Plans
+
     public IPlan CreatAcqusitionPlan(ItemSlot order)
     {
         Stockpile from = world.taskManager.FindClosestStockpileWith(order, protagonistData.mapCoords);

@@ -13,7 +13,7 @@ public class World
 
     LandGenerator landGenerator;
     //Tiles
-    BiomeData biomeData;
+    public BiomeData biomeData;
     private TileData[,] tileData;
     public List<Vector2Int> tilesSelected = new();
     public Vector2Int? tileSelected = null;
@@ -88,7 +88,7 @@ public class World
         worldSize = new Vector2Int(worldSizeX, worldSizeY);
         halfWorldSize = worldSize / 2;
 
-        landGenerator = new(worldSizeX, worldSizeY, objDatabase, pathfinder, biomeData);
+        landGenerator = new(this);
 
         SetProtagonist();
 
@@ -114,12 +114,26 @@ public class World
         protagonistData = new ProtagonistData(halfWorldSize, this);
     }
 
-    //TileObjects
+    //TileEntities
+    public void RegisterEntity(TileEntity ent)
+    {
+        if (ent is WorldObject wo) 
+        {
+            wo.OnDepleted += ClearTileEntity;
+        }
+        if (ent is ResourcePile pile)
+        {
+            pile.OnDepleted += ClearTileEntity;
+        }
+    }
     public ResourcePile CreateResourcePile(TileData tile, ItemSlot slot)
     {
         ResourcePile pile = new(tile.mapCoords, slot);
         taskManager.piles.Add(pile);
         tile.AddEntity(pile);
+
+        RegisterEntity(pile);
+
         render.SpawnResourcePile(pile);
         return pile;
     }
@@ -130,9 +144,14 @@ public class World
     //EVENT Functions
     public void ClearTileEntity(TileEntity ent)
     {
-        ent.isValid = false;
+        if (ent is WorldObject wo) 
+            wo.OnDepleted -= ClearTileEntity;
+        if (ent is ResourcePile pile)
+            pile.OnDepleted -= ClearTileEntity;
+
         TileData tile = GetTileData(ent.TileCoords);
         tile.entities.Remove(ent);
+
         if (ent is ResourcePile rp)
         {
             taskManager.piles.Remove(rp);

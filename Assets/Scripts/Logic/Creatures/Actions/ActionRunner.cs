@@ -1,10 +1,6 @@
 ﻿using System.Collections.Generic;
 public class ActionRunner
-{
-    //External Data
-    World world;
-
-    //brain
+{    
     public IAction currentAction;
 
     int nextId = 0;
@@ -14,10 +10,6 @@ public class ActionRunner
 
     public Queue<IAction> actionQueue = new Queue<IAction>();
 
-    public ActionRunner(World world)
-    {
-        this.world = world;
-    }
     public ActionToken SetAction(IAction newAction)
     {
         var token = new ActionToken(++nextId);
@@ -70,25 +62,13 @@ public class ActionRunner
 
     public void Tick(float dt)
     {
-
         if (currentAction != null && currentAction.IsFinished)
         {
-            //TODO: Clearing after action -> remove to other decision making entity 
-            if (currentAction is HarvestAction h && h.targetObj.harvestSource.Depleted)
-            {
-                world.ClearTileEntity(h.targetObj);
-            }
-            if (currentAction is CollectItem c && c.pile.IsEmpty) 
-            {
-                world.ClearTileEntity(c.pile);
-            }
-
             FinishCurrentAction();
 
             if (actionQueue.Count > 0)
                 SetAction(actionQueue.Dequeue());
         }
-
         currentAction?.Tick(dt);
     }
 }
