@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System;
 public class CharacterBrain
 {
     //External Data
@@ -26,8 +26,13 @@ public class CharacterBrain
         return false;
     }
 
+    //States
+    bool isPlayerControlled = true;
+    public bool IsPlayerControlled => isPlayerControlled;
+    public event Action<CharacterBrain> OnSelectionChanged;
     public bool IsWorking => actionRunner.currentAction is CollectItem || actionRunner.currentAction is HarvestAction || actionRunner.currentAction is BuildAction || actionRunner.currentAction is PickUp;
     public bool IsResting => actionRunner.currentAction is Rest;
+
     public CharacterBrain(World world, ProtagonistData protagonistData)
     {
         this.world = world;
@@ -47,15 +52,20 @@ public class CharacterBrain
     public void Tick(float dt)
     {
         stats.Tick(dt);
+
         if (currentGoal != null && currentGoal.IsFinished)
             currentGoal = null;
 
-        SelectNextGoal();
+        if (!isPlayerControlled) 
+            SelectNextGoal();
 
         currentGoal?.Tick(dt);
         actionRunner.Tick(dt);
 
         if (actionRunner.currentAction != null || currentGoal != null)
+            return;
+
+        if (isPlayerControlled)
             return;
 
         //EmptyInventory before world tasks
@@ -124,6 +134,11 @@ public class CharacterBrain
 
     }
     //Player Command
+    public void SwitchPlayerControl(bool selection)
+    {
+        isPlayerControlled = selection;
+        OnSelectionChanged?.Invoke(this);
+    }
     public void ExecutePlayerCommand(IAction action = null, IPlan plan = null)
     {
         if (currentGoal != null)

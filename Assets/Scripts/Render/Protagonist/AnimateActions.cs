@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
-
 public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by renderWorld
 {
-    public CharacterBrain actions;
+    public CharacterBrain brain;
 
     public SpriteRenderer foodRaw;
     public SpriteRenderer axe;
@@ -16,9 +15,9 @@ public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by r
 
     IAction previous = null;
 
-    public void Init(CharacterBrain actions)
+    public void Init(CharacterBrain brain)
     {
-        this.actions = actions;
+        this.brain = brain;
         isInitialised = true;
     }
     private void Awake()
@@ -31,7 +30,7 @@ public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by r
         if (!isInitialised)
             return;
 
-        if (actions.actionRunner.currentAction == null || actions.actionRunner.currentAction.IsFinished)
+        if (brain.actionRunner.currentAction == null || brain.actionRunner.currentAction.IsFinished)
         {
             progressUI.Hide();
             SetAnimationFor(previous, false);
@@ -39,7 +38,7 @@ public class AnimateActions : MonoBehaviour // on ProtagonistPrefab; called by r
             return;
         }
 
-        SetUIFor(actions.actionRunner.currentAction);
+        SetUIFor(brain.actionRunner.currentAction);
     }
     void SetUIFor(IAction current)
     {

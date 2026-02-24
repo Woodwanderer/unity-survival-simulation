@@ -14,6 +14,9 @@ public class EventBus
     public static event Action<TileEntityView> OnObjectClick;
     public static void ObjectClick(TileEntityView objView) => OnObjectClick?.Invoke(objView);
 
+    //Protagonist
+    public static event Action<ProtagonistData> OnProtagonistClick;
+
 }    
 
 

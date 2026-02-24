@@ -35,7 +35,7 @@ public class GameState
 
     public void Initialise()
     {
-        inventoryUI.Init(world.protagonistData.actions.inventory, world.protagonistData.actions.stats);
+        inventoryUI.Init(world.protagonistData.brain.inventory, world.protagonistData.brain.stats);
         EventBus.OnObjectClick += SelectObj;
     }
     public void SetMode(IGameMode newMode)
@@ -157,7 +157,7 @@ public class GameState
             renderWorld.SelectAreaBuilding(currentBuilding, true);
 
             if (currentBuilding is Stockpile s) 
-                buildingBarUI.Show(s, world.protagonistData.actions);
+                buildingBarUI.Show(s, world.protagonistData.brain);
         }
     }
     void DeselectCurrentBuilding()
@@ -187,6 +187,12 @@ public class GameState
         currentObj = null;
         contextActionBarUI.Hide();
     }
+    //Player
+    void PlayerControlProtagonist()
+    {
+
+    }
+    //General
     void HandleCancel()
     {
         SetTool(null);

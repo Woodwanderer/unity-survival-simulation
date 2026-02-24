@@ -93,7 +93,7 @@ public class World
         SetProtagonist();
 
         taskManager = new(pathfinder);
-        goalManager = new(protagonistData.actions.stats);
+        goalManager = new(protagonistData.brain.stats);
 
         //GenerateTiles(); // Basic generator
         tileData = landGenerator.GenerateByArea();

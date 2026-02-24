@@ -7,6 +7,10 @@ public class InventoryUISlot : MonoBehaviour
     public Image icon;
     public TMP_Text amountText;
     bool IsInit => icon.sprite != null && amountText.enabled;
+    private void Awake()
+    {
+        amountText.enabled = false;
+    }
     public void Set(ItemDefinition item,  int amount)
     {
         icon.sprite = item.icon;

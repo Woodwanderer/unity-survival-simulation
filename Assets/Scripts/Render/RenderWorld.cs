@@ -28,6 +28,7 @@ public class RenderWorld : MonoBehaviour
     //Protagonist
     public GameObject protagonistPrefab; //Link do prefaba Protagonisty - podpiąć w Unity
     public GameObject protagonist; //Instance
+    ProtagonistView protagonistView;
     AnimateActions animator;
 
     private Vector2 mapToCenter;
@@ -279,14 +280,23 @@ public class RenderWorld : MonoBehaviour
     
 
     // PROTAGONIST
-    private void SpawnProtagonist(ProtagonistData protagonistData)
+    void SpawnProtagonist(ProtagonistData protagonistData)
     {
         Vector2Int startCoords = world.GetProtagonistCoords();
         Vector3 startLoc = MapToWorld(startCoords) + creatureTileOffset;
 
         protagonist = Instantiate(protagonistPrefab, startLoc, Quaternion.identity);
+
         animator = protagonist.GetComponent<AnimateActions>();
-        animator.Init(world.protagonistData.actions);
+        animator.Init(world.protagonistData.brain);
+
+        protagonistView = protagonist.GetComponent<ProtagonistView>();
+        world.protagonistData.brain.OnSelectionChanged += protagonistView.SetSelection;
+        protagonistView.SetSelection(world.protagonistData.brain);
+    }
+    public void ManageProtagonistSelection(bool selection)
+    {
+
     }
     public Vector3 GetWorldPosForProtagonist(Vector2Int coords)
     {

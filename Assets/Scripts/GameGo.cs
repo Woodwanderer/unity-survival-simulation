@@ -43,10 +43,10 @@ public class GameGo: MonoBehaviour
         gameState.Initialise();
 
         //UI
-        actionBarUI.Init(world.protagonistData.actions);
+        actionBarUI.Init(world.protagonistData.brain);
         timePanelUI.Init(gameTime);
-        charSheetUI.Init(world.protagonistData.actions.stats);
-        contextActionbar.Init(world.protagonistData.actions);
+        charSheetUI.Init(world.protagonistData.brain);
+        contextActionbar.Init(world.protagonistData.brain);
         buildBarUI.Init(gameState);
         modeBarUI.Init(gameState);
         nighttimeOverlay.Init(gameTime);

@@ -194,6 +194,8 @@ GameObject:
   - component: {fileID: 3059349513464841724}
   - component: {fileID: 5447190097274571042}
   - component: {fileID: 1146237406659057083}
+  - component: {fileID: 1049953169224716772}
+  - component: {fileID: -7737638654071765271}
   m_Layer: 0
   m_Name: ProtagonistPrefab
   m_TagString: Untagged
@@ -307,6 +309,40 @@ MonoBehaviour:
   axe: {fileID: 146795882973435921}
   hammer: {fileID: 3632383706035883514}
   progressBarPrefab: {fileID: 5678725485024379382, guid: 77f160366b42b6947bc91cf8db79779a, type: 3}
+--- !u!114 &1049953169224716772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6081129243382996873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0226a1ab0dcc5e347a2964b4cada2487, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProtagonistView
+  SelectionElipse: {fileID: 2726991099428680050}
+--- !u!65 &-7737638654071765271
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6081129243382996873}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.9453125, y: 1.3867188, z: 0.2}
+  m_Center: {x: 0, y: 0.6933594, z: 0}
 --- !u!1 &7373347166232298662
 GameObject:
   m_ObjectHideFlags: 0

@@ -36,7 +36,7 @@ public class Movement : IAction
     void Init()
     {
         data = world.protagonistData;
-        brain = data.actions;
+        brain = data.brain;
         speed = brain.stats.Speed;
         render = world.render;
     }
