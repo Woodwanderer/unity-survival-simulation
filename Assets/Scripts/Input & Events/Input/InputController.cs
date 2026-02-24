@@ -26,6 +26,7 @@ public class InputController: MonoBehaviour
     public void Tick(float deltaTime)
     {
         // Movement
+        //TO FIX! it's TryGetMouseTile now in GameState!
         if(Input.GetMouseButtonDown(1))
         {
             Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);

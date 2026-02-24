@@ -5,6 +5,7 @@ using TMPro;
 public class CharacterSheetUI : MonoBehaviour
 {
     //External Data
+    PlayerCommandRouter pCR;
     CharacterBrain brain;
     //Deriveratives
     CharacterSheet stats;
@@ -15,8 +16,9 @@ public class CharacterSheetUI : MonoBehaviour
     public TMP_Text protagonistName;
 
     bool protagonistSelected;
-    public void Init(CharacterBrain brain)
+    public void Init(PlayerCommandRouter pCR, CharacterBrain brain) // called by GameState after pCR
     {
+        this.pCR = pCR;
         this.brain = brain;
 
         stats = brain.stats;
@@ -33,11 +35,12 @@ public class CharacterSheetUI : MonoBehaviour
     public void OnProtagonistClick()
     {
         protagonistSelected = !protagonistSelected;
+
         selectionFrame.enabled = protagonistSelected;
 
-        brain.SwitchPlayerControl(protagonistSelected);
-
+        if (protagonistSelected)
+            pCR.Bind(brain);
+        else
+            pCR.UnBind();
     }
-
-
 }

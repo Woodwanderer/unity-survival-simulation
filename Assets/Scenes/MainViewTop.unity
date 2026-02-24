@@ -7896,7 +7896,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 264669006}
         m_TargetAssemblyTypeName: CharacterSheetUI, Assembly-CSharp
-        m_MethodName: OnProtagonistSelected
+        m_MethodName: OnProtagonistClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

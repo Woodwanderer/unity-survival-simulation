@@ -6,9 +6,11 @@ public class GameGo: MonoBehaviour
     private World world;
     public RenderWorld renderWorld;        
     GameState gameState;
+
+    //Input & Events
     public InputController inputController;
     public CameraMovement cam;
-    public InventoryUI inventoryUI;
+    
     public GameTime gameTime = new();
 
     //Data Assets
@@ -21,9 +23,12 @@ public class GameGo: MonoBehaviour
     public TimePanelUI timePanelUI;
     public CharacterSheetUI charSheetUI;
     public ContextActionBarUI contextActionbar;
+    public InventoryUI inventoryUI;
+
     public BuildBarUI buildBarUI;
     public ModeBarUI modeBarUI;
     public BuildingBarUI buildingBarUI;
+
     public NighttimeOverlay nighttimeOverlay;
     public GameSpeedUI gameSpeedUI;
 
@@ -39,13 +44,12 @@ public class GameGo: MonoBehaviour
 
         //renderWorld.StartDebugWorldGen(world); // LAND GENERATOR DEBUG ANIMATION
 
-        gameState = new GameState(world, renderWorld, cam, inputController, inventoryUI, contextActionbar, buildBarUI, actionBarUI, modeBarUI, buildingBarUI);
+        gameState = new GameState(world, renderWorld, cam, inputController, inventoryUI, contextActionbar, buildBarUI, actionBarUI, modeBarUI, buildingBarUI, charSheetUI);
         gameState.Initialise();
 
         //UI
         actionBarUI.Init(world.protagonistData.brain);
         timePanelUI.Init(gameTime);
-        charSheetUI.Init(world.protagonistData.brain);
         contextActionbar.Init(world.protagonistData.brain);
         buildBarUI.Init(gameState);
         modeBarUI.Init(gameState);

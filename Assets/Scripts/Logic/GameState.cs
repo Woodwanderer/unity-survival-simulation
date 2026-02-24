@@ -2,9 +2,12 @@
 using UnityEngine.EventSystems;
 public class GameState
 {
+    //External Data
     public InputController input;
+
     public World world;
     public RenderWorld renderWorld;
+
     CameraMovement cam;
     //UI
     InventoryUI inventoryUI;
@@ -14,12 +17,16 @@ public class GameState
     ActionBarUI actionBarUI;
     ModeBarUI taskBarUI;
 
+    CharacterSheetUI characterSheetUI;
+
+    //This
     TileEntityView currentObj;
     Building currentBuilding;
+    PlayerCommandRouter pCR;
 
     public IGameMode currentMode;
     public IGameTool currentTool;
-    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inventoryUI, ContextActionBarUI contextActionBarUI, BuildBarUI buildBarUI, ActionBarUI actionBarUI, ModeBarUI taskBarUI, BuildingBarUI buildingBarUI)
+    public GameState(World world, RenderWorld render, CameraMovement cam, InputController input_in, InventoryUI inventoryUI, ContextActionBarUI contextActionBarUI, BuildBarUI buildBarUI, ActionBarUI actionBarUI, ModeBarUI taskBarUI, BuildingBarUI buildingBarUI, CharacterSheetUI characterSheetUI)
     {
         this.world = world;
         this.renderWorld = render;
@@ -31,12 +38,18 @@ public class GameState
         this.buildBarUI = buildBarUI;
         this.actionBarUI = actionBarUI;
         this.taskBarUI = taskBarUI;
+
+        this.characterSheetUI = characterSheetUI;
     }
 
     public void Initialise()
     {
         inventoryUI.Init(world.protagonistData.brain.inventory, world.protagonistData.brain.stats);
+
         EventBus.OnObjectClick += SelectObj;
+
+        pCR = new PlayerCommandRouter(world.protagonistData.brain);
+        characterSheetUI.Init(pCR, world.protagonistData.brain);
     }
     public void SetMode(IGameMode newMode)
     {
@@ -187,11 +200,7 @@ public class GameState
         currentObj = null;
         contextActionBarUI.Hide();
     }
-    //Player
-    void PlayerControlProtagonist()
-    {
-
-    }
+    
     //General
     void HandleCancel()
     {

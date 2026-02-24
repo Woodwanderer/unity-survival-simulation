@@ -294,10 +294,6 @@ public class RenderWorld : MonoBehaviour
         world.protagonistData.brain.OnSelectionChanged += protagonistView.SetSelection;
         protagonistView.SetSelection(world.protagonistData.brain);
     }
-    public void ManageProtagonistSelection(bool selection)
-    {
-
-    }
     public Vector3 GetWorldPosForProtagonist(Vector2Int coords)
     {
         return MapToWorld(coords) + creatureTileOffset;

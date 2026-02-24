@@ -39,8 +39,6 @@ public class CharacterBrain
         this.protagonistData = protagonistData;
 
         stats = new CharacterSheet(this);
-
-        Init();
     }
     public void Init()
     {
