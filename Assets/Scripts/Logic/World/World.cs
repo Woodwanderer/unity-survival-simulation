@@ -8,7 +8,7 @@ public class World
     int worldSizeY = 60;
     Vector2Int worldSize;
     public Vector2Int WorldSize => worldSize;
-    public Vector2Int halfWorldSize { get; private set; }
+    public Vector2Int HalfWorldSize { get; private set; }
     public RenderWorld render;
 
     LandGenerator landGenerator;
@@ -86,17 +86,17 @@ public class World
     public void Initialise()
     {
         worldSize = new Vector2Int(worldSizeX, worldSizeY);
-        halfWorldSize = worldSize / 2;
+        HalfWorldSize = worldSize / 2;
 
         landGenerator = new(this);
+        //GenerateTiles(); // Basic generator
+        tileData = landGenerator.GenerateByArea();
 
         SetProtagonist();
 
         taskManager = new(pathfinder);
         goalManager = new(protagonistData.brain.stats);
 
-        //GenerateTiles(); // Basic generator
-        tileData = landGenerator.GenerateByArea();
     }
     ////LAND GENERATOR DEBUG PREVIEW ANIMATION
     /*
@@ -111,7 +111,7 @@ public class World
     }*/
     private void SetProtagonist()
     {
-        protagonistData = new ProtagonistData(halfWorldSize, this);
+        protagonistData = new ProtagonistData(pathfinder.FindClosestWalkableTo(HalfWorldSize), this);
     }
 
     //TileEntities
@@ -158,6 +158,7 @@ public class World
         }
         render.RemoveEntitySprite(ent);
     }
+    //Tiles
 
     //Tile SELECTION
     public void SelectTile(Vector2Int coords)

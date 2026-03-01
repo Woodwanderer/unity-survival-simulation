@@ -70,6 +70,42 @@ public class Pathfinder //BFS -> Deijkstra later ;)
             }
         }
         return result;
+    } //for area selection
+    public Vector2Int FindClosestWalkableTo(Vector2Int coords)
+    {
+        if (world.GetTileData(coords).isWalkable) 
+            return coords;
+
+        Queue<Vector2Int> frontier = new();
+        HashSet<Vector2Int> visited = new();
+
+        frontier.Enqueue(coords);
+        visited.Add(coords);
+
+        while (frontier.Count > 0)
+        {
+            Vector2Int current = frontier.Dequeue();
+            foreach (Vector2Int dir in GridDirections.Cardinal) 
+            {
+                Vector2Int next = current + dir;
+
+                if (!IsWithinWorld(next)) 
+                    continue;
+
+                if (visited.Contains(next)) 
+                    continue;
+
+                visited.Add(next);
+
+                if (world.GetTileData(next).isWalkable)
+                    return next;
+
+                frontier.Enqueue(next);
+
+            }
+        }
+
+        throw new System.Exception("No walkable tile found in world.");
     }
     public TileEntity FindEntity(Vector2Int start, ItemDefinition item)
     {

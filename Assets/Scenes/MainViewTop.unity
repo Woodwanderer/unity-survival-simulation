@@ -1736,7 +1736,6 @@ MonoBehaviour:
   renderWorld: {fileID: 948895213}
   inputController: {fileID: 899128859}
   cam: {fileID: 330585548}
-  inventoryUI: {fileID: 178616592}
   gameConfig: {fileID: 11400000, guid: 25c4cc4335f18474b86908b99f66e7ac, type: 2}
   worldData: {fileID: 11400000, guid: 890d199b65f0f084ca8bc9e9eed87f17, type: 2}
   IActionVisualData: {fileID: 11400000, guid: 45189134cb0b96744873255a3d21bfd7, type: 2}
@@ -1744,6 +1743,7 @@ MonoBehaviour:
   timePanelUI: {fileID: 2021315610}
   charSheetUI: {fileID: 264669006}
   contextActionbar: {fileID: 1785302029}
+  inventoryUI: {fileID: 178616592}
   buildBarUI: {fileID: 229552059}
   modeBarUI: {fileID: 814145307}
   buildingBarUI: {fileID: 959799786}

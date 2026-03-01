@@ -47,9 +47,7 @@ public class LandGenerator
 
         tile.SetLand(terrain, elevation);
 
-
-        if (terrain != Biome.Water)
-            PopulateWorldObjWeighted(grid[tile.mapCoords.x, tile.mapCoords.y]);
+        PopulateWorldObjWeighted(grid[tile.mapCoords.x, tile.mapCoords.y]);
     }
     static readonly Vector2Int[] Directions =
 {

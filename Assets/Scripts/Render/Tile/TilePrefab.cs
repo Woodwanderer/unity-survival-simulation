@@ -60,7 +60,7 @@ public class TilePrefab: MonoBehaviour
 
         view.SetSprite(sprite);
     }
-    public void HideEntitySprite(TileEntity ent)
+    public void RemoveEntitySprite(TileEntity ent)
     {
         TileEntityView view = entities.FirstOrDefault(v => v.Data == ent);
 

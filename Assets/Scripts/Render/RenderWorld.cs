@@ -38,7 +38,7 @@ public class RenderWorld : MonoBehaviour
     public void Initialise(World world)
     {
         this.world = world;
-        mapToCenter = world.halfWorldSize; // used by MapToWorld()
+        mapToCenter = world.HalfWorldSize; // used by MapToWorld()
         TilePrefabs = new TilePrefab[world.WorldSize.x, world.WorldSize.y];
 
         Render();
@@ -259,7 +259,7 @@ public class RenderWorld : MonoBehaviour
             wo.OnStateChanged -= HandleWorldObjStateChanged;
 
         TilePrefab tileP = GetTileP(ent.TileCoords);
-        tileP.HideEntitySprite(ent);
+        tileP.RemoveEntitySprite(ent);
     }
 
     //PATH

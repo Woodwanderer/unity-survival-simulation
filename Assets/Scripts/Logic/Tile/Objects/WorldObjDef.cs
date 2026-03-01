@@ -37,6 +37,8 @@ public enum WorldObjType
     FruitTree,
     Bush,
     Berries,
+    Shrooms,
+    Reeds,
     Rock
 }
 

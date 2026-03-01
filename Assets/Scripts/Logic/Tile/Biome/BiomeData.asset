@@ -40,7 +40,9 @@ MonoBehaviour:
       weight: 15
     - worldObjDef: {fileID: 11400000, guid: 0c426ef7e89d1fe42aeabe39fdd96783, type: 2}
       weight: 5
-    totalWeight: 130
+    - worldObjDef: {fileID: 11400000, guid: f68234ca79ccb2745ac3a8e3efc64b40, type: 2}
+      weight: 20
+    totalWeight: 150
   - biome: 2
     density: 1
     spawnEntries:
@@ -54,8 +56,12 @@ MonoBehaviour:
       weight: 15
     - worldObjDef: {fileID: 11400000, guid: 0c426ef7e89d1fe42aeabe39fdd96783, type: 2}
       weight: 5
-    totalWeight: 140
+    - worldObjDef: {fileID: 11400000, guid: f68234ca79ccb2745ac3a8e3efc64b40, type: 2}
+      weight: 25
+    totalWeight: 165
   - biome: 3
-    density: 0
-    spawnEntries: []
-    totalWeight: 0
+    density: 0.2
+    spawnEntries:
+    - worldObjDef: {fileID: 11400000, guid: 92b37f2b295c8784492b9d8c6f034160, type: 2}
+      weight: 25
+    totalWeight: 25
